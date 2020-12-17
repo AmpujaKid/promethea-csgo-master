@@ -1,0 +1,73 @@
+- Update Log -
+
+=====14.12.2020=====
+[RAGEBOT]
+- Resolver is a bit more stable now.
+- Feet are selectable now in hitbox & multipoint
+[ANTIAIM]
+- Changes to the z fake type.
+- Added twist fake type.
+- Added desync fake yaw, not finished yet.
+- Added float fake yaw.
+- Added delta offset real yaw.
+[VISUALS]
+- Metallic chams material changed.
+- Added a world hitmarker + world damage text.
+- Added Penetration visualizer styles. (2d crosshair, 2d rect, 2d circle, 3d rect (like neverlose)
+- Changed Name ESP font should look cleaner now.
+[MISCELLANEOUS]
+- Added hitsound checkbox.
+- Localplayer animation improvements.
+
+=====15.12.20=====
+[RAGEBOT]
+- Resolver changes
+[ANTIAIM]
+- Added static back fake yaw
+- Added snake real yaw
+- Added manual override
+
+=====16.12.20=====
+[RAGEBOT]
+- Recoded multipoint
+- Resolver changes
+[VISUALS]
+- New watermark
+- Added hidden cvars
+- Added remove blur
+
+
+
+
+
+
+- Other Stuff -
+
+notes:
+Make sure I haven't forgotten anything on the upd log... I don't wanna push an upd and ppl ask
+"Whats this feature? It wasn't in upd log!" and etc.
+
+todo:
+[aimbot]
+	spread fix
+	resolver
+[antiaim]
+	bug test and improve new antiaims
+	fix running = tapped
+[visuals]
+	fake chams
+	menu theme recode
+[movement]
+	nothing for now
+[misc]
+	nothing for now
+
+other:
+Laz, instead of making the manual aa its own option, we should have it be a button. Click keybind
+once to override the current yaw to do its thing around one direction, click it again to stop the
+override. This would be a much cleaner release, I think. Lets put it in aa column 2, under fakelag.
+I am moving it right now, and making edits to spacial use in order to fit everything in the menu.
+
+I am also going to make a giant list of every feature. I will format it like our update log, then
+we can release it as a kind of showcase. Having this list will show everyone just how good our
+cheat is.
