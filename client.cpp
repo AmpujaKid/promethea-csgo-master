@@ -44,7 +44,7 @@ void Client::DrawHUD( ) {
 	// get server ip / type
 	const char* server_ip = g_csgo.m_engine->GetNetChannelInfo() ? g_csgo.m_engine->GetNetChannelInfo()->GetAddress() : XOR("");
 	
-	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("promethea | ms: %i | %itick | %s | %s"), ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("promethea | not connected | %s"), time.str().data());
+	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("leetgrail | ms: %i | %itick | %s | %s"), ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("promethea | not connected | %s"), time.str().data());
 
 	Color color = g_menu.main.config.menu_color.get( );
 
@@ -108,24 +108,24 @@ void Client::ClanTag()
 			switch (curframe % 20)
 			{
 			case 0: clantag = XOR(" "); break;
-			case 1: clantag = XOR("p"); break;
-			case 2: clantag = XOR("pr"); break;
-			case 3: clantag = XOR("pro"); break;
-			case 4: clantag = XOR("prom"); break;
-			case 5: clantag = XOR("prome"); break;
-			case 6: clantag = XOR("promet"); break;
-			case 7: clantag = XOR("prometh"); break;
-			case 8: clantag = XOR("promethe"); break;
-			case 9: clantag = XOR("promethea"); break;
-			case 10: clantag = XOR("promethea"); break;
-			case 11: clantag = XOR("romethea"); break;
-			case 12: clantag = XOR("omethea"); break;
-			case 13: clantag = XOR("methea"); break;
-			case 14: clantag = XOR("ethea"); break;
-			case 15: clantag = XOR("thea"); break;
-			case 16: clantag = XOR("hea"); break;
-			case 17: clantag = XOR("ea"); break;
-			case 18: clantag = XOR("a"); break;
+			case 1: clantag = XOR("l"); break;
+			case 2: clantag = XOR("le"); break;
+			case 3: clantag = XOR("lee"); break;
+			case 4: clantag = XOR("leet"); break;
+			case 5: clantag = XOR("leetg"); break;
+			case 6: clantag = XOR("leetgr"); break;
+			case 7: clantag = XOR("leetgra"); break;
+			case 8: clantag = XOR("leetgrai"); break;
+			case 9: clantag = XOR("leetgrail"); break;
+			case 10: clantag = XOR("leetgrail"); break;
+			case 11: clantag = XOR("eetgrail"); break;
+			case 12: clantag = XOR("etgrail"); break;
+			case 13: clantag = XOR("tgrail"); break;
+			case 14: clantag = XOR("grail"); break;
+			case 15: clantag = XOR("rail"); break;
+			case 16: clantag = XOR("ail"); break;
+			case 17: clantag = XOR("il"); break;
+			case 18: clantag = XOR("l"); break;
 			case 19: clantag = XOR(" "); break;
 			}
 

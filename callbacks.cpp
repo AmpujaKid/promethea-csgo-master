@@ -287,6 +287,14 @@ bool callbacks::IsConfig6( ) {
 	return g_menu.main.config.config.get( ) == 5;
 }
 
+bool callbacks::IsWeaponSecondary() { // this is dumb
+	bool secondary = false;
+	if (g_cl.m_weapon_id == Weapons_t::DEAGLE || g_cl.m_weapon_id == Weapons_t::ELITE || g_cl.m_weapon_id == Weapons_t::DEAGLE || g_cl.m_weapon_id == Weapons_t::FIVESEVEN || g_cl.m_weapon_id == Weapons_t::GLOCK) {
+		secondary = true;
+	}
+	return secondary;
+}
+
 // weaponcfgs callbacks.
 bool callbacks::DEAGLE( ) {
 	if( !g_csgo.m_engine->IsInGame( ) || !g_cl.m_processing )

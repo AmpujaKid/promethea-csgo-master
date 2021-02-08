@@ -4,6 +4,7 @@ namespace callbacks {
 	void SkinUpdate( );
 	void ForceFullUpdate( );
 	void ToggleThirdPerson( );
+	bool IsWeaponSecondary();
 	void ToggleFakeLatency( );
 	void ToggleDownManual();
 	void ToggleLeftManual();

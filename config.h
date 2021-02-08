@@ -7,7 +7,6 @@ public:
 	void SaveHotkeys( );
 	void load( const Form* form, const std::string& name );
 	void save( const Form* form, const std::string& name );
-	void ChangeMenuScale();
 
 private:
 	bool m_init;

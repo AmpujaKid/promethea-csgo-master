@@ -2157,9 +2157,6 @@ public:
 		menu_color.setup(XOR("menu color"), XOR("menu_color"), colors::light_blue, &g_gui.m_color);
 		RegisterElement(&menu_color);
 
-		menu_scale.setup(XOR("menu scale (W.I.P)"), XOR("menu_scale"), { XOR("1"), XOR("1.25"), XOR("1.5"), XOR("1.75"), XOR("2") });
-		RegisterElement(&menu_scale);
-
 		mode.setup(XOR("safety mode"), XOR("mode"), { XOR("matchmaking"), XOR("no-spread") });
 		RegisterElement(&mode, 1);
 
@@ -2236,9 +2233,9 @@ public:
 	ConfigTab	 config;
 
 public:
-	void init(float width, float height) {
+	void init() {
 		SetPosition(50, 50);
-		SetSize(width, height);
+		SetSize(525, 570);
 
 		// aim.
 		RegisterTab(&aimbot);
@@ -2276,25 +2273,6 @@ public:
 public:
 	void init() {
 		Colorpicker::init();
-
-		switch (main.config.menu_scale.get()) {
-		case 0:
-			main.init(630.f, 500.f);
-			break;
-		case 1:
-			main.init(787.5f, 625.f);
-			break;
-		case 2:
-			main.init(945.f, 750.f);
-			break;
-		case 3:
-			main.init(1102.5f, 875.f);
-			break;
-		case 4:
-			main.init(1260.f, 1000.f);
-			break;
-		}
-
 		g_gui.RegisterForm(&main, VK_INSERT);
 	}
 };

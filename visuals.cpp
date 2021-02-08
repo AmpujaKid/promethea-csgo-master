@@ -506,7 +506,7 @@ void Visuals::StatusIndicators( ) {
 		if( g_cl.m_local->m_vecVelocity( ).length_2d( ) > 270.f || g_cl.m_lagcomp ) {
 			Indicator_t ind{ };
 			ind.color = g_cl.m_lagcomp ? 0xff15c27b : 0xff0000ff;
-			ind.text = XOR( "LC" );
+			ind.text = XOR( "LAG COMP" );
 
 			indicators.push_back( ind );
 		}
