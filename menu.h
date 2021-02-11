@@ -149,6 +149,9 @@ public:
 
 	Dropdown pitch_stand;
 	Dropdown yaw_stand;
+	Slider   distortion_await;
+	Slider   distortion_speed;
+	Slider   distortion_swap_amount;
 	Slider   jitter_range_stand;
 	Slider   rot_range_stand;
 	Slider   rot_speed_stand;
@@ -217,9 +220,24 @@ public:
 		pitch_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		RegisterElement(&pitch_stand);
 
-		yaw_stand.setup(XOR("yaw"), XOR("yaw_stnd"), { XOR("off"), XOR("direction"), XOR("jitter"), XOR("rotate"), XOR("delta offset"), XOR("crooked") });
+		yaw_stand.setup(XOR("yaw"), XOR("yaw_stnd"), { XOR("off"), XOR("direction"), XOR("jitter"), XOR("rotate"), XOR("delta offset"), XOR("crooked"), XOR("distortion") });
 		yaw_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		RegisterElement(&yaw_stand);
+
+		distortion_await.setup("await", XOR("distortion_await"), 1.f, 10.f, true, 0, 1.f, 1.f);
+		distortion_await.AddShowCallback(callbacks::IsAntiAimModeStand);
+		distortion_await.AddShowCallback(callbacks::IsAntiAimModeDistortion);
+		RegisterElement(&distortion_await);
+
+		distortion_speed.setup("speed", XOR("distortion_speed"), 1.f, 100.f, true, 0, 1.f, 1.f);
+		distortion_speed.AddShowCallback(callbacks::IsAntiAimModeStand);
+		distortion_speed.AddShowCallback(callbacks::IsAntiAimModeDistortion);
+		RegisterElement(&distortion_speed);
+
+		distortion_swap_amount.setup("amount", XOR("distortion_swap_amount"), -180.f, 180.f, true, 0, 1.f, 1.f, XOR(L"°"));
+		distortion_swap_amount.AddShowCallback(callbacks::IsAntiAimModeStand);
+		distortion_swap_amount.AddShowCallback(callbacks::IsAntiAimModeDistortion);
+		RegisterElement(&distortion_swap_amount);
 
 		jitter_range_stand.setup("", XOR("jitter_range_stnd"), 1.f, 180.f, false, 0, 45.f, 5.f, XOR(L"�"));
 		jitter_range_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
@@ -462,6 +480,7 @@ public:
 
 	Dropdown	  chams_entity_selection;
 	Checkbox      chams_local;
+	Checkbox      fake_indicator;
 	Dropdown	  chams_local_mat;
 	Colorpicker   chams_local_col;
 	Slider        chams_local_blend;
@@ -567,6 +586,10 @@ public:
 		chams_local.setup(XOR("chams local"), XOR("chams_local"));
 		chams_local.AddShowCallback(callbacks::IsChamsSelection0);
 		RegisterElement(&chams_local, 1);
+
+		fake_indicator.setup(XOR("fake indicator"), XOR("fake_indicator"));
+		fake_indicator.AddShowCallback(callbacks::IsChamsSelection0);
+		RegisterElement(&fake_indicator, 1);
 
 		chams_local_mat.setup(XOR("chams local material"), XOR("chams_local_mat"), { XOR("material"), XOR("flat"), XOR("metallic"), XOR("shaded"), XOR("glow") });
 		chams_local_mat.AddShowCallback(callbacks::IsChamsSelection0);
@@ -839,7 +862,7 @@ public:
 
 public:
 	void init() {
-		SetTitle(XOR("movement"));
+		SetTitle(XOR("move"));
 
 		bhop.setup(XOR("automatic jump"), XOR("bhop"));
 		RegisterElement(&bhop);
@@ -2216,6 +2239,7 @@ public:
 	}
 };
 
+
 class MainForm : public Form {
 public:
 	// aimbot.
@@ -2227,14 +2251,14 @@ public:
 	VisualsTab	 visuals;
 
 	// misc.
-	MovementTab  movement;
-	SkinsTab     skins;
+	MovementTab movement;
+	SkinsTab  skins;
 	MiscTab	     misc;
 	ConfigTab	 config;
 
 public:
 	void init() {
-		SetPosition(50, 50);
+		SetPosition(100, 100);
 		SetSize(525, 570);
 
 		// aim.
@@ -2272,7 +2296,13 @@ public:
 
 public:
 	void init() {
-		Colorpicker::init();
+
+		Colorpicker::init();	// points here, so this was the second injection crash problem, moved here to fix bound bug, look at colorpicker init
+
+		g_notify.add(tfm::format(XOR("Colorpicker successfully initialized\n")));
+
+		main.init();
+
 		g_gui.RegisterForm(&main, VK_INSERT);
 	}
 };

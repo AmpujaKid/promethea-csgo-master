@@ -46,7 +46,7 @@ void Colorpicker::draw( ) {
 	Point p{ area.x + m_pos.x, area.y + m_pos.y };
 
 	// label.
-	render::menu_shade.string( p.x + LABEL_OFFSET, p.y - 2, { 205, 205, 205, m_parent->m_alpha }, m_label );
+	render::menu.string( p.x + LABEL_OFFSET, p.y - 2, { 205, 205, 205, m_parent->m_alpha }, m_label );
 
 	// outline.
 	render::rect( p.x + m_w - COLORPICKER_WIDTH, p.y, COLORPICKER_WIDTH, COlORPICKER_HEIGHT, { 0, 0, 0, m_parent->m_alpha } );

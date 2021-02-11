@@ -1,4 +1,4 @@
-﻿#include "includes.h"
+#include "includes.h"
 
 void Form::draw() {
 	// opacity should reach 1 in 500 milliseconds.
@@ -37,22 +37,26 @@ void Form::draw() {
 	if (!m_tabs.empty()) {
 		Rect tabs_area = GetTabsRect();
 
-		for (size_t i{}; i < m_tabs.size(); ++i) {
+		for (size_t i{}; i < m_tabs.size(); ++i) 
+		{
 			const auto& t = m_tabs[i];
-			int font_width = render::menu_shade.size(t->m_title).m_width;
+			int font_width = render::menu.size(t->m_title).m_width;
 
 			// text
-			render::menu_shade.string(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 16, tabs_area.y,
-				Color{ 152, 152, 152, m_alpha }, t->m_title);
+			render::menu.string(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 16, tabs_area.y,
+				Color{ 150, 150, 150, m_alpha }, t->m_title);
 
 			// active tab indicator
 			render::rect_filled_fade(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 10, tabs_area.y + 14,
-				font_width + 11, 2,
-				t == m_active_tab ? Color{ 0, 0, 0, 0 } : Color{ 0, 0, 0, m_alpha }, 0, 150);
+				font_width + 11, 4, Color{ 0, 0, 0, m_alpha }, 0, 150);
 
 			render::rect_filled(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 10, tabs_area.y + 14,
-				font_width + 11, 2,
+				font_width + 11, 4,
 				t == m_active_tab ? color : Color{ 0, 0, 0, 0 });
+
+			render::rect_filled(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 10, tabs_area.y + 16,
+				font_width + 11, 2,
+				t == m_active_tab ? Color{ 0, 0, 0, 215 } : Color{ 0, 0, 0, 0 });
 		}
 
 		// this tab has elements.

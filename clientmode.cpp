@@ -23,7 +23,7 @@ void Hooks::OverrideView( CViewSetup* view ) {
 	g_hooks.m_client_mode.GetOldMethod< OverrideView_t >( IClientMode::OVERRIDEVIEW )( this, view );
 
     // remove scope edge blur.
-	if( g_menu.main.visuals.noscope.get( ) && g_menu.main.visuals.noblur.get( ) ) {
+	if( g_menu.main.visuals.noblur.get( ) ) {
 		if( g_cl.m_local )
             view->m_edge_blur = 0;
 	}

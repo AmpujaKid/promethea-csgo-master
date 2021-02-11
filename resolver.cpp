@@ -133,6 +133,97 @@ void Resolver::MatchShot( AimPlayer* data, LagRecord* record ) {
 	}
 }
 
+void Resolver::AntiFreestand(LagRecord* record) {
+	// constants
+	constexpr float STEP{ 4.f };
+	constexpr float RANGE{ 32.f };
+
+	// best target.
+	vec3_t enemypos = record->m_player->GetShootPosition();
+	float away = GetAwayAngle(record);
+
+	// construct vector of angles to test.
+	std::vector< AdaptiveAngle > angles{ };
+	angles.emplace_back(away - 180.f);
+	angles.emplace_back(away + 90.f);
+	angles.emplace_back(away - 90.f);
+
+	// start the trace at the your shoot pos.
+	vec3_t start = g_cl.m_local->GetShootPosition();
+
+	// see if we got any valid result.
+	// if this is false the path was not obstructed with anything.
+	bool valid{ false };
+
+	// iterate vector of angles.
+	for (auto it = angles.begin(); it != angles.end(); ++it) {
+
+		// compute the 'rough' estimation of where our head will be.
+		vec3_t end{ enemypos.x + std::cos(math::deg_to_rad(it->m_yaw)) * RANGE,
+			enemypos.y + std::sin(math::deg_to_rad(it->m_yaw)) * RANGE,
+			enemypos.z };
+
+		// draw a line for debugging purposes.
+		// g_csgo.m_debug_overlay->AddLineOverlay( start, end, 255, 0, 0, true, 0.1f );
+
+		// compute the direction.
+		vec3_t dir = end - start;
+		float len = dir.normalize();
+
+		// should never happen.
+		if (len <= 0.f)
+			continue;
+
+		// step thru the total distance, 4 units per step.
+		for (float i{ 0.f }; i < len; i += STEP) {
+			// get the current step position.
+			vec3_t point = start + (dir * i);
+
+			// get the contents at this point.
+			int contents = g_csgo.m_engine_trace->GetPointContents(point, MASK_SHOT_HULL);
+
+			// contains nothing that can stop a bullet.
+			if (!(contents & MASK_SHOT_HULL))
+				continue;
+
+			float mult = 1.f;
+
+			// over 50% of the total length, prioritize this shit.
+			if (i > (len * 0.5f))
+				mult = 1.25f;
+
+			// over 90% of the total length, prioritize this shit.
+			if (i > (len * 0.75f))
+				mult = 1.25f;
+
+			// over 90% of the total length, prioritize this shit.
+			if (i > (len * 0.9f))
+				mult = 2.f;
+
+			// append 'penetrated distance'.
+			it->m_dist += (STEP * mult);
+
+			// mark that we found anything.
+			valid = true;
+		}
+	}
+
+	if (!valid) {
+		return;
+	}
+
+	// put the most distance at the front of the container.
+	std::sort(angles.begin(), angles.end(),
+		[](const AdaptiveAngle& a, const AdaptiveAngle& b) {
+			return a.m_dist > b.m_dist;
+		});
+
+	// the best angle should be at the front now.
+	AdaptiveAngle* best = &angles.front();
+
+	record->m_eye_angles.y = best->m_yaw;
+}
+
 void Resolver::SetMode( LagRecord* record ) {
 	// the resolver has 3 modes to chose from.
 	// these modes will vary more under the hood depending on what data we have about the player
@@ -190,144 +281,85 @@ void Resolver::ResolveWalk( AimPlayer* data, LagRecord* record ) {
 	data->m_body_update = record->m_anim_time + 0.22f;
 
 	// reset stand and body index.
-	data->m_stand_index  = 0;
+	data->m_moving_index = 0;
+	data->m_stand_index = 0;
 	data->m_stand_index2 = 0;
-	data->m_body_index   = 0;
+	data->m_body_index = 0;
+	data->m_freestanding_index = 0;
+
 
 	// copy the last record that this player was walking
 	// we need it later on because it gives us crucial data.
 	std::memcpy( &data->m_walk_record, record, sizeof( LagRecord ) );
 }
 
-void Resolver::ResolveStand( AimPlayer* data, LagRecord* record ) {
-	// for no-spread call a seperate resolver.
-	if( g_menu.main.config.mode.get( ) == 1 ) {
-		StandNS( data, record );
-		return;
-	}
-
+void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	// get predicted away angle for the player.
-	float away = GetAwayAngle( record );
+	float away = GetAwayAngle(record);
 
 	// pointer for easy access.
 	LagRecord* move = &data->m_walk_record;
+	float delta = record->m_anim_time - move->m_anim_time;
 
 	// we have a valid moving record.
-	if( move->m_sim_time > 0.f ) {
+	if (move->m_sim_time > 0.f && !move->dormant() && !record->dormant()) {
 		vec3_t delta = move->m_origin - record->m_origin;
 
 		// check if moving record is close.
-		if( delta.length( ) <= 128.f ) {
+		if (delta.length() <= 128.f) {
 			// indicate that we are using the moving lby.
 			data->m_moved = true;
 		}
 	}
 
-	// a valid moving context was found
-	if( data->m_moved ) {
-		float diff = math::NormalizedAngle( record->m_body - move->m_body );
-		float delta = record->m_anim_time - move->m_anim_time;
+	if (delta < .22f) // can't flick if they moved .22 seconds ago so its just their lby
+	{
+		record->m_eye_angles.y = move->m_body;
 
-		// it has not been time for this first update yet.
-		if( delta < 0.22f ) {
-			// set angles to current LBY.
-			record->m_eye_angles.y = move->m_body;
-
-			// set resolve mode.
-			record->m_mode = Modes::RESOLVE_STOPPED_MOVING;
-
-			// exit out of the resolver, thats it.
-			return;
-		}
-
-		// LBY SHOULD HAVE UPDATED HERE.
-		else if( record->m_anim_time >= data->m_body_update ) {
-			// only shoot the LBY flick 3 times.
-			// if we happen to miss then we most likely mispredicted.
-			if( data->m_body_index <= 3 ) {
-				// set angles to current LBY.
-				record->m_eye_angles.y = record->m_body;
-
-				// predict next body update.
-				data->m_body_update = record->m_anim_time + 1.1f;
-
-				// set the resolve mode.
-				record->m_mode = Modes::RESOLVE_BODY;
-
-				return;
-			}
-
-			// set to stand1 -> known last move.
-			record->m_mode = Modes::RESOLVE_STAND1;
-
-			C_AnimationLayer* curr = &record->m_layers[ 3 ];
-			int act = data->m_player->GetSequenceActivity( curr->m_sequence );
-
-			// ok, no fucking update. apply big resolver.
-			record->m_eye_angles.y = move->m_body;
-
-			// every third shot do some fuckery.
-			if (!(data->m_stand_index % 3))
-				record->m_eye_angles.y += g_csgo.RandomFloat(-35.f, 35.f);
-
-			// jesus we can fucking stop missing can we?
-			if (data->m_stand_index > 6 && act != 980) {
-				// lets just hope they switched ang after move.
-				record->m_eye_angles.y = move->m_body + 180.f;
-			}
-
-			// we missed 3 shots.
-			else if (data->m_stand_index > 3 && act != 980) {
-				// try backwards.
-				record->m_eye_angles.y = away + 180.f;
-			}
-
-			return;
-		}
+		record->m_mode = Modes::RESOLVE_STOPPED_MOVING;
 	}
+	else if (data->m_body != data->m_old_body && data->m_body_index <= 5) // flick prediction, has .22 flick predict
+	{
+		record->m_eye_angles.y = data->m_body;
 
-	// stand2 -> no known last move.
-	record->m_mode = Modes::RESOLVE_STAND2;
+		data->m_body_update = record->m_anim_time + 1.1f;
 
-	switch (data->m_stand_index2 % 9) {
+		record->m_mode = Modes::RESOLVE_LBY_UPDATE;
+	}
+	else if (data->m_moved && data->m_moving_index < 1) // last moving if we havn't missed it
+	{
+		record->m_eye_angles.y = move->m_body;
 
-	case 0:
-		record->m_eye_angles.y = away + 118.f;
-		break;
+		record->m_mode = Modes::RESOLVE_LAST_LBY;
+	}
+	else if (!data->m_moved || data->m_moving_index >= 1 && data->m_freestanding_index < 3) // freestanding if we have gone through that shit or missed last moving
+	{
+		AntiFreestand(record);
 
-	case 1:
-		record->m_eye_angles.y = away - 120.f;
-		break;
+		record->m_mode = Modes::RESOLVE_FREESTAND;
+	}
+	else // bruteforce as a last fallback
+	{
+		switch (data->m_stand_index2 % 4)
+		{
+		case 1:
+			record->m_eye_angles.y = away + 180;
+			break;
 
-	case 2:
-		record->m_eye_angles.y = away + 180.f;
-		break;
+		case 2:
+			record->m_eye_angles.y = away - 110;
+			break;
 
-	case 3:
-		record->m_eye_angles.y = away - 30.f;
-		break;
+		case 3:
+			record->m_eye_angles.y = away + 110;
+			break;
 
-	case 4:
-		record->m_eye_angles.y = away + 98.f;
-		break;
+		case 4:
+			record->m_eye_angles.y = away;
+			break;
+		}
 
-	case 5:
-		record->m_eye_angles.y = away - 2.f;
-		break;
-
-	case 6:
-		record->m_eye_angles.y = away + 150.f;
-		break;
-
-	case 7:
-		record->m_eye_angles.y = away - 119.f;
-		break;
-
-	case 8:
-		record->m_eye_angles.y = away + 180.f;
-		break;
-	default:
-		break;
+		record->m_mode = Modes::RESOLVE_BRUTEFORCE;
 	}
 }
 
@@ -335,38 +367,46 @@ void Resolver::StandNS( AimPlayer* data, LagRecord* record ) {
 	// get away angles.
 	float away = GetAwayAngle( record );
 
-	switch( data->m_stand_index2 % 6 ) {
+	switch( data->m_stand_index2 % 9 ) {
 
 	case 0:
-		record->m_eye_angles.y = away + 180.f;
+		record->m_eye_angles.y -= away + record->m_body;
 		break;
 
 	case 1:
-		record->m_eye_angles.y = away + 45.f;
+		record->m_eye_angles.y += away - 12.f - record->m_body;
 		break;
 
 	case 2:
-		record->m_eye_angles.y = record->m_body - 45.f;
+		record->m_eye_angles.y -= away + 180.f + record->m_body;
 		break;
 
 	case 3:
-		record->m_eye_angles.y = record->m_body + 15.f;
+		record->m_eye_angles.y += away - 30.f - record->m_body;
 		break;
 
 	case 4:
-		record->m_eye_angles.y = record->m_body - 15.f;
+		record->m_eye_angles.y -= away + 98.f + record->m_body;
 		break;
 
 	case 5:
-		record->m_eye_angles.y = away;
+		record->m_eye_angles.y += away - 2.f - record->m_body;
 		break;
 
+	case 6:
+		record->m_eye_angles.y -= away + 150.f + record->m_body;
+		break;
+
+	case 7:
+		record->m_eye_angles.y += away - 119.f - record->m_body;
+		break;
+
+	case 8:
+		record->m_eye_angles.y -= away + 180.f + record->m_body;
+		break;
 	default:
 		break;
 	}
-
-	// force LBY to not fuck any pose and do a true bruteforce.
-	record->m_body = record->m_eye_angles.y;
 }
 
 void Resolver::ResolveAir( AimPlayer* data, LagRecord* record ) {
@@ -398,17 +438,45 @@ void Resolver::ResolveAir( AimPlayer* data, LagRecord* record ) {
 	// this should be a rough estimation of where he is looking.
 	float velyaw = math::rad_to_deg( std::atan2( record->m_velocity.y, record->m_velocity.x ) );
 
-	switch( data->m_shots % 3 ) {
+	float away = GetAwayAngle(record);
+
+	switch( data->m_shots % 9 ) {
 	case 0:
-		record->m_eye_angles.y = velyaw + 180.f;
+		record->m_eye_angles.y -= away + record->m_body + velyaw;
 		break;
 
 	case 1:
-		record->m_eye_angles.y = velyaw - 90.f;
+		record->m_eye_angles.y += away - 12.f - record->m_body + velyaw;
 		break;
 
 	case 2:
-		record->m_eye_angles.y = velyaw + 90.f;
+		record->m_eye_angles.y -= away + 180.f + record->m_body + velyaw;
+		break;
+
+	case 3:
+		record->m_eye_angles.y += away - 30.f - record->m_body + velyaw;
+		break;
+
+	case 4:
+		record->m_eye_angles.y -= away + 98.f + record->m_body + velyaw;
+		break;
+
+	case 5:
+		record->m_eye_angles.y += away - 2.f - record->m_body + velyaw;
+		break;
+
+	case 6:
+		record->m_eye_angles.y -= away + 150.f + record->m_body + velyaw;
+		break;
+
+	case 7:
+		record->m_eye_angles.y += away - 119.f - record->m_body + velyaw;
+		break;
+
+	case 8:
+		record->m_eye_angles.y -= away + 180.f + record->m_body + velyaw;
+		break;
+	default:
 		break;
 	}
 }
@@ -457,6 +525,7 @@ void Resolver::AirNS( AimPlayer* data, LagRecord* record ) {
 
 void Resolver::ResolvePoses( Player* player, LagRecord* record ) {
 	AimPlayer* data = &g_aimbot.m_players[ player->index( ) - 1 ];
+
 
 	// only do this bs when in air.
 	if( record->m_mode == Modes::RESOLVE_AIR ) {

@@ -14,7 +14,7 @@ void Config::init() {
 		return;
 
 	// append our subdir.
-	g_winapi.PathAppendA((char*)m_path.c_str(), g_cl.m_user.c_str());
+	g_winapi.PathAppendA((char*)m_path.c_str(), g_cl.m_cfg_folder.c_str());
 
 	// create folder if not present.
 	g_winapi.CreateDirectoryA(m_path.c_str(), 0);

@@ -1,4 +1,5 @@
 #include "includes.h"
+#include "resolver.h"
 
 Aimbot g_aimbot{ };;
 
@@ -626,6 +627,7 @@ void Aimbot::find( ) {
 			// left click attack.
 			else
 				g_cl.m_cmd->m_buttons |= IN_ATTACK;
+
 		}
 	}
 }

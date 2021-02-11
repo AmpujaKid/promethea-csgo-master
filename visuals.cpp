@@ -97,6 +97,56 @@ void Visuals::ModulateWorld( ) {
 	}
 }
 
+void Visuals::IndicateAngles()
+{
+	if (!g_csgo.m_engine->IsInGame() && !g_csgo.m_engine->IsInGame())
+		return;
+
+	if (!g_menu.main.players.fake_indicator.get())
+		return;
+
+	if (!g_cl.m_local || g_cl.m_local->m_iHealth() < 1)
+		return;
+
+	const auto pos = g_cl.m_local->GetRenderOrigin();
+	vec2_t tmp;
+
+	if (render::WorldToScreen(pos, tmp))
+	{
+		vec2_t draw_tmp;
+		const vec3_t real_pos(50.f * std::cos(math::deg_to_rad(g_hvh.m_yaw)) + pos.x, 50.f * sin(math::deg_to_rad(g_hvh.m_yaw)) + pos.y, pos.z);
+
+		if (render::WorldToScreen(real_pos, draw_tmp))
+		{
+			render::line(tmp.x, tmp.y, draw_tmp.x, draw_tmp.y, { 0, 255, 0, 255 });
+			render::hud.string(draw_tmp.x, draw_tmp.y, { 0, 255, 0, 255 }, "real angle", render::ALIGN_LEFT);
+		}
+
+		if (g_menu.main.antiaim.fake_yaw.get())
+		{
+			const vec3_t fake_pos(50.f * cos(math::deg_to_rad(g_cl.m_angle.y)) + pos.x, 50.f * sin(math::deg_to_rad(g_cl.m_angle.y)) + pos.y, pos.z);
+
+			if (render::WorldToScreen(fake_pos, draw_tmp))
+			{
+				render::line(tmp.x, tmp.y, draw_tmp.x, draw_tmp.y, { 255, 0, 0, 255 });
+				render::hud.string(draw_tmp.x, draw_tmp.y, { 255, 0, 0, 255 }, "fake angle", render::ALIGN_LEFT);
+			}
+		}
+
+		if (g_menu.main.antiaim.enable.get())
+		{
+			const vec3_t lby_pos(50.f * cos(math::deg_to_rad(g_cl.m_cmd->m_view_angles.y)) + pos.x,
+				50.f * sin(math::deg_to_rad(g_cl.m_cmd->m_view_angles.y)) + pos.y, pos.z);
+
+			if (render::WorldToScreen(lby_pos, draw_tmp))
+			{
+				render::line(tmp.x, tmp.y, draw_tmp.x, draw_tmp.y, { 255, 255, 255, 255 });
+				render::hud.string(draw_tmp.x, draw_tmp.y, { 255, 255, 255, 255 }, "lby angle", render::ALIGN_LEFT);
+			}
+		}
+	}
+}
+
 void Visuals::ThirdpersonThink( ) {
 	ang_t                          offset;
 	vec3_t                         origin, forward;

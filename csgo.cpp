@@ -182,16 +182,16 @@ bool CSGO::init( ) {
 	m_pPredictionPlayer     = util::get_method( m_prediction, CPrediction::RUNCOMMAND ).add( 0x54 ).get< Player* >( );
 
 	// some weird tier0 stuff that prevents me from debugging properly...
-//#ifdef _DEBUG
-//	Address debugbreak = pattern::find( g_csgo.m_client_dll, XOR( "CC F3 0F 10 4D ? 0F 57 C0" ) );
-//
-//	DWORD old;
-//	g_winapi.VirtualProtect( debugbreak, 1, PAGE_EXECUTE_READWRITE, &old );
-//
-//	debugbreak.set< uint8_t >( 0x90 );
-//
-//	g_winapi.VirtualProtect( debugbreak, 1, old, &old );
-//#endif
+#ifdef _DEBUG
+	Address debugbreak = pattern::find( g_csgo.m_client_dll, XOR( "CC F3 0F 10 4D ? 0F 57 C0" ) );
+
+	DWORD old;
+	g_winapi.VirtualProtect( debugbreak, 1, PAGE_EXECUTE_READWRITE, &old );
+
+	debugbreak.set< uint8_t >( 0x90 );
+
+	g_winapi.VirtualProtect( debugbreak, 1, old, &old );
+#endif
 
 
 	// download our fonts
@@ -242,7 +242,7 @@ bool CSGO::init( ) {
 	g_csgo.m_cvar->FindVar(HASH("con_filter_enable"))->SetValue(2);
 	g_csgo.m_engine->ExecuteClientCmd(XOR("clear"));
 
-	m_done = true;
+	// m_done = true;
 	return true;
 }
 

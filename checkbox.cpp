@@ -13,7 +13,7 @@ void Checkbox::draw( ) {
 
 	// render checkbox title.
 	if( m_use_label )
-	    render::menu_shade.string( p.x + LABEL_OFFSET, p.y - 3, { 205, 205, 205, m_parent->m_alpha }, m_label );
+	    render::menu.string( p.x + LABEL_OFFSET, p.y - 3, { 205, 205, 205, m_parent->m_alpha }, m_label );
 
 	// render border.
 	render::rect( p.x + 1, p.y + 1, CHECKBOX_SIZE - 2, CHECKBOX_SIZE - 2, { 0, 0, 0, m_parent->m_alpha } );
@@ -33,7 +33,7 @@ void Checkbox::draw( ) {
 void Checkbox::think( ) {
 	// set the click area to the length of the string, so we can also press the string to toggle.
 	if( m_use_label )
-		m_w = LABEL_OFFSET + render::menu_shade.size( m_label ).m_width;
+		m_w = LABEL_OFFSET + render::menu.size( m_label ).m_width;
 }
 
 void Checkbox::click( ) {

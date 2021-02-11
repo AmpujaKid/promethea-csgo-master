@@ -162,6 +162,10 @@ bool callbacks::IsStandYawRnadom( ) {
 	return g_menu.main.antiaim.yaw_stand.get( ) == 4;
 }
 
+bool callbacks::IsAntiAimModeDistortion() {
+	return g_menu.main.antiaim.yaw_stand.get() == 6;
+}
+
 bool callbacks::IsStandDirAuto( ) {
 	return g_menu.main.antiaim.dir_stand.get( ) == 0;
 }

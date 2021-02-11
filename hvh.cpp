@@ -489,6 +489,15 @@ void HVH::DoRealAntiAim( ) {
 					}
 					g_cl.m_cmd->m_view_angles.y -= 148.f;
 					break;
+
+					// distortion
+				case 6:
+					if (m_flicks == 0 || m_flicks % 2)
+						g_cl.m_cmd->m_view_angles.y += math::NormalizeYaw(g_menu.main.antiaim.distortion_swap_amount.get() + 180);
+					else
+						g_cl.m_cmd->m_view_angles.y += math::NormalizeYaw(g_menu.main.antiaim.distortion_swap_amount.get());
+
+					m_flicks++;
 				}
 			}
 
@@ -533,7 +542,7 @@ void HVH::DoRealAntiAim( ) {
 				break;
 			}
 
-					// rotate.
+				  // rotate.
 			case 3: {
 				// set base angle.
 				g_cl.m_cmd->m_view_angles.y = (m_direction - m_rot_range / 2.f);
@@ -544,7 +553,7 @@ void HVH::DoRealAntiAim( ) {
 				break;
 			}
 
-					// delta offset.
+				  // delta offset.
 			case 4:
 				// check update time.
 				if (g_csgo.m_globals->m_curtime >= m_next_random_update) {
@@ -567,11 +576,31 @@ void HVH::DoRealAntiAim( ) {
 
 				//crooked
 			case 5:
-				if(g_csgo.m_globals->m_tick_count >= m_next_update) {
+				if (g_csgo.m_globals->m_tick_count >= m_next_update) {
 					g_cl.m_cmd->m_view_angles.y = lbydelta;
-					m_next_update = g_csgo.m_globals->m_tick_count + g_csgo.RandomFloat(4.f,8.f);
+					m_next_update = g_csgo.m_globals->m_tick_count + g_csgo.RandomFloat(4.f, 8.f);
 				}
 				break;
+
+			case 6: {
+				// variables and distortion
+				float direction{};
+				int await = g_menu.main.antiaim.distortion_await.get();
+				float prespeed = g_menu.main.antiaim.distortion_speed.get();
+
+				if ((m_flicks / await) % 2)
+				{
+					direction = std::fmod((g_csgo.m_globals->m_curtime * (prespeed * 20.f)), 360.f);
+				}
+				else
+				{
+					direction = std::fmod(-(g_csgo.m_globals->m_curtime * (prespeed * 20.f)), 360.f);
+				}
+
+				g_cl.m_cmd->m_view_angles.y += direction;
+
+				break;
+			}
 
 			default:
 				break;

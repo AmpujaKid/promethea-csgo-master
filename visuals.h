@@ -106,6 +106,7 @@ public:
 
 public:
 	static void ModulateWorld( );
+	void IndicateAngles( );
 	void ThirdpersonThink( );
 	void Hitmarker( );
 	void PlayerHurt(IGameEvent * pEvent);

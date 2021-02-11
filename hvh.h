@@ -31,6 +31,7 @@ public:
 	size_t m_mode;
 	int    m_pitch;
 	int    m_yaw;
+	int    m_flicks;
 	float  m_yaw_offset;
 	float  m_switch_yaw;
 	float  m_jitter_range;

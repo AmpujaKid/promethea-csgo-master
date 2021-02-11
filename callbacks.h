@@ -35,6 +35,7 @@ namespace callbacks {
 	bool IsStandYawJitter( );
 	bool IsStandYawRotate( );
 	bool IsStandYawRnadom( );
+	bool IsAntiAimModeDistortion();
 	bool IsStandDirAuto( );
 	bool IsStandDirCustom( );
 	bool IsAntiAimModeWalk( );

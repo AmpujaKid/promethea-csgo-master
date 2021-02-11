@@ -28,6 +28,7 @@ void Edit::think( ) {
 		// if we want to exit typing? user presses escape or enter. he is likely done
 		if( g_input.GetKeyPress( VK_RETURN ) || g_input.GetKeyPress( VK_ESCAPE ) ) {
 			m_typing = false;
+			g_csgo.m_input_system->EnableInput(true);
 
 			if( m_callback )
 				m_callback( );
@@ -38,12 +39,15 @@ void Edit::think( ) {
 		// same applies here.
 		if( m_parent->m_active_element != this || !m_parent->m_open ) {
 			m_typing = false;
+			g_csgo.m_input_system->EnableInput(true);
 
 			if( m_callback )
 				m_callback( );
 
 			return;
 		}
+
+		g_csgo.m_input_system->EnableInput(false);
 
 		if( !m_old_typing )
 			g_input.m_buffer = m_text;
