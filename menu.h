@@ -194,6 +194,7 @@ public:
 	Slider	 fake_jitter_range;
 	Slider	 fake_swap_range;
 	Slider	 fake_flick_range;
+	Slider   fake_flick_distance;
 
 	Checkbox      lag_enable;
 	MultiDropdown lag_active;
@@ -425,6 +426,10 @@ public:
 		fake_flick_range.setup("", XOR("fake_flick_range"), -180.f, 180.f, false, 0, 0.f, 1.f, XOR(L"�"));
 		fake_flick_range.AddShowCallback(callbacks::IsFakeAntiAimFlick);
 		RegisterElement(&fake_flick_range, 1);
+
+		fake_flick_distance.setup("distance from real", XOR("fake_flick_range"), -180.f, 180.f, true, 0, 0.f, 1.f, XOR(L"♦"));
+		fake_flick_distance.AddShowCallback(callbacks::IsFakeAntiAimFlick);
+		RegisterElement(&fake_flick_distance, 1);
 
 		// col 2.
 
@@ -2264,29 +2269,37 @@ public:
 		// aim.
 		RegisterTab(&aimbot);
 		aimbot.init();
+		g_notify.add(tfm::format(XOR("aimbot successfully initialized\n")));
 
 		RegisterTab(&antiaim);
 		antiaim.init();
+		g_notify.add(tfm::format(XOR("antiaim successfully initialized\n")));
 
 		// visuals.
 		RegisterTab(&players);
 		players.init();
+		g_notify.add(tfm::format(XOR("players successfully initialized\n")));
 
 		RegisterTab(&visuals);
 		visuals.init();
+		g_notify.add(tfm::format(XOR("visuals successfully initialized\n")));
 
 		// misc.
 		RegisterTab(&movement);
 		movement.init();
+		g_notify.add(tfm::format(XOR("movement successfully initialized\n")));
 
 		RegisterTab(&skins);
 		skins.init();
+		g_notify.add(tfm::format(XOR("skins successfully initialized\n")));
 
 		RegisterTab(&misc);
 		misc.init();
+		g_notify.add(tfm::format(XOR("miscellaneous successfully initialized\n")));
 
 		RegisterTab(&config);
 		config.init();
+		g_notify.add(tfm::format(XOR("confing successfully initialized\n")));
 	}
 };
 
@@ -2299,7 +2312,7 @@ public:
 
 		Colorpicker::init();	// points here, so this was the second injection crash problem, moved here to fix bound bug, look at colorpicker init
 
-		g_notify.add(tfm::format(XOR("Colorpicker successfully initialized\n")));
+		g_notify.add(tfm::format(XOR("colorpicker successfully initialized\n")));
 
 		main.init();
 

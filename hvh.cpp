@@ -637,17 +637,19 @@ void HVH::DoFakeAntiAim( ) {
 		// get fake jitter range from menu.
 		float range = g_menu.main.antiaim.fake_jitter_range.get( ) / 2.f;
 
-		// set base to opposite of direction.
-		g_cl.m_cmd->m_view_angles.y = m_direction + 180.f;
-
-		// apply jitter.
-		g_cl.m_cmd->m_view_angles.y += g_csgo.RandomFloat( -range, range );
-		break;
+		switch (g_csgo.m_globals->m_tick_count % 2) {
+		case 1:
+			g_cl.m_cmd->m_view_angles.y = m_direction - range;
+		case 2:
+			g_cl.m_cmd->m_view_angles.y = m_direction + range;
+		default:
+			break;
+		}
 	}
 
 		  // float aa
 	case 3:
-		g_cl.m_cmd->m_view_angles.y += g_csgo.RandomFloat(-36.f, 36.f) + 48.f;
+		g_cl.m_cmd->m_view_angles.y += m_direction + g_csgo.RandomFloat(-36.f, 36.f) + 48.f;
 		break;
 
 		// fake flick
@@ -656,7 +658,7 @@ void HVH::DoFakeAntiAim( ) {
 			g_cl.m_cmd->m_view_angles.y += g_menu.main.antiaim.fake_flick_range.get();
 		}
 		else {
-			g_cl.m_cmd->m_view_angles.y = m_direction + 180.f;
+			g_cl.m_cmd->m_view_angles.y = m_direction + g_menu.main.antiaim.fake_flick_distance.get();
 		}
 		break;
 
