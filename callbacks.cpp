@@ -60,45 +60,45 @@ void callbacks::SaveHotkeys( ) {
 }
 
 void callbacks::ConfigLoad1( ) {
-	g_config.load( &g_menu.main, XOR( "1.sup" ) );
+	g_config.load( &g_menu.main, XOR( "1.pro" ) );
 	g_menu.main.config.config.select( 1 - 1 );
 
 	g_notify.add( tfm::format( XOR( "loaded config 1\n" ) ) );
 }
 
 void callbacks::ConfigLoad2( ) {
-	g_config.load( &g_menu.main, XOR( "2.sup" ) );
+	g_config.load( &g_menu.main, XOR( "2.pro" ) );
 	g_menu.main.config.config.select( 2 - 1 );
 	g_notify.add( tfm::format( XOR( "loaded config 2\n" ) ) );
 }
 
 void callbacks::ConfigLoad3( ) {
-	g_config.load( &g_menu.main, XOR( "3.sup" ) );
+	g_config.load( &g_menu.main, XOR( "3.pro" ) );
 	g_menu.main.config.config.select( 3 - 1 );
 	g_notify.add( tfm::format( XOR( "loaded config 3\n" ) ) );
 }
 
 void callbacks::ConfigLoad4( ) {
-	g_config.load( &g_menu.main, XOR( "4.sup" ) );
+	g_config.load( &g_menu.main, XOR( "4.pro" ) );
 	g_menu.main.config.config.select( 4 - 1 );
 	g_notify.add( tfm::format( XOR( "loaded config 4\n" ) ) );
 }
 
 void callbacks::ConfigLoad5( ) {
-	g_config.load( &g_menu.main, XOR( "5.sup" ) );
+	g_config.load( &g_menu.main, XOR( "5.pro" ) );
 	g_menu.main.config.config.select( 5 - 1 );
 	g_notify.add( tfm::format( XOR( "loaded config 5\n" ) ) );
 }
 
 void callbacks::ConfigLoad6( ) {
-	g_config.load( &g_menu.main, XOR( "6.sup" ) );
+	g_config.load( &g_menu.main, XOR( "6.pro" ) );
 	g_menu.main.config.config.select( 6 - 1 );
 	g_notify.add( tfm::format( XOR( "loaded config 6\n" ) ) );
 }
 
 void callbacks::ConfigLoad( ) {
 	std::string config = g_menu.main.config.config.GetActiveItem( );
-	std::string file   = tfm::format( XOR( "%s.sup" ), config.data( ) );
+	std::string file   = tfm::format( XOR( "%s.pro" ), config.data( ) );
 
 	g_config.load( &g_menu.main, file );
 	g_notify.add( tfm::format( XOR( "loaded config %s\n" ), config.data( ) ) );
@@ -106,7 +106,7 @@ void callbacks::ConfigLoad( ) {
 
 void callbacks::ConfigSave( ) {
 	std::string config = g_menu.main.config.config.GetActiveItem( );
-	std::string file   = tfm::format( XOR( "%s.sup" ), config.data( ) );
+	std::string file   = tfm::format( XOR( "%s.pro" ), config.data( ) );
 
 	g_config.save( &g_menu.main, file );
 	g_notify.add( tfm::format( XOR( "saved config %s\n" ), config.data( ) ) );

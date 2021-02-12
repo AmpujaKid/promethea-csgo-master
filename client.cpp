@@ -11,7 +11,7 @@ ulong_t __stdcall Client::init( void* arg ) {
 	g_cl.m_user = XOR( "user" );
 
 	// config folder.
-	g_cl.m_cfg_folder = XOR("C:\\Sharpie.sln\\Configs");
+	g_cl.m_cfg_folder = XOR("C:\\Promethea\\Configs");
 
 	// stop here if we failed to acquire all the data needed from csgo.
 	if( !g_csgo.init( ) )
@@ -46,7 +46,7 @@ void Client::DrawHUD( ) {
 	// get server ip / type
 	const char* server_ip = g_csgo.m_engine->GetNetChannelInfo() ? g_csgo.m_engine->GetNetChannelInfo()->GetAddress() : XOR("");
 	
-	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("sharpie.sln | %s | ms: %i | %itick | %s | %s"), build, ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("sharpie.sln | %s | %s"), build, time.str().data());
+	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("promethea | %s | ms: %i | %itick | %s | %s"), build, ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("promethea | %s | %s"), build, time.str().data());
 
 	Color color = g_menu.main.config.menu_color.get( );
 
@@ -98,7 +98,7 @@ void Client::ClanTag()
 		SetClanTagFn( tag.c_str( ), tag.c_str());
 	};
 
-	std::string clantag = XOR("sharpie ");
+	std::string clantag = XOR("promethea ");
 	static int prevframe = 0;
 	static bool reset = false;
 	int curframe = ( ( int )( g_inputpred.m_curtime * 3.f ) ) % (clantag.size( ) * 2 );
@@ -110,20 +110,23 @@ void Client::ClanTag()
 			switch (curframe % 15)
 			{
 			case 0: clantag = XOR(" "); break;
-			case 1: clantag = XOR("s "); break;
-			case 2: clantag = XOR("sh "); break;
-			case 3: clantag = XOR("sha "); break;
-			case 4: clantag = XOR("shar "); break;
-			case 5: clantag = XOR("sharp "); break;
-			case 6: clantag = XOR("sharpi "); break;
-			case 7: clantag = XOR("sharpie "); break;
-			case 8: clantag = XOR("sharpi "); break;
-			case 9: clantag = XOR("sharp "); break;
-			case 10: clantag = XOR("shar "); break;
-			case 11: clantag = XOR("sha "); break;
-			case 12: clantag = XOR("sh "); break;
-			case 13: clantag = XOR("s"); break;
-			case 14: clantag = XOR(" "); break;
+			case 1: clantag = XOR("p "); break;
+			case 2: clantag = XOR("pr "); break;
+			case 3: clantag = XOR("pro "); break;
+			case 4: clantag = XOR("prom "); break;
+			case 5: clantag = XOR("prome "); break;
+			case 6: clantag = XOR("promet "); break;
+			case 7: clantag = XOR("prometh "); break;
+			case 8: clantag = XOR("promethe "); break;
+			case 9: clantag = XOR("promethea "); break;
+			case 10: clantag = XOR("romethea "); break;
+			case 11: clantag = XOR("omethea "); break;
+			case 12: clantag = XOR("methea "); break;
+			case 13: clantag = XOR("ethea "); break;
+			case 14: clantag = XOR("thea "); break;
+			case 15: clantag = XOR("hea "); break;
+			case 16: clantag = XOR("ea "); break;
+			case 17: clantag = XOR("a "); break;
 			}
 
 			// define our clantag

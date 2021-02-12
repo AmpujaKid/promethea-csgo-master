@@ -85,7 +85,7 @@ struct player_info_t {
 			int   m_xuid_high;
 		};
 	};
-	static char   m_name[ 128 ];
+	char   m_name[ 128 ];
 	int           m_user_id;
 	char          m_guid[ 33 ];
 	uint32_t      m_friends_id;
