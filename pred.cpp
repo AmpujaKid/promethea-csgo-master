@@ -5,12 +5,12 @@ InputPrediction g_inputpred{};;
 
 void InputPrediction::update( ) {
 	bool        valid{ g_csgo.m_cl->m_delta_tick > 0 };
-	//int         outgoing_command, current_command;
-	//CUserCmd    *cmd;
+	int         outgoing_command, current_command;
+	CUserCmd    *cmd;
 
 	// render start was not called.
 	if( g_cl.m_stage == FRAME_NET_UPDATE_END ) {
-		/*outgoing_command = g_csgo.m_cl->m_last_outgoing_command + g_csgo.m_cl->m_choked_commands;
+		outgoing_command = g_csgo.m_cl->m_last_outgoing_command + g_csgo.m_cl->m_choked_commands;
 
 		// this must be done before update ( update will mark the unpredicted commands as predicted ).
 		for( int i{}; ; ++i ) {
@@ -30,7 +30,7 @@ void InputPrediction::update( ) {
 			// so we must fix tickbase by incrementing it ourselves on non-predicted commands.
 			if( !cmd->m_predicted )
 				++g_cl.m_local->m_nTickBase( );
-		}*/
+		}
 
 		// EDIT; from what ive seen RunCommand is called when u call Prediction::Update
 		// so the above code is not fucking needed.

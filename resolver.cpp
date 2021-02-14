@@ -73,35 +73,35 @@ float Resolver::GetAwayAngle( LagRecord* record ) {
 
 	// we have no historical origins.
 	// no choice but to use the most recent one.
-	if( g_cl.m_net_pos.empty( ) ) {
+	//if( g_cl.m_net_pos.empty( ) ) {
 		math::VectorAngles( g_cl.m_local->m_vecOrigin( ) - record->m_pred_origin, away );
 		return away.y;
-	}
+	//}
 
-	// half of our rtt (round trip time is how long it takes to send a request to a server and get a response back).
-	// also known as the one-way delay (how long it takes to send to server).
-	float owd = ( g_cl.m_latency / 2.f );
+	// half of our rtt.
+	// also known as the one-way delay.
+	//float owd = ( g_cl.m_latency / 2.f );
 
 	// since our origins are computed here on the client
 	// we have to compensate for the delay between our client and the server
 	// therefore the OWD should be subtracted from the target time.
-	float target = record->m_pred_time - owd;
+	//float target = record->m_pred_time; //- owd;
 
 	// iterate all.
-	for( const auto &net : g_cl.m_net_pos ) {
+	//for( const auto &net : g_cl.m_net_pos ) {
 		// get the delta between this records time context
 		// and the target time.
-		float dt = std::abs( target - net.m_time );
+	//	float dt = std::abs( target - net.m_time );
 
 		// the best origin.
-		if( dt < delta ) {
-			delta = dt;
-			pos   = net.m_pos;
-		}
-	}
+	//	if( dt < delta ) {
+	//		delta = dt;
+	//		pos   = net.m_pos;
+	//	}
+	//}
 
-	math::VectorAngles( pos - record->m_pred_origin, away );
-	return away.y;
+	//math::VectorAngles( pos - record->m_pred_origin, away );
+	//return away.y;
 }
 
 void Resolver::MatchShot( AimPlayer* data, LagRecord* record ) {
@@ -192,7 +192,7 @@ void Resolver::AntiFreestand(LagRecord* record) {
 			if (i > (len * 0.5f))
 				mult = 1.25f;
 
-			// over 75% of the total length, prioritize this shit.
+			// over 90% of the total length, prioritize this shit.
 			if (i > (len * 0.75f))
 				mult = 1.25f;
 
@@ -247,6 +247,9 @@ void Resolver::SetMode( LagRecord* record ) {
 void Resolver::ResolveAngles( Player* player, LagRecord* record ) {
 	AimPlayer* data = &g_aimbot.m_players[ player->index( ) - 1 ];
 
+	if (g_cl.m_round_end)
+		ResetNiggaShit(data);
+
 	// mark this record if it contains a shot.
 	MatchShot( data, record );
 
@@ -293,6 +296,15 @@ void Resolver::ResolveWalk( AimPlayer* data, LagRecord* record ) {
 	std::memcpy( &data->m_walk_record, record, sizeof( LagRecord ) );
 }
 
+void Resolver::ResetNiggaShit(AimPlayer* data) {
+	g_notify.add("[DEBUG] reset resolver info");
+	data->m_moving_index = 0;
+	data->m_stand_index = 0;
+	data->m_stand_index2 = 0;
+	data->m_body_index = 0;
+	data->m_freestanding_index = 0;
+}
+
 void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	// get predicted away angle for the player.
 	float away = GetAwayAngle(record);
@@ -332,7 +344,7 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 		record->m_mode = Modes::RESOLVE_LAST_LBY;
 	}
-	else if (!data->m_moved || data->m_moving_index >= 1 && data->m_freestanding_index < 3) // freestanding if we have gone through that shit or missed last moving
+	else if (data->m_moving_index >= 1 && data->m_freestanding_index < 3) // freestanding if we have gone through that shit or missed last moving
 	{
 		AntiFreestand(record);
 
@@ -340,44 +352,22 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	}
 	else // bruteforce as a last fallback
 	{
-		switch (data->m_stand_index2 % 9)
+		switch (data->m_stand_index2 % 4)
 		{
-		case 0:
-			record->m_eye_angles.y -= away + 180.f - record->m_body;
-			break;
-
 		case 1:
-			record->m_eye_angles.y += away - 12.f - record->m_body;
+			record->m_eye_angles.y = away + 180;
 			break;
 
 		case 2:
-			record->m_eye_angles.y -= away + 60.f + record->m_body;
+			record->m_eye_angles.y = away - 110;
 			break;
 
 		case 3:
-			record->m_eye_angles.y += away - 30.f - record->m_body;
+			record->m_eye_angles.y = away + 110;
 			break;
 
 		case 4:
-			record->m_eye_angles.y -= away + 98.f + record->m_body;
-			break;
-
-		case 5:
-			record->m_eye_angles.y += away - 2.f - record->m_body;
-			break;
-
-		case 6:
-			record->m_eye_angles.y -= away + 150.f + record->m_body;
-			break;
-
-		case 7:
-			record->m_eye_angles.y += away - 119.f - record->m_body;
-			break;
-
-		case 8:
-			record->m_eye_angles.y -= away + record->m_body;
-			break;
-		default:
+			record->m_eye_angles.y = away;
 			break;
 		}
 
@@ -472,7 +462,7 @@ void Resolver::ResolveAir( AimPlayer* data, LagRecord* record ) {
 		break;
 
 	case 2:
-		record->m_eye_angles.y -= away + record->m_body + velyaw;
+		record->m_eye_angles.y -= away + 180.f + record->m_body + velyaw;
 		break;
 
 	case 3:

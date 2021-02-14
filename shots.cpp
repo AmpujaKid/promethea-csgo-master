@@ -180,14 +180,23 @@ void Shots::OnImpact( IGameEvent *evt ) {
 
 		// if we miss a shot on body update.
 		// we can chose to stop shooting at them.
-		if ( mode == Resolver::Modes::RESOLVE_BODY )
-			++data->m_body_index;
+		//if (mode == Resolver::Modes::RESOLVE_BODY)
+			//++data->m_body_index;
 
-		else if ( mode == Resolver::Modes::RESOLVE_STAND )
-			++data->m_stand_index;
+		//else if (mode == Resolver::Modes::RESOLVE_STAND)
+			//++data->m_stand_index;
 
-		else if ( mode == Resolver::Modes::RESOLVE_STAND2 )
-			++data->m_stand_index2;
+		//else if (mode == Resolver::Modes::RESOLVE_STAND2)
+			//++data->m_stand_index2;
+
+		if (mode == Resolver::Modes::RESOLVE_FREESTAND)
+			++data->m_freestanding_index;
+
+		else if (mode == Resolver::Modes::RESOLVE_LAST_LBY)
+			++data->m_moving_index;
+
+		else if (mode == Resolver::Modes::RESOLVE_LAST_LBY)
+			++data->m_moving_index;
 
 		++data->m_missed_shots;
 	}

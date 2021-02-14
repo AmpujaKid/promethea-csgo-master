@@ -468,6 +468,7 @@ void Visuals::think( ) {
 	// draw everything else.
 	SpreadCrosshair( );
 	StatusIndicators( );
+	IndicateAngles();
 	ManualArrows( );
 	Spectators( );
 	PenetrationCrosshair( );
