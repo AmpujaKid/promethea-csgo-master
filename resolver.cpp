@@ -247,8 +247,9 @@ void Resolver::SetMode( LagRecord* record ) {
 void Resolver::ResolveAngles( Player* player, LagRecord* record ) {
 	AimPlayer* data = &g_aimbot.m_players[ player->index( ) - 1 ];
 
+	bool printDebug = true;
 	if (g_cl.m_round_end)
-		ResetNiggaShit(data);
+		ResetNiggaShit(data, printDebug);
 
 	// mark this record if it contains a shot.
 	MatchShot( data, record );
@@ -296,8 +297,11 @@ void Resolver::ResolveWalk( AimPlayer* data, LagRecord* record ) {
 	std::memcpy( &data->m_walk_record, record, sizeof( LagRecord ) );
 }
 
-void Resolver::ResetNiggaShit(AimPlayer* data) {
-	g_notify.add("[DEBUG] reset resolver info");
+void Resolver::ResetNiggaShit(AimPlayer* data, bool printDebug) {
+	if (printDebug) {
+		g_notify.add("[DEBUG] reset resolver info");
+		printDebug = false;
+	}
 	data->m_moving_index = 0;
 	data->m_stand_index = 0;
 	data->m_stand_index2 = 0;
@@ -355,19 +359,20 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 		switch (data->m_stand_index2 % 4)
 		{
 		case 1:
-			record->m_eye_angles.y = away + 180;
+			record->m_eye_angles.y -= away + record->m_body;
 			break;
 
 		case 2:
-			record->m_eye_angles.y = away - 110;
+			record->m_eye_angles.y += away - 12.f - record->m_body;
 			break;
 
 		case 3:
-			record->m_eye_angles.y = away + 110;
+			record->m_eye_angles.y -= away + 180.f + record->m_body;
 			break;
 
+
 		case 4:
-			record->m_eye_angles.y = away;
+			record->m_eye_angles.y = away - 130.f + record->m_body;
 			break;
 		}
 

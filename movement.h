@@ -16,6 +16,7 @@ public:
 
 public:
 	void JumpRelated( );
+	void ExploitWalk();
 	void Strafe( );
 	void DoPrespeed( );
 	bool GetClosestPlane( vec3_t& plane );

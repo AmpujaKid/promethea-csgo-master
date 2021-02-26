@@ -53,7 +53,7 @@ void Client::DrawHUD( ) {
 	// get server ip / type
 	const char* server_ip = g_csgo.m_engine->GetNetChannelInfo() ? g_csgo.m_engine->GetNetChannelInfo()->GetAddress() : XOR("");
 	
-	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("promethea [%s] | ms: %i | %itick | %s | %s"), build, ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("promethea [%s] | %s"), build, time.str().data());
+	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("neptune [%s] | ms: %i | %itick | %s | %s"), build, ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("neptune [%s] | %s"), build, time.str().data());
 
 	Color color = g_menu.main.config.menu_color.get( );
 
@@ -105,7 +105,7 @@ void Client::ClanTag()
 		SetClanTagFn( tag.c_str( ), tag.c_str());
 	};
 
-	std::string clantag = XOR("promethea ");
+	std::string clantag = XOR("neptune ");
 	static int prevframe = 0;
 	static bool reset = false;
 	int curframe = ( ( int )( g_inputpred.m_curtime * 3.f ) ) % (clantag.size( ) * 2 );
@@ -117,19 +117,19 @@ void Client::ClanTag()
 			switch (curframe % 15)
 			{
 			case 0: clantag = XOR(" "); break;
-			case 1: clantag = XOR("promethea "); break;
-			case 2: clantag = XOR("promethea "); break;
-			case 3: clantag = XOR("promethea "); break;
-			case 4: clantag = XOR("promethea "); break;
-			case 5: clantag = XOR("promethea "); break;
-			case 6: clantag = XOR("promethea "); break;
-			case 7: clantag = XOR("promethea "); break;
-			case 8: clantag = XOR("promethea "); break;
-			case 9: clantag = XOR("promethea "); break;
-			case 10: clantag = XOR("promethea "); break;
-			case 11: clantag = XOR("promethea "); break;
-			case 12: clantag = XOR("promethea "); break;
-			case 13: clantag = XOR("promethea"); break;
+			case 1: clantag = XOR("n "); break;
+			case 2: clantag = XOR("ne "); break;
+			case 3: clantag = XOR("nep "); break;
+			case 4: clantag = XOR("nept "); break;
+			case 5: clantag = XOR("neptu "); break;
+			case 6: clantag = XOR("neptun "); break;
+			case 7: clantag = XOR("neptune "); break;
+			case 8: clantag = XOR("eptune "); break;
+			case 9: clantag = XOR("ptune "); break;
+			case 10: clantag = XOR("tune "); break;
+			case 11: clantag = XOR("une "); break;
+			case 12: clantag = XOR("ne "); break;
+			case 13: clantag = XOR("e"); break;
 			case 14: clantag = XOR(" "); break;
 			}
 

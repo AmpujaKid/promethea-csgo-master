@@ -202,6 +202,7 @@ public:
 	Slider        lag_limit;
 	Checkbox      lag_land;
 	Checkbox	  choke_on_flick;
+	Keybind       antiaim_exploit;
 
 public:
 	void init() {
@@ -450,6 +451,9 @@ public:
 
 		choke_on_flick.setup(XOR("choke on flick"), XOR("choke_on_flick"));
 		RegisterElement(&choke_on_flick, 1);
+
+		antiaim_exploit.setup(XOR("antiaim exploit"), XOR("antiaim_exploit"));
+		RegisterElement(&antiaim_exploit, 1);
 	}
 };
 

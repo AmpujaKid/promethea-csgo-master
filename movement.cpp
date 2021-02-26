@@ -17,6 +17,24 @@ void Movement::JumpRelated( ) {
 	}
 }
 
+void Movement::ExploitWalk() {
+	if (!g_input.GetKeyState(g_menu.main.antiaim.antiaim_exploit.get()))
+		return;
+
+	static int old_cmds = 0;
+
+	if (old_cmds != g_cl.m_cmd->m_command_number)
+		old_cmds = g_cl.m_cmd->m_command_number;
+
+	if (*g_cl.m_packet)
+	{
+		g_cl.m_cmd->m_tick = INT_MAX;
+		g_cl.m_cmd->m_command_number = old_cmds;
+	}
+
+	*g_cl.m_packet = false;
+}
+
 void Movement::Strafe( ) {
 	vec3_t velocity;
 	float  delta, abs_delta, velocity_angle, velocity_delta, correct;

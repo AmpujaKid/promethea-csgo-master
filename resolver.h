@@ -33,7 +33,7 @@ public:
 
 	void ResolveAngles(Player* player, LagRecord* record);
 	void ResolveWalk(AimPlayer* data, LagRecord* record);
-	void ResetNiggaShit(AimPlayer* data);
+	void ResetNiggaShit(AimPlayer* data, bool printDebug);
 	void ResolveStand(AimPlayer* data, LagRecord* record);
 	void StandNS(AimPlayer* data, LagRecord* record);
 	void ResolveAir(AimPlayer* data, LagRecord* record);
