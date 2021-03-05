@@ -243,7 +243,7 @@ bool CSGO::init( ) {
 	g_csgo.m_engine->ExecuteClientCmd(XOR("clear"));
 
 	// m_done = true;
-	return true;
+	return true; // breakpoint on inject here
 }
 
 bool game::IsBreakable( Entity *ent ) {
