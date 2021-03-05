@@ -1,7 +1,74 @@
 #include "includes.h"
 #include "resolver.h"
 
+#define shift_ticks 13
+
 Aimbot g_aimbot{ };;
+
+bool CanFireWithExploit(int m_iShiftedTick)
+{
+	// curtime before shift
+	float curtime = game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase() - m_iShiftedTick);
+	return g_cl.CanFireWeapon(curtime);
+}
+
+bool Aimbot::CanDT() {
+	int idx = g_cl.m_weapon->m_iItemDefinitionIndex();
+	return g_cl.m_local->alive()
+		&& g_csgo.m_cl->m_choked_commands <= 1
+		&& m_double_tap && !g_hvh.m_fake_duck;
+}
+
+void Aimbot::DoubleTap()
+{
+	static bool did_shift_before = false;
+	static int double_tapped = 0;
+	static int prev_shift_ticks = 0;
+	static bool reset = false;
+
+	g_tickbase.m_shift_data.m_ticks_to_shift = 0;
+	if (CanDT() && !g_csgo.m_gamerules->m_bFreezePeriod())
+	{
+		if (m_double_tap)
+		{
+			prev_shift_ticks = 0;
+
+			auto can_shift_shot = CanFireWithExploit(shift_ticks);
+			auto can_shot = CanFireWithExploit(abs(-1 - prev_shift_ticks));
+
+			if (can_shift_shot || !can_shot && !did_shift_before)
+			{
+				prev_shift_ticks = shift_ticks;
+				double_tapped = 0;
+			}
+			else {
+				double_tapped++;
+				prev_shift_ticks = 0;
+			}
+
+			if (prev_shift_ticks > 0)
+			{
+				if (g_cl.m_weapon->DTable() && CanFireWithExploit(prev_shift_ticks))
+				{
+					if (g_cl.m_cmd->m_buttons & IN_ATTACK)
+					{
+						g_tickbase.m_shift_data.m_ticks_to_shift = prev_shift_ticks;
+						reset = true;
+					}
+					else {
+						if ((!(g_cl.m_cmd->m_buttons & IN_ATTACK) || !g_cl.m_shot) && reset
+							&& fabsf(g_cl.m_weapon->m_fLastShotTime() - game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase())) > 0.5f) {
+							g_tickbase.m_shift_data.m_should_be_ready = false;
+							g_tickbase.m_shift_data.m_next_shift_amount = shift_ticks;
+							reset = false;
+						}
+					}
+				}
+			}
+			did_shift_before = prev_shift_ticks != 0;
+		}
+	}
+}
 
 void AimPlayer::UpdateAnimations( LagRecord *record ) {
 	CCSGOPlayerAnimState *state = m_player->m_PlayerAnimState( );

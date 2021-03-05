@@ -36,6 +36,10 @@ void callbacks::ToggleRightManual() {
 	g_hvh.m_manual_side = 3;
 }
 
+void callbacks::ToggleDT() {
+	g_aimbot.m_double_tap = !g_aimbot.m_double_tap;
+}
+
 void callbacks::ToggleKillfeed( ) {
     KillFeed_t* feed = ( KillFeed_t* )g_csgo.m_hud->FindElement( HASH( "SFHudDeathNoticeAndBotStatus" ) );
     if( feed )

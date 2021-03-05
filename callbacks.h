@@ -9,6 +9,7 @@ namespace callbacks {
 	void ToggleDownManual();
 	void ToggleLeftManual();
 	void ToggleRightManual();
+	void ToggleDT();
     void ToggleKillfeed( );
 	void UnlockHiddenConvars( );
 	void SaveHotkeys( );

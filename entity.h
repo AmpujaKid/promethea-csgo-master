@@ -1111,6 +1111,32 @@ public:
 		return get< int >(g_entoffsets.m_iClip1);
 	}
 
+	__forceinline bool IsGun()
+	{
+		if (!this)
+			return false;
+
+		int id = this->m_iItemDefinitionIndex();
+		if (!id)
+			return false;
+
+		if (this->IsKnife() || this->IsGrenade())
+			return false;
+		else
+			return true;
+	}
+
+	__forceinline bool isShotgun()
+	{
+		int WeaponId = this->m_iItemDefinitionIndex();
+		return WeaponId == XM1014 || WeaponId == NOVA || WeaponId == SAWEDOFF || WeaponId == MAG7;
+	}
+
+	__forceinline bool DTable() {
+		int WeaponId = this->m_iItemDefinitionIndex();
+		return IsGun() && !isShotgun() && WeaponId != SSG08 && WeaponId != AWP && WeaponId != REVOLVER && WeaponId != ZEUS;
+	}
+
 	__forceinline int &m_iPrimaryReserveAmmoCount() {
 		return get< int >(g_entoffsets.m_iPrimaryReserveAmmoCount);
 	}
@@ -1275,6 +1301,8 @@ public:
 	__forceinline bool IsKnife() {
 		return (GetWpnData()->m_weapon_type == WEAPONTYPE_KNIFE && m_iItemDefinitionIndex() != ZEUS);
 	}
+
+	__forceinline bool IsGrenade() { return m_iItemDefinitionIndex() >= Weapons_t::FLASHBANG && m_iItemDefinitionIndex() <= Weapons_t::FIREBOMB; }
 
 	__forceinline vec3_t CalculateSpread(int seed, float inaccuracy, float spread, bool revolver2 = false) {
 		WeaponInfo *wep_info;

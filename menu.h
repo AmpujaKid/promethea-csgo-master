@@ -35,6 +35,7 @@ public:
 	MultiDropdown baim2;
 	Slider        baim_hp;
 	Keybind       baim_key;
+	Keybind       doubletap;
 
 public:
 	void init() {
@@ -141,6 +142,10 @@ public:
 
 		baim_key.setup(XOR("body aim on key"), XOR("body aim on key"));
 		RegisterElement(&baim_key, 1);
+
+		doubletap.setup(XOR("teleport on key"), XOR("doubletap"));
+		doubletap.SetToggleCallback(callbacks::ToggleDT);
+		RegisterElement(&doubletap, 1);
 	}
 };
 
