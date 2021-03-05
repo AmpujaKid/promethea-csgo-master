@@ -68,7 +68,7 @@ public:
 	float pFake;
 	float timer;
 	float swap_range;
-	bool m_fake_duck;
+	bool m_fake_duck = false;
 	int m_manual_side;
 
 public:

@@ -123,26 +123,13 @@ void TickbaseSystem::PostMovement( ) {
 	g_tickbase.m_shift_data.m_can_shift_tickbase = bCanShootIn12Ticks || ( !bCanShootNormally || bFastRecovery ) && ( g_tickbase.m_shift_data.m_did_shift_before );
 
 	// If we can shift tickbase, shift enough ticks in order to double-tap
-	// Always prioritise fake-duck if we wish to
-	if( g_tickbase.m_shift_data.m_can_shift_tickbase && !g_hvh.m_fake_duck ) {
+	if( g_tickbase.m_shift_data.m_can_shift_tickbase ) {
 		// Tell the cheat to shift tick-base and disable fakelag
 		g_tickbase.m_shift_data.m_next_shift_amount = g_cl.m_goal_shift;
 	}
 	else {
 		g_tickbase.m_shift_data.m_next_shift_amount = 0;
 		g_tickbase.m_shift_data.m_should_be_ready = false;
-	}
-
-	// we want to recharge after stopping fake duck.
-	if( g_hvh.m_fake_duck ) {
-		g_tickbase.m_shift_data.m_prepare_recharge = true;
-
-		g_tickbase.m_shift_data.m_next_shift_amount = 0;
-		g_tickbase.m_shift_data.m_should_be_ready = false;
-
-		g_tickbase.m_shift_data.m_should_disable = true; 
-
-		return;
 	}
 
 	// Are we even supposed to shift tickbase?
