@@ -32,7 +32,7 @@ void Movement::ExploitWalk() {
 		g_cl.m_cmd->m_command_number = old_cmds;
 	}
 
-	*g_cl.m_packet = false;
+	//*g_cl.m_packet = false;
 }
 
 void Movement::Strafe( ) {

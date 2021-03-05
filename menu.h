@@ -203,6 +203,7 @@ public:
 	Checkbox      lag_land;
 	Checkbox	  choke_on_flick;
 	Keybind       antiaim_exploit;
+	Checkbox      lbyexploit;
 
 public:
 	void init() {
@@ -454,6 +455,9 @@ public:
 
 		antiaim_exploit.setup(XOR("antiaim exploit"), XOR("antiaim_exploit"));
 		RegisterElement(&antiaim_exploit, 1);
+
+		lbyexploit.setup(XOR("lby 2.0"), XOR("lbyexploit"));
+		RegisterElement(&lbyexploit, 1);
 	}
 };
 
@@ -2059,6 +2063,7 @@ public:
 	Checkbox hidden_cvar;
 	Checkbox ranks;
 	Checkbox clantag;
+	Checkbox debug;
 
 public:
 	void init() {
@@ -2154,6 +2159,9 @@ public:
 
 		clantag.setup(XOR("clantag"), XOR("clantag"));
 		RegisterElement(&clantag, 1);
+
+		debug.setup(XOR("print debugger"), XOR("debug"));
+		RegisterElement(&debug, 1);
 
 		killfeed.setup(XOR("preserve killfeed"), XOR("killfeed"));
 		killfeed.SetCallback(callbacks::ToggleKillfeed);

@@ -281,8 +281,14 @@ void HVH::GetAntiAimDirection( ) {
 
 		// jitter
 	case 3:
-		m_direction = m_view + 45.f;
-		m_direction = m_view - 45.f;
+		switch (g_csgo.m_globals->m_tick_count % 0) {
+		case 0:
+			m_direction = m_view + 45.f;
+			break;
+
+		case 1:
+			m_direction = m_view - 45.f;
+		}
 
 
 	default:
@@ -437,14 +443,25 @@ void HVH::DoRealAntiAim( ) {
 		bool air = g_menu.main.antiaim.body_fake_air.get( ) > 0 && m_mode == AntiAimMode::AIR;
 
 		// one tick before the update.
-		if( stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= ( g_cl.m_body_pred - g_cl.m_anim_frame ) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred ) {
+		if( stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= ( g_cl.m_body_pred - g_cl.m_anim_frame ) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && !g_menu.main.antiaim.lbyexploit.get() ) {
 			// z mode.
 			if (g_menu.main.antiaim.body_fake_stand.get() == 3)
 				g_cl.m_cmd->m_view_angles.y -= 150.f;
 			// suppress 979
 			else if (g_menu.main.antiaim.body_fake_stand.get() == 4)
-				//g_csgo.m_net->m_out_seq -= 2;
-				;
+				g_csgo.m_net->m_out_seq -= 2;
+		}
+
+		else if (stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= (g_cl.m_body_pred - g_cl.m_anim_frame + g_csgo.m_globals->m_tick_count) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && g_menu.main.antiaim.lbyexploit.get()) {
+			// z mode.
+			if (g_menu.main.antiaim.body_fake_stand.get() == 3) {
+				g_cl.m_cmd->m_view_angles.y -= 150.f;
+				g_cl.m_cmd->m_view_angles.y += 110.f;
+			}
+			// suppress 979
+			else if (g_menu.main.antiaim.body_fake_stand.get() == 5) {
+				g_csgo.m_net->m_out_seq -= 2;
+			}
 		}
 
 		// check if we will have a lby fake this tick.
@@ -472,7 +489,7 @@ void HVH::DoRealAntiAim( ) {
 
 					// z.
 				case 3:
-					g_cl.m_cmd->m_view_angles.y += 150.f;
+					g_cl.m_cmd->m_view_angles.y += 116.f;
 					break;
 
 					// twist
@@ -487,7 +504,7 @@ void HVH::DoRealAntiAim( ) {
 						g_csgo.m_net->m_out_seq += 1;
 						inFlick = false;
 					}
-					g_cl.m_cmd->m_view_angles.y -= 148.f;
+					g_cl.m_cmd->m_view_angles.y -= 112.f;
 					break;
 
 					// distortion
@@ -686,7 +703,7 @@ void HVH::DoFakeAntiAim( ) {
 
 		// static backwards
 	case 8:
-		g_cl.m_cmd->m_view_angles.y = m_view + 180.f;
+		g_cl.m_cmd->m_view_angles.y = m_view + 150.f;
 		break;
 	default:
 		break;

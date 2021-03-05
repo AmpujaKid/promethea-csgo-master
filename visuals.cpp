@@ -563,7 +563,35 @@ void Visuals::StatusIndicators( ) {
 		}
 	}
 
-	if( indicators.empty( ) )
+	if (g_menu.main.misc.debug.get()) {
+		Indicator_t ind{};
+		ind.color = g_menu.main.config.menu_color.get();
+		if (Resolver::RESOLVE_EXPLOIT)
+			ind.text = XOR("RESOLVE CRIMWALK");
+		else if (&Resolver::ResolveWalk)
+			ind.text = XOR("RESOLVE WALK");
+		else if (&Resolver::ResolveStand)
+			ind.text = XOR("RESOLVE STAND");
+		else if (&Resolver::ResolveAir)
+			ind.text = XOR("RESOLVE AIR");
+		else if (&Resolver::AntiFreestand)
+			ind.text = XOR("RESOLVE FREESTAND");
+		else if (Resolver::RESOLVE_BRUTEFORCE)
+			ind.text = XOR("RESOLVE BRUTEFORCE");
+		else
+			ind.text = XOR("RESOLVE NONE");
+
+		indicators.push_back(ind);
+	}
+
+	if (g_menu.main.antiaim.antiaim_exploit.get()) {
+		Indicator_t ind{};
+		ind.color = g_menu.main.config.menu_color.get();
+		ind.text = XOR("CRIMWALK");
+		indicators.push_back(ind);
+	}
+
+	if (indicators.empty())
 		return;
 
 	// iterate and draw indicators.

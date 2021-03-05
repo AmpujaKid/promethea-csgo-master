@@ -7,6 +7,7 @@ public:
 	enum Modes : size_t {
 		RESOLVE_NONE = 0,
 		RESOLVE_WALK,
+		RESOLVE_EXPLOIT,
 		RESOLVE_STAND,
 		RESOLVE_STAND1,
 		RESOLVE_STAND2,
@@ -35,6 +36,7 @@ public:
 	void ResolveWalk(AimPlayer* data, LagRecord* record);
 	void ResetNiggaShit(AimPlayer* data, bool printDebug);
 	void ResolveStand(AimPlayer* data, LagRecord* record);
+	void ExploitFix(AimPlayer* data, LagRecord* record);
 	void StandNS(AimPlayer* data, LagRecord* record);
 	void ResolveAir(AimPlayer* data, LagRecord* record);
 

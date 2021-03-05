@@ -232,8 +232,13 @@ void Resolver::SetMode( LagRecord* record ) {
 	float speed = record->m_anim_velocity.length( );
 
 	// if on ground, moving, and not fakewalking.
-	if( ( record->m_flags & FL_ONGROUND ) && speed > 0.1f && !record->m_fake_walk )
-		record->m_mode = Modes::RESOLVE_WALK;
+	if ((record->m_flags & FL_ONGROUND) && speed > 0.1f && !record->m_fake_walk) {
+		if ((record->m_flags & FL_ONGROUND) && speed > (INT_MAX - 4))
+			record->m_mode = Modes::RESOLVE_EXPLOIT;
+		else {
+			record->m_mode = Modes::RESOLVE_WALK;
+		}
+	}
 
 	// if on ground, not moving or fakewalking.
 	if( ( record->m_flags & FL_ONGROUND ) && ( speed <= 0.1f || record->m_fake_walk ) )
@@ -264,8 +269,11 @@ void Resolver::ResolveAngles( Player* player, LagRecord* record ) {
 		record->m_eye_angles.x = 90.f;
 
 	// we arrived here we can do the acutal resolve.
-	if( record->m_mode == Modes::RESOLVE_WALK ) 
-		ResolveWalk( data, record );
+	if (record->m_mode == Modes::RESOLVE_WALK)
+		ResolveWalk(data, record);
+
+	else if (record->m_mode == Modes::RESOLVE_EXPLOIT)
+		ExploitFix(data, record);
 
 	else if( record->m_mode == Modes::RESOLVE_STAND )
 		ResolveStand( data, record );
@@ -298,10 +306,9 @@ void Resolver::ResolveWalk( AimPlayer* data, LagRecord* record ) {
 }
 
 void Resolver::ResetNiggaShit(AimPlayer* data, bool printDebug) {
-	if (printDebug) {
+	if (g_menu.main.misc.debug.get())
 		g_notify.add("[DEBUG] reset resolver info");
-		printDebug = false;
-	}
+
 	data->m_moving_index = 0;
 	data->m_stand_index = 0;
 	data->m_stand_index2 = 0;
@@ -378,6 +385,26 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 		record->m_mode = Modes::RESOLVE_BRUTEFORCE;
 	}
+}
+
+void Resolver::ExploitFix(AimPlayer* data, LagRecord* record) {
+	// apply lby to eyeangles.
+	record->m_eye_angles.y = record->m_body;
+
+	// delay body update.
+	data->m_body_update = record->m_anim_time + 0.22f;
+
+	// reset stand and body index.
+	data->m_moving_index = 0;
+	data->m_stand_index = 0;
+	data->m_stand_index2 = 0;
+	data->m_body_index = 0;
+	data->m_freestanding_index = 0;
+
+
+	// copy the last record that this player was walking
+	// we need it later on because it gives us crucial data.
+	std::memcpy(&data->m_walk_record, record, sizeof(LagRecord));
 }
 
 void Resolver::StandNS( AimPlayer* data, LagRecord* record ) {
