@@ -8,6 +8,7 @@ public:
 	Dropdown	  selection;
 	Checkbox	  fov;
 	Slider		  fov_amount;
+	Dropdown      exploit_type;
 	MultiDropdown hitbox;
 	MultiDropdown hitbox_history;
 	MultiDropdown multipoint;
@@ -55,6 +56,9 @@ public:
 		fov_amount.setup("", XOR("fov_amount"), 1.f, 180.f, false, 0, 180.f, 1.f, XOR(L"�"));
 		fov_amount.AddShowCallback(callbacks::IsFovOn);
 		RegisterElement(&fov_amount);
+
+		exploit_type.setup(XOR("exploits (under construction)"), XOR("exploit_type"), { XOR("doubletap"), XOR("hideshots") });
+		RegisterElement(&exploit_type);
 
 		hitbox.setup(XOR("hitbox"), XOR("hitbox"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
 		RegisterElement(&hitbox);

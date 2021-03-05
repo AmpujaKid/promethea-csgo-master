@@ -162,6 +162,60 @@ public:
 	CClientState* m_client_state;
 };
 
+class bf_write {
+public:
+	unsigned char* m_pData;
+	int m_nDataBytes;
+	int m_nDataBits;
+	int m_iCurBit;
+	bool m_bOverflow;
+	bool m_bAssertOnOverflow;
+	const char* m_pDebugName;
+
+	void StartWriting(void* pData, int nBytes, int iStartBit = 0, int nBits = -1) {
+		// Make sure it's dword aligned and padded.
+		// The writing code will overrun the end of the buffer if it isn't dword aligned, so truncate to force alignment
+		nBytes &= ~3;
+
+		m_pData = (unsigned char*)pData;
+		m_nDataBytes = nBytes;
+
+		if (nBits == -1) {
+			m_nDataBits = nBytes << 3;
+		}
+		else {
+			m_nDataBits = nBits;
+		}
+
+		m_iCurBit = iStartBit;
+		m_bOverflow = false;
+	}
+
+	bf_write() {
+		m_pData = NULL;
+		m_nDataBytes = 0;
+		m_nDataBits = -1; // set to -1 so we generate overflow on any operation
+		m_iCurBit = 0;
+		m_bOverflow = false;
+		m_bAssertOnOverflow = true;
+		m_pDebugName = NULL;
+	}
+
+	// nMaxBits can be used as the number of bits in the buffer.
+	// It must be <= nBytes*8. If you leave it at -1, then it's set to nBytes * 8.
+	bf_write(void* pData, int nBytes, int nBits = -1) {
+		m_bAssertOnOverflow = true;
+		m_pDebugName = NULL;
+		StartWriting(pData, nBytes, 0, nBits);
+	}
+
+	bf_write(const char* pDebugName, void* pData, int nBytes, int nBits = -1) {
+		m_bAssertOnOverflow = true;
+		m_pDebugName = pDebugName;
+		StartWriting(pData, nBytes, 0, nBits);
+	}
+};
+
 class IVEngineClient {
 public:
 	enum indices : size_t {

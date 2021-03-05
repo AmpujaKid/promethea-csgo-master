@@ -599,7 +599,7 @@ public:
 		return get< float >(g_csgo.LastBoneSetupTime);
 	}
 
-	__forceinline int &m_nTickBase() {
+	__forceinline int& m_nTickBase() {
 		return get< int >(g_entoffsets.m_nTickBase);
 	}
 

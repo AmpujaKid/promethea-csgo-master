@@ -841,6 +841,7 @@ void HVH::SendPacket() {
 	if (g_menu.main.antiaim.lag_enable.get() && !g_csgo.m_gamerules->m_bFreezePeriod() && !(g_cl.m_flags & FL_FROZEN)) {
 		// limit of lag.
 		int limit = std::min((int)g_menu.main.antiaim.lag_limit.get(), g_cl.m_max_lag);
+		int mode = g_menu.main.antiaim.lag_mode.get();
 
 		// indicates whether to lag or not.
 		bool active{ };
@@ -873,6 +874,13 @@ void HVH::SendPacket() {
 			else if (*it == 2 && g_cl.m_local->m_bDucking()) {
 				active = true;
 				break;
+			}
+
+			// fake duck.
+			else if (m_fake_duck) {
+				g_cl.m_should_lag = true;
+				limit = 14;
+				mode = 0;
 			}
 
 			 //before flick

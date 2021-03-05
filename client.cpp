@@ -333,7 +333,7 @@ void Client::DoMove( ) {
 		m_player_fire = g_csgo.m_globals->m_curtime >= m_local->m_flNextAttack( ) && !g_csgo.m_gamerules->m_bFreezePeriod( ) && !( g_cl.m_flags & FL_FROZEN );
 
 		UpdateRevolverCock( );
-		m_weapon_fire = CanFireWeapon( );
+		m_weapon_fire = CanFireWeapon(g_csgo.m_globals->m_curtime);
 	}
 
 	// last tick defuse.
@@ -570,43 +570,57 @@ void Client::print( const std::string text, ... ) {
 	g_csgo.m_cvar->ConsoleColorPrintf( colors::white, buf.c_str( ) );
 }
 
-bool Client::CanFireWeapon( ) {
+bool Client::CanFireWeapon(float curtime) {
 	// the player cant fire.
-	if( !m_player_fire )
+	if (!m_player_fire || !m_weapon)
 		return false;
 
-	if( m_weapon_type == WEAPONTYPE_GRENADE )
+	if (m_weapon_type == WEAPONTYPE_GRENADE)
 		return false;
 
 	// if we have no bullets, we cant shoot.
-	if( m_weapon_type != WEAPONTYPE_KNIFE && m_weapon->m_iClip1( ) < 1 )
+	if (m_weapon_type != WEAPONTYPE_KNIFE && m_weapon->m_iClip1() < 1)
 		return false;
 
 	// do we have any burst shots to handle?
-	if( ( m_weapon_id == GLOCK || m_weapon_id == FAMAS ) && m_weapon->m_iBurstShotsRemaining( ) > 0 ) {
+	if ((m_weapon_id == GLOCK || m_weapon_id == FAMAS) && m_weapon->m_iBurstShotsRemaining() > 0) {
 		// new burst shot is coming out.
-		if( g_csgo.m_globals->m_curtime >= m_weapon->m_fNextBurstShot( ) )
+		if (curtime >= m_weapon->m_fNextBurstShot())
 			return true;
 	}
 
 	// r8 revolver.
-	if( m_weapon_id == REVOLVER ) {
-		int act = m_weapon->m_Activity( );
-
+	if (m_weapon_id == REVOLVER) {
 		// mouse1.
-		if( !m_revolver_fire ) {
-			if( ( act == 185 || act == 193 ) && m_revolver_cock == 0 )
-				return g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack( );
-
+		if (m_revolver_fire) {
+			return true;
+		}
+		else {
 			return false;
 		}
 	}
 
 	// yeez we have a normal gun.
-	if( g_csgo.m_globals->m_curtime >= m_weapon->m_flNextPrimaryAttack( ) )
+	if (curtime >= m_weapon->m_flNextPrimaryAttack())
 		return true;
 
 	return false;
+}
+
+bool Client::IsFiring(float curtime) {
+	const auto weapon = g_cl.m_weapon;
+	if (!weapon)
+		return false;
+
+	const auto IsZeus = m_weapon_id == Weapons_t::ZEUS;
+	const auto IsKnife = !IsZeus && m_weapon_type == WEAPONTYPE_KNIFE;
+
+	if (m_weapon_type == WEAPONTYPE_GRENADE)
+		return !weapon->m_bPinPulled() && weapon->m_fThrowTime() > 0.f && weapon->m_fThrowTime() < curtime;
+	else if (IsKnife)
+		return (g_cl.m_cmd->m_buttons & (IN_ATTACK) || g_cl.m_cmd->m_buttons & (IN_ATTACK2)) && CanFireWeapon(curtime);
+	else
+		return g_cl.m_cmd->m_buttons & (IN_ATTACK) && CanFireWeapon(curtime);
 }
 
 void Client::UpdateRevolverCock( ) {

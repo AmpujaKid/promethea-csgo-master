@@ -277,6 +277,7 @@
     <ClInclude Include="surface.h" />
     <ClInclude Include="syscall.h" />
     <ClInclude Include="tab.h" />
+    <ClInclude Include="tickbase_shift.h" />
     <ClInclude Include="tinyformat.h" />
     <ClInclude Include="trace.h" />
     <ClInclude Include="unique_vector.h" />
@@ -336,6 +337,7 @@
     <ClCompile Include="pred.cpp" />
     <ClCompile Include="netchannel.cpp" />
     <ClCompile Include="render.cpp" />
+    <ClCompile Include="tickbase_shift.cpp" />
     <ClCompile Include="viewrender.cpp" />
     <ClCompile Include="resolver.cpp" />
     <ClCompile Include="prediction.cpp" />

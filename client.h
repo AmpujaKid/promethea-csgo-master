@@ -46,7 +46,8 @@ public:
 	void print( const std::string text, ... );
 
 	// check if we are able to fire this tick.
-	bool CanFireWeapon( );
+	bool CanFireWeapon(float curtime);
+	bool IsFiring(float curtime);
 	void UpdateRevolverCock( );
 	void UpdateIncomingSequences( );
 
@@ -79,6 +80,7 @@ public:
 	bool     m_round_end;
 	Stage_t	 m_stage;
 	int	     m_max_lag;
+	bool	 m_should_lag;
 	int      m_lag;
 	int	     m_old_lag;
 	bool*    m_packet;
@@ -89,11 +91,13 @@ public:
 	int      m_latency_ticks;
 	int      m_server_tick;
 	int      m_arrival_tick;
+	int      m_goal_shift;
 	int      m_width, m_height;
 
 	// usercommand variables.
 	CUserCmd* m_cmd;
 	int	      m_tick;
+	int	      m_rate;
 	int	      m_buttons;
 	int       m_old_buttons;
 	ang_t     m_view_angles;

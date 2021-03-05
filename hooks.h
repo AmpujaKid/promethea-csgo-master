@@ -54,6 +54,7 @@ public:
 	using TempEntities_t               = bool( __thiscall* )( void*, void * );
 	using EmitSound_t                  = void( __thiscall* )( void*, IRecipientFilter&, int, int, const char*, unsigned int, const char*, float, float, int, int, int, const vec3_t*, const vec3_t*, void*, bool, float, int );
 	// using PreDataUpdate_t            = void( __thiscall* )( void*, DataUpdateType_t );
+	using WriteUsercmdDeltaToBuffer_t = bool(__thiscall*)(void*, int, void*, int, int, bool);
 
 public:
 	bool                     TempEntities( void *msg );
@@ -65,6 +66,7 @@ public:
 	//int                      IN_KeyEvent( int event, int key, const char* bind );
 	void                     LevelInitPreEntity( const char* map );
 	void                     FrameStageNotify( Stage_t stage );
+	bool					 WriteUsercmdDeltaToBuffer(int m_nSlot, void* m_pBuffer, int m_nFrom, int m_nTo, bool m_bNewCmd);
 	void                     UpdateClientSideAnimation( );
     Weapon*                  GetActiveWeapon( );
 	bool                     InPrediction( );

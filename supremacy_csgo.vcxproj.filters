@@ -312,6 +312,9 @@
     <ClInclude Include="interfaces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="tickbase_shift.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bonesetup.cpp">
@@ -469,6 +472,9 @@
     </ClCompile>
     <ClCompile Include="clientstate.cpp">
       <Filter>Source Files\hooks\game</Filter>
+    </ClCompile>
+    <ClCompile Include="tickbase_shift.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

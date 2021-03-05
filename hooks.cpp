@@ -131,6 +131,7 @@ void Hooks::init( ) {
 	m_client.add( CHLClient::LEVELSHUTDOWN, util::force_cast( &Hooks::LevelShutdown ) );
 	//m_client.add( CHLClient::INKEYEVENT, util::force_cast( &Hooks::IN_KeyEvent ) );
 	m_client.add( CHLClient::FRAMESTAGENOTIFY, util::force_cast( &Hooks::FrameStageNotify ) );
+	m_client.add(24, util::force_cast(&Hooks::WriteUsercmdDeltaToBuffer));
 
 	m_engine.init( g_csgo.m_engine );
 	m_engine.add( IVEngineClient::ISCONNECTED, util::force_cast( &Hooks::IsConnected ) );
