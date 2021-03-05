@@ -12,7 +12,7 @@ ulong_t __stdcall Client::init( void* arg ) {
 	g_cl.m_user = XOR( "user" );
 
 	// config folder.
-	g_cl.m_cfg_folder = XOR("C:\\Promethea\\Configs");
+	g_cl.m_cfg_folder = XOR("C:\\Neptune\\Configs");
 
 	// stop here if we failed to acquire all the data needed from csgo.
 	if( !g_csgo.init( ) )
@@ -566,7 +566,7 @@ void Client::print( const std::string text, ... ) {
 	Color color = g_menu.main.config.menu_color.get( );
 
 	// print to console.
-	g_csgo.m_cvar->ConsoleColorPrintf( color, XOR( "[promethea] " ) );
+	g_csgo.m_cvar->ConsoleColorPrintf( color, XOR( "[neptune] " ) );
 	g_csgo.m_cvar->ConsoleColorPrintf( colors::white, buf.c_str( ) );
 }
 
