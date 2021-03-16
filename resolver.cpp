@@ -316,6 +316,30 @@ void Resolver::ResetNiggaShit(AimPlayer* data, bool printDebug) {
 	data->m_freestanding_index = 0;
 }
 
+float Resolver::GetLBYRotatedYaw(float lby, float yaw)
+{
+	float delta = math::NormalizedAngle(yaw - lby);
+	if (fabs(delta) < 25.f)
+		return lby;
+
+	if (delta > 0.f)
+		return yaw + 25.f;
+
+	return yaw;
+}
+
+bool Resolver::IsYawSideways(Player* entity, float yaw)
+{
+	auto local_player = g_cl.m_local;
+	if (!local_player)
+		return false;
+
+	const auto at_target_yaw = math::CalcAngle(local_player->m_vecOrigin(), entity->m_vecOrigin()).y;
+	const float delta = fabs(math::NormalizedAngle(at_target_yaw - yaw));
+
+	return delta > 20.f && delta < 160.f;
+}
+
 void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	// get predicted away angle for the player.
 	float away = GetAwayAngle(record);

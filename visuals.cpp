@@ -531,6 +531,14 @@ void Visuals::StatusIndicators( ) {
 	struct Indicator_t { Color color; std::string text; };
 	std::vector< Indicator_t > indicators{ };
 
+	// DOUBLETAP
+	if (g_menu.main.visuals.indicators.get(5)) {
+		Indicator_t ind{ };
+		ind.color = g_tickbase.m_shift_data.m_can_shift_tickbase ? 0xff15c27b : 0xff0000ff;
+		ind.text = XOR("DT");
+
+		indicators.push_back(ind);
+	}
 
 	// PING
 	if (g_menu.main.visuals.indicators.get(2)) {
@@ -563,7 +571,7 @@ void Visuals::StatusIndicators( ) {
 		}
 	}
 
-	if (g_menu.main.misc.debug.get()) {
+	if (g_menu.main.misc.debug.get() == 1) {
 		Indicator_t ind{};
 		ind.color = g_menu.main.config.menu_color.get();
 		if (Resolver::RESOLVE_EXPLOIT)
@@ -584,7 +592,7 @@ void Visuals::StatusIndicators( ) {
 		indicators.push_back(ind);
 	}
 
-	if (g_menu.main.antiaim.antiaim_exploit.get()) {
+	if (g_menu.main.antiaim.antiaim_exploit.get() == 0) {
 		Indicator_t ind{};
 		ind.color = g_menu.main.config.menu_color.get();
 		ind.text = XOR("CRIMWALK");
@@ -1809,7 +1817,7 @@ void Visuals::DrawBeams( ) {
 				beam_info.m_flWidth = 3.0f;
 				beam_info.m_flEndWidth = 5.0f;
 				beam_info.m_flFadeLength = 0.f;
-				beam_info.m_flAmplitude = 0.f;   // beam 'jitter'.
+				beam_info.m_flAmplitude = 10.f;   // beam 'jitter'.
 				beam_info.m_flBrightness = 255.f;
 				beam_info.m_flSpeed = 0.2f;  // seems to control how fast the 'scrolling' of beam is... once fully spawned.
 				beam_info.m_nStartFrame = 0;

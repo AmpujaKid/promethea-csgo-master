@@ -10,6 +10,9 @@ namespace callbacks {
 	void ToggleLeftManual();
 	void ToggleRightManual();
 	void ToggleDT();
+	bool IsWalkmodeFake();
+	bool IsWalkmodeSlow();
+	bool walkmode();
     void ToggleKillfeed( );
 	void UnlockHiddenConvars( );
 	void SaveHotkeys( );

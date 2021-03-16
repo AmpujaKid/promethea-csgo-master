@@ -1,6 +1,6 @@
 - Update Log -
 
-=====14.12.2020=====
+=====12.14.2020=====
 [RAGEBOT]
 - Resolver is a bit more stable now.
 - Feet are selectable now in hitbox & multipoint
@@ -19,7 +19,7 @@
 - Added hitsound checkbox.
 - Localplayer animation improvements.
 
-=====15.12.20=====
+=====12.15.20=====
 [RAGEBOT]
 - Resolver changes
 [ANTIAIM]
@@ -27,10 +27,22 @@
 - Added snake real yaw
 - Added manual override
 
-=====16.12.20=====
+=====12.16.20=====
 [RAGEBOT]
 - Recoded multipoint
 - Resolver changes
+[VISUALS]
+- New watermark
+- Added hidden cvars
+- Added remove blur
+
+=====3.7.21=====
+[RAGEBOT]
+- Doubletap (not working yet)
+- Teleport on Key
+[ANTIAIM]
+- LBY 2.0 (not consistent)
+- Global Antiaim Improvements
 [VISUALS]
 - New watermark
 - Added hidden cvars

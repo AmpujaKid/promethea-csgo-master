@@ -537,6 +537,35 @@ void Movement::QuickStop( ) {
 	}
 }
 
+void Movement::ClampMovementSpeed(float speed) {
+	float final_speed = speed;
+
+	if (!g_cl.m_cmd || !g_cl.m_processing)
+		return;
+
+	g_cl.m_cmd->m_buttons |= IN_SPEED;
+
+	float squirt = std::sqrtf((g_cl.m_cmd->m_forward_move * g_cl.m_cmd->m_forward_move) + (g_cl.m_cmd->m_side_move * g_cl.m_cmd->m_side_move));
+
+	if (squirt > speed) {
+		float squirt2 = std::sqrtf((g_cl.m_cmd->m_forward_move * g_cl.m_cmd->m_forward_move) + (g_cl.m_cmd->m_side_move * g_cl.m_cmd->m_side_move));
+
+		float cock1 = g_cl.m_cmd->m_forward_move / squirt2;
+		float cock2 = g_cl.m_cmd->m_side_move / squirt2;
+
+		auto Velocity = g_cl.m_local->m_vecVelocity().length_2d();
+
+		if (final_speed + 1.0 <= Velocity) {
+			g_cl.m_cmd->m_forward_move = 0;
+			g_cl.m_cmd->m_side_move = 0;
+		}
+		else {
+			g_cl.m_cmd->m_forward_move = cock1 * final_speed;
+			g_cl.m_cmd->m_side_move = cock2 * final_speed;
+		}
+	}
+}
+
 void Movement::SlideWalk()
 {
 	if (!g_cl.m_processing)
@@ -579,6 +608,70 @@ void Movement::SlideWalk()
 			if (v13 > 0.0)
 				v15 = 1024;
 			g_cl.m_cmd->m_buttons = v11 | v15;
+		}
+	}
+}
+
+void Movement::SlowWalk() {
+	vec3_t velocity{ g_cl.m_local->m_vecVelocity() };
+	int    ticks{ }, max{ 7 };
+
+	if (!g_input.GetKeyState(g_menu.main.movement.slow_motion.get()))
+		return;
+
+	if (!g_cl.m_local->GetGroundEntity())
+		return;
+
+	if (g_menu.main.movement.slow_motion.get()) {
+		//if( g_cl.m_weapon && g_cl.m_weapon_info )
+	//	max = std::floor( 11 * ( g_cl.m_weapon_info->m_max_player_speed / 250.f ) );
+
+	// reference:
+	// https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/game/shared/gamemovement.cpp#L1612
+
+	// calculate friction.
+		float friction = g_csgo.sv_friction->GetFloat() * g_cl.m_local->m_surfaceFriction();
+
+		for (; ticks <= g_cl.m_max_lag; ++ticks) {
+			// calculate speed.
+			float speed = velocity.length();
+
+			// if too slow return.
+			if (speed <= 0.1f)
+				break;
+
+			// bleed off some speed, but if we have less than the bleed, threshold, bleed the threshold amount.
+			float control = std::max(speed, g_csgo.sv_stopspeed->GetFloat());
+
+			// calculate the drop amount.
+			float drop = control * friction * g_csgo.m_globals->m_interval;
+
+			// scale the velocity.
+			float newspeed = std::max(0.f, speed - drop);
+
+			if (newspeed != speed) {
+				// determine proportion of old speed we are using.
+				newspeed /= speed;
+
+				// adjust velocity according to proportion.
+				velocity *= newspeed;
+			}
+		}
+
+		// zero forwardmove and sidemove.
+		if (ticks > (max - g_cl.m_lag) || !g_cl.m_lag)
+			g_cl.m_cmd->m_forward_move = g_cl.m_cmd->m_side_move = 0.f;
+
+		// set bSendPacket.
+		*g_cl.m_packet = !(g_cl.m_lag < max);
+	}
+	else {
+		if (g_cl.m_weapon_info) {
+			// get the max possible speed whilest we are still accurate.
+			float flMaxSpeed = g_cl.m_local->m_bIsScoped() > 0 ? g_cl.m_weapon_info->m_max_player_speed_alt : g_cl.m_weapon_info->m_max_player_speed;
+			float flDesiredSpeed = (flMaxSpeed * 0.33000001);
+
+			ClampMovementSpeed(flDesiredSpeed);
 		}
 	}
 }

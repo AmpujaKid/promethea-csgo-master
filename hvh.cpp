@@ -281,8 +281,16 @@ void HVH::GetAntiAimDirection( ) {
 
 		// jitter
 	case 3:
-		m_direction = m_view - 45.f;
-		m_direction = m_view + 45.f;
+		switch ((GetTickCount() + 1) % 2) {
+		case 1:
+			m_direction = m_view - 45.f;
+			break;
+
+		case 0:
+			m_direction = m_view + 45.f;
+			break;
+
+		}
 
 
 	default:

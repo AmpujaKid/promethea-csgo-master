@@ -5,71 +5,6 @@
 
 Aimbot g_aimbot{ };;
 
-bool CanFireWithExploit(int m_iShiftedTick)
-{
-	// curtime before shift
-	float curtime = game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase() - m_iShiftedTick);
-	return g_cl.CanFireWeapon(curtime);
-}
-
-bool Aimbot::CanDT() {
-	int idx = g_cl.m_weapon->m_iItemDefinitionIndex();
-	return g_cl.m_local->alive()
-		&& g_csgo.m_cl->m_choked_commands <= 1
-		&& m_double_tap && !g_hvh.m_fake_duck;
-}
-
-void Aimbot::DoubleTap()
-{
-	static bool did_shift_before = false;
-	static int double_tapped = 0;
-	static int prev_shift_ticks = 0;
-	static bool reset = false;
-
-	g_tickbase.m_shift_data.m_ticks_to_shift = 0;
-	if (CanDT() && !g_csgo.m_gamerules->m_bFreezePeriod())
-	{
-		if (m_double_tap)
-		{
-			prev_shift_ticks = 0;
-
-			auto can_shift_shot = CanFireWithExploit(shift_ticks);
-			auto can_shot = CanFireWithExploit(abs(-1 - prev_shift_ticks));
-
-			if (can_shift_shot || !can_shot && !did_shift_before)
-			{
-				prev_shift_ticks = shift_ticks;
-				double_tapped = 0;
-			}
-			else {
-				double_tapped++;
-				prev_shift_ticks = 0;
-			}
-
-			if (prev_shift_ticks > 0)
-			{
-				if (g_cl.m_weapon->DTable() && CanFireWithExploit(prev_shift_ticks))
-				{
-					if (g_cl.m_cmd->m_buttons & IN_ATTACK)
-					{
-						g_tickbase.m_shift_data.m_ticks_to_shift = prev_shift_ticks;
-						reset = true;
-					}
-					else {
-						if ((!(g_cl.m_cmd->m_buttons & IN_ATTACK) || !g_cl.m_shot) && reset
-							&& fabsf(g_cl.m_weapon->m_fLastShotTime() - game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase())) > 0.5f) {
-							g_tickbase.m_shift_data.m_should_be_ready = false;
-							g_tickbase.m_shift_data.m_next_shift_amount = shift_ticks;
-							reset = false;
-						}
-					}
-				}
-			}
-			did_shift_before = prev_shift_ticks != 0;
-		}
-	}
-}
-
 void AimPlayer::UpdateAnimations( LagRecord *record ) {
 	CCSGOPlayerAnimState *state = m_player->m_PlayerAnimState( );
 	if ( !state )
@@ -485,6 +420,9 @@ void Aimbot::init( ) {
 	m_best_hp = 100 + 1;
 	m_best_lag = std::numeric_limits< float >::max( );
 	m_best_height = std::numeric_limits< float >::max( );
+
+	if (!g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)
+		m_shoot_next_tick = false;
 }
 
 void Aimbot::StripAttack( ) {
@@ -666,6 +604,8 @@ void Aimbot::find( ) {
 		// set autostop shit.
 		m_stop = !( g_cl.m_buttons & IN_JUMP );
 
+		g_movement.QuickStop();
+
 		bool on = g_menu.main.aimbot.hitchance.get( ) && g_menu.main.config.mode.get( ) == 0;
 		bool hit = on && CheckHitchance( m_target, m_angle );
 
@@ -688,13 +628,14 @@ void Aimbot::find( ) {
 
 		if ( hit || !on ) {
 			// right click attack.
-			if ( g_menu.main.config.mode.get( ) == 1 && g_cl.m_weapon_id == REVOLVER )
-				g_cl.m_cmd->m_buttons |= IN_ATTACK2;
+			if(!g_tickbase.m_shift_data.m_should_attempt_shift ||  ((g_cl.m_goal_shift == 13 || g_tickbase.m_shift_data.m_should_disable) && g_tickbase.m_shift_data.m_should_attempt_shift) || g_cl.m_goal_shift == 7 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
+				if (g_menu.main.config.mode.get() == 1 && g_cl.m_weapon_id == REVOLVER)
+					g_cl.m_cmd->m_buttons |= IN_ATTACK2;
 
-			// left click attack.
-			else
-				g_cl.m_cmd->m_buttons |= IN_ATTACK;
-
+				// left click attack.
+				else
+					g_cl.m_cmd->m_buttons |= IN_ATTACK;
+			}
 		}
 	}
 }
@@ -1136,6 +1077,10 @@ void Aimbot::apply( ) {
 
 		// set that we fired.
 		g_cl.m_shot = true;
+	}
+
+	if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
+		m_shoot_next_tick = true;
 	}
 }
 

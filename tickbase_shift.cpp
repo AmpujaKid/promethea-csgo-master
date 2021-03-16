@@ -28,7 +28,7 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 	m_nFrom = -1;
 
 	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
-	g_tickbase.m_shift_data.m_ticks_to_shift = 0;
+	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 
 	int* m_pnNewCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x2C );
 	int* m_pnBackupCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x30 );
@@ -71,12 +71,12 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 void TickbaseSystem::PreMovement( ) {
 
 	// Invalidate next shift amount and the ticks to shift prior to shifting
-	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = 0;
+	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 }
 
 void TickbaseSystem::PostMovement( ) {
 	// Perform sanity checks to make sure we're able to shift
-	if( !g_cl.m_processing || g_menu.main.aimbot.exploit_type.get() == 0) {
+	if( !g_cl.m_processing || g_menu.main.aimbot.rapidfire.get()) {
 		return;
 	}
 
@@ -126,6 +126,7 @@ void TickbaseSystem::PostMovement( ) {
 	if( g_tickbase.m_shift_data.m_can_shift_tickbase ) {
 		// Tell the cheat to shift tick-base and disable fakelag
 		g_tickbase.m_shift_data.m_next_shift_amount = g_cl.m_goal_shift;
+		*g_cl.m_packet = true;
 	}
 	else {
 		g_tickbase.m_shift_data.m_next_shift_amount = 0;

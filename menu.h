@@ -3,12 +3,39 @@
 class AimbotTab : public Tab {
 public:
 	// col1.
+
+	/*
+	Explaination of the sections:
+	We will separate the tabs into subsections in the new update. I will add a new bit of code to define a subtab or I'll just
+	keep it as dropdown, I don't know yet. It's pretty self explanatory, but I'll tell you anyways. The way it will work is I
+	will define a couple different sub tabs. For example (as you can see right below this) we can separate the aimbot tab into 
+	three subtabs: main, exploits, and accuracy. The main subtab will contain all of our toggleables and keybinds (such as limit 
+	field of view, enable aimbot, etc), the exploits subtab will contain all of our tickbase stuff (I have a few ideas) and 
+	the accuracy subtab will contain stuff like hitchance and min damage. I will create some callbacks stuff so that the 
+	subtabs are only visible when a certain subtab is selected.
+	*/
+	Dropdown      aimbot_section; // we can separate the aimbot tab into main, exploits, accuracy
+
+	// main subtab
 	Checkbox	  enable;
 	Checkbox	  silent;
 	Dropdown	  selection;
 	Checkbox	  fov;
 	Slider		  fov_amount;
+	Checkbox      knifebot;
+	Checkbox	  zeusbot;
+	Checkbox      nospread;
+	Checkbox      norecoil;
+	Checkbox      lagfix;
+	Checkbox	  correct;
+
+	// exploits subtab
+	Checkbox      tickbase;
 	Dropdown      exploit_type;
+	Checkbox      rapidfire; // double tap
+	Keybind       doubletap; // teleport on key (i know, shut up)
+
+	// accuracy subtab
 	MultiDropdown hitbox;
 	MultiDropdown hitbox_history;
 	MultiDropdown multipoint;
@@ -20,22 +47,15 @@ public:
 	Checkbox	  penetrate;
 	Slider		  penetrate_minimal_damage;
 	Checkbox	  penetrate_minimal_damage_hp;
-	Checkbox      knifebot;
-	Checkbox	  zeusbot;
-
-	// col2.
 	Dropdown      zoom;
-	Checkbox      nospread;
-	Checkbox      norecoil;
 	Checkbox      hitchance;
 	Slider	      hitchance_amount;
-	Checkbox      lagfix;
-	Checkbox	  correct;
 	MultiDropdown baim1;
 	MultiDropdown baim2;
 	Slider        baim_hp;
 	Keybind       baim_key;
-	Keybind       doubletap;
+
+	// todo: add callbacks to all the aimbot tab elements, and rearrange all the elements. This is just the Aimbot tab so far, I'll do the rest.
 
 public:
 	void init() {
@@ -58,8 +78,8 @@ public:
 		fov_amount.AddShowCallback(callbacks::IsFovOn);
 		RegisterElement(&fov_amount);
 
-		exploit_type.setup(XOR("exploits (under construction)"), XOR("exploit_type"), { XOR("doubletap"), XOR("hideshots") });
-		RegisterElement(&exploit_type);
+		//exploit_type.setup(XOR("exploits (under construction)"), XOR("exploit_type"), { XOR("doubletap"), XOR("hideshots") });
+		//RegisterElement(&exploit_type);
 
 		hitbox.setup(XOR("hitbox"), XOR("hitbox"), { XOR("head"), XOR("chest"), XOR("body"), XOR("arms"), XOR("legs"), XOR("feet") });
 		RegisterElement(&hitbox);
@@ -142,6 +162,9 @@ public:
 
 		baim_key.setup(XOR("body aim on key"), XOR("body aim on key"));
 		RegisterElement(&baim_key, 1);
+
+		rapidfire.setup(XOR("doubletap"), XOR("rapidfire"));
+		RegisterElement(&rapidfire, 1);
 
 		doubletap.setup(XOR("teleport on key"), XOR("doubletap"));
 		doubletap.SetToggleCallback(callbacks::ToggleDT);
@@ -716,6 +739,7 @@ public:
 	Checkbox      noflash;
 	Checkbox      noscope;
 	Checkbox      noblur;
+	Checkbox      quickmenu;
 	Checkbox      fov;
 	Slider        fov_amt;
 	Checkbox      fov_scoped;
@@ -802,6 +826,9 @@ public:
 		noblur.setup(XOR("remove blur"), XOR("noblur"));
 		RegisterElement(&noblur, 1);
 
+		//quickmenu.setup(XOR("quick menu"), XOR("quickmenu"));
+		//RegisterElement(&quickmenu, 1);
+
 		fov.setup(XOR("override fov"), XOR("fov"));
 		RegisterElement(&fov, 1);
 
@@ -832,7 +859,7 @@ public:
 		spread_xhair_blend.setup("", XOR("spread_xhair_blend"), 10.f, 100.f, false, 0, 100.f, 1.f, XOR(L"%"));
 		RegisterElement(&spread_xhair_blend, 1);
 
-		indicators.setup(XOR("indicators"), XOR("indicators"), { XOR("lby"), XOR("lag compensation"), XOR("fake latency"), XOR("manual") });
+		indicators.setup(XOR("indicators"), XOR("indicators"), { XOR("lby"), XOR("lag compensation"), XOR("fake latency"), XOR("manual"), XOR("doubletap") });
 		RegisterElement(&indicators, 1);
 
 		tracers.setup(XOR("grenade prediction"), XOR("tracers"));
@@ -873,7 +900,9 @@ public:
 	Slider   z_freq;
 	Slider   z_dist;
 
+	Dropdown walkmode;
 	Keybind  fakewalk;
+	Keybind  slow_motion;
 	Checkbox tickbaseWalk;
 	Keybind  autopeek;
 	Keybind  autostop;
@@ -916,8 +945,19 @@ public:
 		z_dist.setup("", XOR("z_dist"), 1.f, 100.f, false, 0, 20.f, 0.5f, XOR(L"%"));
 		RegisterElement(&z_dist);
 
+		walkmode.setup(XOR("walk exploit mode"), XOR("walkmode"), { XOR("slow walk"), XOR("fake walk") });
+		RegisterElement(&walkmode, 1);
+
 		fakewalk.setup(XOR("fake-walk"), XOR("fakewalk"));
+		fakewalk.AddShowCallback(callbacks::IsWalkmodeFake);
 		RegisterElement(&fakewalk, 1);
+
+		slow_motion.setup(XOR("slow-walk"), XOR("slowwalk"));
+		slow_motion.AddShowCallback(callbacks::IsWalkmodeSlow);
+		RegisterElement(&slow_motion, 1);
+
+		tickbaseWalk.setup(XOR("tickbase-walk"), XOR("tickbasewalk"));
+		RegisterElement(&tickbaseWalk, 1);
 
 		autopeek.setup(XOR("automatic peek"), XOR("autopeek"));
 		RegisterElement(&autopeek, 1);

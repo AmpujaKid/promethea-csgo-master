@@ -40,6 +40,14 @@ void callbacks::ToggleDT() {
 	g_aimbot.m_double_tap = !g_aimbot.m_double_tap;
 }
 
+bool callbacks::IsWalkmodeFake() {
+	return g_menu.main.movement.walkmode.get() == 0;
+}
+
+bool callbacks::IsWalkmodeSlow() {
+	return g_menu.main.movement.walkmode.get() == 1;
+}
+
 void callbacks::ToggleKillfeed( ) {
     KillFeed_t* feed = ( KillFeed_t* )g_csgo.m_hud->FindElement( HASH( "SFHudDeathNoticeAndBotStatus" ) );
     if( feed )

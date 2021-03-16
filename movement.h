@@ -13,6 +13,7 @@ public:
 	float  m_old_yaw;
 	float  m_circle_yaw;
 	bool   m_invert;
+	bool m_slow_motion;
 
 public:
 	void JumpRelated( );
@@ -25,7 +26,9 @@ public:
 	void AutoPeek( );
 	void QuickStop( );
 	void SlideWalk();
+	void SlowWalk();
 	void FakeWalk( );
+	void ClampMovementSpeed(float speed);
 };
 
 extern Movement g_movement;

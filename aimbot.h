@@ -147,7 +147,7 @@ public:
 
 	// fake latency stuff.
 	bool       m_fake_latency;
-
+	bool m_shoot_next_tick;
 	bool	   m_stop;
 	bool       m_double_tap;
 
@@ -181,8 +181,6 @@ public:
 	}
 
 public:
-	bool CanDT();
-	void DoubleTap();
 	// aimbot.
 	void init( );
 	void StripAttack( );

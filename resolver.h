@@ -35,6 +35,8 @@ public:
 	void ResolveAngles(Player* player, LagRecord* record);
 	void ResolveWalk(AimPlayer* data, LagRecord* record);
 	void ResetNiggaShit(AimPlayer* data, bool printDebug);
+	float GetLBYRotatedYaw(float lby, float yaw);
+	bool IsYawSideways(Player* entity, float yaw);
 	void ResolveStand(AimPlayer* data, LagRecord* record);
 	void ExploitFix(AimPlayer* data, LagRecord* record);
 	void StandNS(AimPlayer* data, LagRecord* record);
