@@ -29,6 +29,8 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 
 	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
 	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
+	if (g_menu.main.movement.slow_motion.get())
+		g_tickbase.m_shift_data.m_ticks_to_shift = 2;
 
 	int* m_pnNewCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x2C );
 	int* m_pnBackupCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x30 );
@@ -71,7 +73,7 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 void TickbaseSystem::PreMovement( ) {
 
 	// Invalidate next shift amount and the ticks to shift prior to shifting
-	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = 12;
+	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = g_menu.main.movement.slow_motion.get() ? 2 : 12;
 }
 
 void TickbaseSystem::PostMovement( ) {
@@ -101,6 +103,8 @@ void TickbaseSystem::PostMovement( ) {
 		g_tickbase.m_shift_data.m_should_be_ready = false;
 		return;
 	}
+
+	g_tickbase.m_shift_data.old_tickbase = g_tickbase.m_shift_data.m_should_attempt_shift;
 
 	g_tickbase.m_shift_data.m_should_disable = false;
 
@@ -136,9 +140,10 @@ void TickbaseSystem::PostMovement( ) {
 	// Are we even supposed to shift tickbase?
 	if( g_tickbase.m_shift_data.m_next_shift_amount > 0 ) {
 		// Prevent m_iTicksAllowedForProcessing from being incremented.
-		// g_cl.m_cmd->m_tick = INT_MAX;
+		//g_cl.m_cmd->m_tick = INT_MAX;
 		// Determine if we're able to double-tap  
-		if(bCanShootIn12Ticks) {
+		// note - slow walk shift is such a weird exploit to code.
+		if (g_menu.main.antiaim.lbyexploit.get() ? (!g_menu.main.movement.slow_motion.get() && bCanShootIn12Ticks) : bCanShootIn12Ticks) {
 			if (g_tickbase.m_shift_data.m_prepare_recharge && !bIsShooting) {
 				g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
 				g_tickbase.m_shift_data.m_prepare_recharge = false;
@@ -156,7 +161,43 @@ void TickbaseSystem::PostMovement( ) {
 
 					// Update our wish ticks to shift, and later shift tickbase
 					g_tickbase.m_shift_data.m_ticks_to_shift = g_tickbase.m_shift_data.m_next_shift_amount;
+
+					// note - this is for preserving fake in desync, but i think it still applies;
+					// the maximum amount of ticks we can shift is sv_maxusrcmdprocessticks
+					// which is defaulted to 16 - but since we want to be fakelagging atleast 2 ticks
+					// for our fake angle to work, we need to reserve 2 ticks for the fakelag. 
+					// we want our doubletap to be as fast as possible, and our fake to be as wide as possible
+					// therefore let's just fakelag 2 ticks - resulting in our max shift ticks being 14
+					// cos sv_maxusrcmdprocessticks Take Away Two Is Fourteen
+					// (assuming that the convar wasn't changed to a higher/lower value).
+					g_cl.m_goal_shift = 14;
+					if (g_tickbase.m_shift_data.old_tickbase != g_tickbase.m_shift_data.m_should_attempt_shift) {
+						if (g_menu.main.misc.debug.get())
+							g_notify.add(tfm::format(XOR("Tried doubletap")));
+
+						if (g_tickbase.m_shift_data.m_should_attempt_shift)
+							g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
+						else
+							g_tickbase.m_shift_data.m_needs_recharge = 0;
+
+						g_tickbase.m_shift_data.m_did_shift_before = false;
+					}
 				}
+			}
+		}
+		else if (g_menu.main.movement.slow_motion.get()) {
+			g_cl.m_goal_shift = 2;
+			if (g_tickbase.m_shift_data.old_tickbase != g_tickbase.m_shift_data.m_should_attempt_shift) {
+				if(g_menu.main.misc.debug.get())
+					g_notify.add( tfm::format( XOR( "Tried breaking lby using tickbase" )) );
+
+				if (g_tickbase.m_shift_data.m_should_attempt_shift)
+
+					g_tickbase.m_shift_data.m_needs_recharge = 0;
+				else
+					g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
+
+				g_tickbase.m_shift_data.m_did_shift_before = false;
 			}
 		}
 		else {

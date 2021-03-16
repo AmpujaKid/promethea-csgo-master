@@ -571,7 +571,7 @@ void Visuals::StatusIndicators( ) {
 		}
 	}
 
-	if (g_menu.main.misc.debug.get() == 1) {
+	if (g_menu.main.misc.debug.get()) {
 		Indicator_t ind{};
 		ind.color = g_menu.main.config.menu_color.get();
 		if (Resolver::RESOLVE_EXPLOIT)
@@ -592,7 +592,7 @@ void Visuals::StatusIndicators( ) {
 		indicators.push_back(ind);
 	}
 
-	if (g_menu.main.antiaim.antiaim_exploit.get() == 0) {
+	if (g_menu.main.antiaim.antiaim_exploit.get()) {
 		Indicator_t ind{};
 		ind.color = g_menu.main.config.menu_color.get();
 		ind.text = XOR("CRIMWALK");

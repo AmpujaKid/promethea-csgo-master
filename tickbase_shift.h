@@ -17,6 +17,7 @@ public:
 		bool m_should_be_ready;
 		bool m_can_shift_tickbase;
 		bool m_should_disable;
+		bool old_tickbase;
 	} m_shift_data;
 
 	// Used to fix prediction when shifting tickbase
