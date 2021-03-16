@@ -1072,15 +1072,16 @@ void Aimbot::apply( ) {
 		if ( g_menu.main.aimbot.norecoil.get( ) )
 			g_cl.m_cmd->m_view_angles -= g_cl.m_local->m_aimPunchAngle( ) * g_csgo.weapon_recoil_scale->GetFloat( );
 
-		// store fired shot.
-		g_shots.OnShotFire( m_target ? m_target : nullptr, m_target ? m_damage : -1.f, g_cl.m_weapon_info->m_bullets, m_target ? m_record : nullptr );
+		if (g_cl.IsFiring(game::TICKS_TO_TIME(g_cl.m_local->m_nTickBase()))) {
+			g_shots.OnShotFire(m_target ? m_target : nullptr, m_target ? m_damage : -1.f, g_cl.m_weapon_info->m_bullets, m_target ? m_record : nullptr);
 
-		// set that we fired.
-		g_cl.m_shot = true;
-	}
+			// set that we fired.
+			g_cl.m_shot = true;
+		}
 
-	if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
-		m_shoot_next_tick = true;
+		if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
+			m_shoot_next_tick = true;
+		}
 	}
 }
 

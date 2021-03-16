@@ -885,6 +885,13 @@ void HVH::SendPacket() {
 				mode = 0;
 			}
 
+			// commenting in gives the 'p2c effect' where it turns on fakelag between shots, though cba adjusting the current recharging..
+			else if (g_tickbase.m_shift_data.m_should_attempt_shift && ((!g_tickbase.m_shift_data.m_should_be_ready && g_tickbase.m_shift_data.m_prepare_recharge) || g_tickbase.m_shift_data.m_needs_recharge || g_tickbase.m_shift_data.m_should_be_ready) && !m_fake_duck) {
+				g_cl.m_should_lag = true;
+				limit = 2;
+				mode = 0;
+			}
+
 			 //before flick
 
 			else if (g_csgo.m_globals->m_curtime > g_cl.m_body_pred) {
@@ -893,6 +900,7 @@ void HVH::SendPacket() {
 				}
 				break;
 			}
+
 
 			//TO DO: Fix this (should choke right after flick)
 

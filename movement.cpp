@@ -619,6 +619,9 @@ void Movement::SlowWalk() {
 	if (!g_input.GetKeyState(g_menu.main.movement.slow_motion.get()))
 		return;
 
+	if (!callbacks::IsWalkmodeSlow)
+		return;
+
 	if (!g_cl.m_local->GetGroundEntity())
 		return;
 
@@ -681,6 +684,9 @@ void Movement::FakeWalk( ) {
 	int    ticks{ }, max{ 16 };
 
 	if( !g_input.GetKeyState( g_menu.main.movement.fakewalk.get( ) ) )
+		return;
+
+	if (!callbacks::IsWalkmodeFake)
 		return;
 
 	if( !g_cl.m_local->GetGroundEntity( ) )

@@ -41,11 +41,11 @@ void callbacks::ToggleDT() {
 }
 
 bool callbacks::IsWalkmodeFake() {
-	return g_menu.main.movement.walkmode.get() == 0;
+	return g_menu.main.movement.walkmode.get() == 1;
 }
 
 bool callbacks::IsWalkmodeSlow() {
-	return g_menu.main.movement.walkmode.get() == 1;
+	return g_menu.main.movement.walkmode.get() == 0;
 }
 
 void callbacks::ToggleKillfeed( ) {
