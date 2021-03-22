@@ -36,10 +36,12 @@
 - Added hidden cvars
 - Added remove blur
 
-=====3.7.21=====
+=====3.22.21=====
 [RAGEBOT]
 - Tickbase Manipulation
 - Resolver Improvements
+- Improved Aimbot
+- Added Override Resolver
 [ANTIAIM]
 - Global Antiaim Improvements
 [MISC]
