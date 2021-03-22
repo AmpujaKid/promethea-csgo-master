@@ -42,6 +42,7 @@ public:
 	float  m_dir_custom;
 	size_t m_base_angle;
 	float  m_auto_time;
+	int    m_lby_counter = 0;
 
 	bool   m_twist = false;
 	bool   m_step_switch;

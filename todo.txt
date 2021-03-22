@@ -44,6 +44,8 @@
 - Added Override Resolver
 [ANTIAIM]
 - Global Antiaim Improvements
+- New Antiaim Direction "Shake"
+- New Antiaim Lby "Shake"
 [MISC]
 - Added Slow Walk
 

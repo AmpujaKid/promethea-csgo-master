@@ -450,8 +450,17 @@ void HVH::DoRealAntiAim( ) {
 			if (g_menu.main.antiaim.body_fake_stand.get() == 3)
 				g_cl.m_cmd->m_view_angles.y -= 150.f;
 			// suppress 979
-			else if (g_menu.main.antiaim.body_fake_stand.get() == 4)
+			else if (g_menu.main.antiaim.body_fake_stand.get() == 5)
 				g_csgo.m_net->m_out_seq -= 2;
+
+			else if (g_menu.main.antiaim.body_fake_stand.get() == 6) {
+				if (m_lby_counter == 0) {
+					g_cl.m_cmd->m_view_angles.y -= 60;
+				}
+				else {
+					m_lby_counter = 0;
+				}
+			}
 		}
 
 		else if (stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= (g_cl.m_body_pred - g_cl.m_anim_frame + g_csgo.m_globals->m_tick_count) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && g_menu.main.antiaim.lbyexploit.get()) {
@@ -517,6 +526,25 @@ void HVH::DoRealAntiAim( ) {
 						g_cl.m_cmd->m_view_angles.y += math::NormalizeYaw(g_menu.main.antiaim.distortion_swap_amount.get());
 
 					m_flicks++;
+
+					// lby 2.0
+				case 7:
+					if (m_lby_counter == 0) {
+						g_cl.m_cmd->m_view_angles.y += 15;
+						m_lby_counter += 1;
+					}
+					else if (m_lby_counter == 1) {
+						g_cl.m_cmd->m_view_angles.y -= 35;
+						m_lby_counter += 1;
+					}
+					else if (m_lby_counter == 2) {
+						g_cl.m_cmd->m_view_angles.y = 180;
+						m_lby_counter = 0;
+					}
+					else {
+						m_lby_counter = 0;
+					}
+					break;
 				}
 			}
 
@@ -586,10 +614,10 @@ void HVH::DoRealAntiAim( ) {
 				}
 				// apply angle.
 				if (m_pick_next_random > 1.f) {
-					g_cl.m_cmd->m_view_angles.y += m_random_angle;
+					g_cl.m_cmd->m_view_angles.y = m_random_angle;
 				}
 				else {
-					g_cl.m_cmd->m_view_angles.y += m_random_alt_angle;
+					g_cl.m_cmd->m_view_angles.y = m_random_alt_angle;
 				}
 				break;
 
@@ -617,6 +645,23 @@ void HVH::DoRealAntiAim( ) {
 				}
 
 				g_cl.m_cmd->m_view_angles.y += direction;
+
+				break;
+			}
+
+				  // lby 2.0
+			case 7: {
+				if (m_lby_counter == 0) {
+					g_cl.m_cmd->m_view_angles.y -= 45;
+				}
+				else if (m_lby_counter == 1) {
+					g_cl.m_cmd->m_view_angles.y += 15;
+				}
+				else if (m_lby_counter == 2) {
+					g_cl.m_cmd->m_view_angles.y = 180;
+				}
+
+
 
 				break;
 			}
@@ -677,6 +722,7 @@ void HVH::DoFakeAntiAim( ) {
 		// jitter rotate
 	case 5:
 		g_cl.m_cmd->m_view_angles.y = m_direction + 90.f + std::fmod(g_csgo.m_globals->m_curtime * 360.f,300.f);
+		pFake = m_direction + 90.f + g_csgo.RandomFloat(-10.f, 10.f);
 		pFake = g_cl.m_cmd->m_view_angles.y += g_csgo.RandomFloat(-45.f, 45.f);
 		break;
 

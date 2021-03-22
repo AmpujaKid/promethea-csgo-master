@@ -260,7 +260,7 @@ public:
 		pitch_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		RegisterElement(&pitch_stand);
 
-		yaw_stand.setup(XOR("yaw"), XOR("yaw_stnd"), { XOR("off"), XOR("direction"), XOR("jitter"), XOR("rotate"), XOR("delta offset"), XOR("crooked"), XOR("distortion") });
+		yaw_stand.setup(XOR("yaw"), XOR("yaw_stnd"), { XOR("off"), XOR("direction"), XOR("jitter"), XOR("rotate"), XOR("delta offset"), XOR("crooked"), XOR("distortion"), XOR("shake") });
 		yaw_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		RegisterElement(&yaw_stand);
 
@@ -326,7 +326,7 @@ public:
 		dir_lock.AddShowCallback(callbacks::HasStandYaw);
 		RegisterElement(&dir_lock);
 
-		body_fake_stand.setup(XOR("fake body"), XOR("body_fake_stnd"), { XOR("off"), XOR("custom"), XOR("rotate"), XOR("z"), XOR("twist"), XOR("anim breaker") });
+		body_fake_stand.setup(XOR("fake body"), XOR("body_fake_stnd"), { XOR("off"), XOR("custom"), XOR("rotate"), XOR("z"), XOR("twist"), XOR("anim breaker"), XOR("shake") });
 		body_fake_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		body_fake_stand.AddShowCallback(callbacks::HasStandYaw);
 		RegisterElement(&body_fake_stand);
