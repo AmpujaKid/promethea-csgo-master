@@ -655,15 +655,8 @@ void HVH::DoFakeAntiAim( ) {
 	case 2: {
 		// get fake jitter range from menu.
 		float range = g_menu.main.antiaim.fake_jitter_range.get( ) / 2.f;
-
-		switch (g_csgo.m_globals->m_tick_count % 2) {
-		case 1:
-			g_cl.m_cmd->m_view_angles.y = m_direction - range;
-		case 2:
-			g_cl.m_cmd->m_view_angles.y = m_direction + range;
-		default:
-			break;
-		}
+		g_cl.m_cmd->m_view_angles.y = m_direction + range;
+		range *= -1;
 	}
 
 		  // float aa
@@ -698,7 +691,8 @@ void HVH::DoFakeAntiAim( ) {
 		swap_range = g_menu.main.antiaim.fake_swap_range.get() / 2.f;
 
 		// apply jitter.
-		g_cl.m_cmd->m_view_angles.y = g_csgo.RandomFloat(-swap_range, swap_range);
+		g_cl.m_cmd->m_view_angles.y = m_direction + swap_range;
+		swap_range = swap_range * -1;
 		break;
 
 		break;
@@ -886,7 +880,7 @@ void HVH::SendPacket() {
 			}
 
 			// commenting in gives the 'p2c effect' where it turns on fakelag between shots, though cba adjusting the current recharging..
-			else if (g_tickbase.m_shift_data.m_should_attempt_shift && ((!g_tickbase.m_shift_data.m_should_be_ready && g_tickbase.m_shift_data.m_prepare_recharge) || g_tickbase.m_shift_data.m_needs_recharge || g_tickbase.m_shift_data.m_should_be_ready) && !m_fake_duck) {
+			else if (g_tickbase.m_shift_data.m_should_attempt_shift && ((!g_tickbase.m_shift_data.m_should_be_ready && g_tickbase.m_shift_data.m_prepare_recharge) || g_tickbase.m_shift_data.m_needs_recharge || g_tickbase.m_shift_data.m_should_be_ready)) {
 				g_cl.m_should_lag = true;
 				limit = 2;
 				mode = 0;
@@ -989,3 +983,25 @@ void HVH::SendPacket() {
 		g_cl.m_weapon_fire = false;
 	}
 }
+/*
+void HVH::FakeDuck()
+{
+	if (!g_csgo.m_cl || !g_cl.m_cmd)
+		return;
+
+	// ensure infinite duck.
+	g_cl.m_cmd->m_buttons |= IN_BULLRUSH;
+
+	if (!g_cl.m_processing || !m_fake_duck)
+		return;
+
+	// unduck if we are choking 7 or less ticks.
+	if (g_csgo.m_cl->m_choked_commands <= 7) {
+		g_cl.m_cmd->m_buttons &= ~IN_DUCK;
+	}
+	// duck if we are choking more than 7 ticks.
+	else {
+		g_cl.m_cmd->m_buttons |= IN_DUCK;
+	}
+}
+*/

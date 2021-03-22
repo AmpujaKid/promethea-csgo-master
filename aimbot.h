@@ -16,10 +16,11 @@ struct AnimationBackup_t {
 };
 
 struct HitscanData_t {
+	int    m_hitbox;
 	float  m_damage;
 	vec3_t m_pos;
 
-	__forceinline HitscanData_t( ) : m_damage{ 0.f }, m_pos{} {}
+	__forceinline HitscanData_t() : m_hitbox{ 0 }, m_damage{ 0.f }, m_pos{} {}
 };
 
 struct HitscanBox_t {
@@ -84,7 +85,7 @@ public:
 	void OnRoundStart( Player* player );
 	void SetupHitboxes( LagRecord* record, bool history );
 	bool SetupHitboxPoints( LagRecord* record, BoneArray* bones, int index, std::vector< vec3_t >& points );
-	bool GetBestAimPosition( vec3_t& aim, float& damage, LagRecord* record );
+	bool GetBestAimPosition(vec3_t& aim, float& damage, LagRecord* record, int& hitbox);
 
 public:
 	void reset( ) {

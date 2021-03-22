@@ -48,6 +48,7 @@ public:
 
 public:
 	std::array< vec3_t, 64 > m_impacts;
+	int value = 0;
 };
 
 extern Resolver g_resolver;

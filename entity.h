@@ -836,23 +836,25 @@ public:
 	}
 
 	__forceinline vec3_t GetShootPosition() {
-		/*
-		float *__thiscall sub_103A4A60(_DWORD *this, float *a2)
-		{
-			int v2; // edi
-			_DWORD *v3; // ecx
+		if (this->index() == g_csgo.m_engine->GetLocalPlayer()) {
+			vec3_t origin = m_vecOrigin();
 
-			v2 = this;
-			(*(*this + 652))(a2);
-			if ( *(v2 + 0x39E1) )
-			{
-				v3 = *(v2 + 0x3874);
-				if ( v3 )
-					sub_103B4130(v3, a2);
-				}
-				return a2;
-			}
-		*/
+			vec3_t vDuckHullMin = g_csgo.m_game_movement->GetPlayerMins(true);
+			vec3_t vStandHullMin = g_csgo.m_game_movement->GetPlayerMins(false);
+
+			float fMore = (vDuckHullMin.z - vStandHullMin.z);
+
+			vec3_t vecDuckViewOffset = g_csgo.m_game_movement->GetPlayerViewOffset(true);
+			vec3_t vecStandViewOffset = g_csgo.m_game_movement->GetPlayerViewOffset(false);
+			float duckFraction = m_flDuckAmount();
+
+			float tempz = ((vecDuckViewOffset.z - fMore) * duckFraction) +
+				(vecStandViewOffset.z * (1 - duckFraction));
+
+			origin.z += tempz;
+
+			return origin;
+		}
 
 		vec3_t pos;
 

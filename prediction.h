@@ -99,6 +99,9 @@ public:
 		PROCESSMOVEMENT             = 1,
 		STARTTRACKPREDICTIONERRORS  = 3,
 		FINISHTRACKPREDICTIONERRORS = 4,
+		GETPLAYERMINS               = 6,
+		GETPLAYERMAXS               = 7,
+		GETPLAYERVIEWOFFSET         = 8,
 		ONLAND                      = 32
 	};
 
@@ -112,5 +115,17 @@ public:
 
 	__forceinline void FinishTrackPredictionErrors( Entity* player ) {
 		return util::get_method< void( __thiscall* )( decltype( this ), Entity* ) >( this, FINISHTRACKPREDICTIONERRORS )( this, player );
+	}
+
+	__forceinline vec3_t const& GetPlayerMins(bool ducked) {
+		return util::get_method< vec3_t const& (__thiscall*)(decltype(this), bool) >(this, GETPLAYERMINS)(this, ducked);
+	}
+
+	__forceinline vec3_t const& GetPlayerMaxs(bool ducked) {
+		return util::get_method< vec3_t const& (__thiscall*)(decltype(this), bool) >(this, GETPLAYERMAXS)(this, ducked);
+	}
+
+	__forceinline vec3_t const& GetPlayerViewOffset(bool ducked) {
+		return util::get_method< vec3_t const& (__thiscall*)(decltype(this), bool) >(this, GETPLAYERVIEWOFFSET)(this, ducked);
 	}
 };

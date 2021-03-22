@@ -54,6 +54,7 @@ public:
 	MultiDropdown baim2;
 	Slider        baim_hp;
 	Keybind       baim_key;
+	Keybind       override_key;
 
 	// todo: add callbacks to all the aimbot tab elements, and rearrange all the elements. This is just the Aimbot tab so far, I'll do the rest.
 
@@ -164,11 +165,14 @@ public:
 		RegisterElement(&baim_key, 1);
 
 		rapidfire.setup(XOR("doubletap"), XOR("rapidfire"));
-		RegisterElement(&rapidfire, 1);
+		//RegisterElement(&rapidfire, 1);
 
 		doubletap.setup(XOR("teleport on key"), XOR("doubletap"));
 		doubletap.SetToggleCallback(callbacks::ToggleDT);
-		RegisterElement(&doubletap, 1);
+		//RegisterElement(&doubletap, 1);
+
+		override_key.setup(XOR("override"), XOR("override_key"));
+		RegisterElement(&override_key, 1);
 	}
 };
 
@@ -236,6 +240,7 @@ public:
 	Checkbox	  choke_on_flick;
 	Keybind       antiaim_exploit;
 	Checkbox      lbyexploit;
+	Keybind       fakeduck;
 
 public:
 	void init() {
@@ -486,10 +491,13 @@ public:
 		RegisterElement(&choke_on_flick, 1);
 
 		antiaim_exploit.setup(XOR("antiaim exploit"), XOR("antiaim_exploit"));
-		RegisterElement(&antiaim_exploit, 1);
+		//RegisterElement(&antiaim_exploit, 1);
 
-		lbyexploit.setup(XOR("lby 2.0"), XOR("lbyexploit"));
-		RegisterElement(&lbyexploit, 1);
+		lbyexploit.setup(XOR("tickbase lby"), XOR("lbyexploit"));
+		//RegisterElement(&lbyexploit, 1);
+
+		//fakeduck.setup(XOR("fakeduck"), XOR("fakeduck"));
+		//RegisterElement(&fakeduck, 1);
 	}
 };
 

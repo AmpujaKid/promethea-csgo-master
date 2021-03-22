@@ -133,6 +133,61 @@ void Resolver::MatchShot( AimPlayer* data, LagRecord* record ) {
 	}
 }
 
+void Resolver::Override(LagRecord* record)
+{
+	int     closestfov{ 180 };
+	Player* nearest_player = nullptr;
+
+	for (int i = 1; i <= g_csgo.m_globals->m_max_clients; i++)
+	{
+		Player* player = g_csgo.m_entlist->GetClientEntity< Player* >(i);
+
+		if (!player)
+			continue;
+
+		float fov = math::GetFOV(g_cl.m_view_angles, g_cl.m_shoot_pos, player->GetShootPosition());
+		if (fov < closestfov) {
+			nearest_player = player;
+			closestfov = fov;
+		}
+	}
+
+	if (record->m_player != nearest_player)
+		return;
+
+	// get away angle.
+	float away = GetAwayAngle(record);
+
+	// find distance between my cursor -> enemy.
+	float delta = g_cl.m_view_angles.y - away;
+	math::NormalizeAngle(delta);
+
+	// apply angle.
+	value = delta;
+
+	if (delta >= 170 || delta <= -170)
+	{
+		// back
+		record->m_eye_angles.y = away + 180;
+
+		//record->m_resolver_mode = "OVERRIDE_BACK";
+	}
+	else if (delta < 170 && delta > 0)
+	{
+		// right
+		record->m_eye_angles.y = away + 90.f;
+
+		//record->m_resolver_mode = "OVERRIDE_RIGHT";
+	}
+	else if (delta > -170 && delta < 0)
+	{
+		// left
+		record->m_eye_angles.y = away - 90.f;
+
+		//record->m_resolver_mode = "OVERRIDE_LEFT";
+	}
+}
+
 void Resolver::AntiFreestand(LagRecord* record) {
 	// constants
 	constexpr float STEP{ 4.f };
@@ -272,9 +327,6 @@ void Resolver::ResolveAngles( Player* player, LagRecord* record ) {
 	if (record->m_mode == Modes::RESOLVE_WALK)
 		ResolveWalk(data, record);
 
-	else if (record->m_mode == Modes::RESOLVE_EXPLOIT)
-		ExploitFix(data, record);
-
 	else if( record->m_mode == Modes::RESOLVE_STAND )
 		ResolveStand( data, record );
 
@@ -373,17 +425,22 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 		record->m_mode = Modes::RESOLVE_LBY_UPDATE;
 	}
+	else if (g_input.GetKeyState(g_menu.main.aimbot.override_key.get()))
+	{
+		Override(record);
+	}
 	else if (data->m_moved && data->m_moving_index < 1) // last moving if we havn't missed it
 	{
 		record->m_eye_angles.y = move->m_body;
 
 		record->m_mode = Modes::RESOLVE_LAST_LBY;
 	}
-	else if (data->m_moving_index >= 1 && data->m_freestanding_index < 3) // freestanding if we have gone through that shit or missed last moving
+	else if (!data->m_moved || data->m_moving_index >= 1 && data->m_freestanding_index < 3) // freestanding if we have gone through that shit or missed last moving
 	{
 		AntiFreestand(record);
 
 		record->m_mode = Modes::RESOLVE_FREESTAND;
+		//record->m_resolver_mode = "FREESTANDING";
 	}
 	else // bruteforce as a last fallback
 	{

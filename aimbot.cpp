@@ -506,10 +506,12 @@ void Aimbot::think( ) {
 }
 
 void Aimbot::find( ) {
-	struct BestTarget_t { Player *player; vec3_t pos; float damage; LagRecord *record; };
+	struct BestTarget_t { Player* player; vec3_t pos; float damage; LagRecord* record; int hitbox; };
 
 	vec3_t       tmp_pos;
 	float        tmp_damage;
+	float		 real_damage{};
+	float		 backtrack_damage{};
 	BestTarget_t best;
 	best.player = nullptr;
 	best.damage = -1.f;
@@ -538,7 +540,7 @@ void Aimbot::find( ) {
 				continue;
 
 			// rip something went wrong..
-			if ( t->GetBestAimPosition( tmp_pos, tmp_damage, front ) && SelectTarget( front, tmp_pos, tmp_damage ) ) {
+			if ( t->GetBestAimPosition( tmp_pos, tmp_damage, front, best.hitbox ) && SelectTarget( front, tmp_pos, tmp_damage ) ) {
 
 				// if we made it so far, set shit.
 				best.player = t->m_player;
@@ -551,38 +553,54 @@ void Aimbot::find( ) {
 		// player did not break lagcomp.
 		// history aim is possible at this point.
 		else {
-			LagRecord *ideal = g_resolver.FindIdealRecord( t );
-			if ( !ideal )
+			LagRecord* tmp_record = nullptr;
+
+			LagRecord* first = g_resolver.FindIdealRecord(t);
+			if (!first)
 				continue;
 
-			t->SetupHitboxes( ideal, false );
-			if ( t->m_hitboxes.empty( ) )
+			t->SetupHitboxes(first, false);
+			if (t->m_hitboxes.empty())
 				continue;
 
-			// try to select best record as target.
-			if ( t->GetBestAimPosition( tmp_pos, tmp_damage, ideal ) && SelectTarget( ideal, tmp_pos, tmp_damage ) ) {
-				// if we made it so far, set shit.
-				best.player = t->m_player;
-				best.pos = tmp_pos;
-				best.damage = tmp_damage;
-				best.record = ideal;
-			}
+			vec3_t real_pos{};
+			int real_hitbox{};
 
-			LagRecord *last = g_resolver.FindLastRecord( t );
-			if ( !last || last == ideal )
+			if (!t->GetBestAimPosition(real_pos, real_damage, first, real_hitbox) && !SelectTarget(first, real_pos, real_damage))
 				continue;
 
-			t->SetupHitboxes( last, true );
-			if ( t->m_hitboxes.empty( ) )
+			LagRecord* last = g_resolver.FindLastRecord(t);
+			if (!last || last == first)
 				continue;
 
-			// rip something went wrong..
-			if ( t->GetBestAimPosition( tmp_pos, tmp_damage, last ) && SelectTarget( last, tmp_pos, tmp_damage ) ) {
-				// if we made it so far, set shit.
-				best.player = t->m_player;
-				best.pos = tmp_pos;
-				best.damage = tmp_damage;
-				best.record = last;
+			t->SetupHitboxes(last, true);
+			if (t->m_hitboxes.empty())
+				continue;
+
+			vec3_t last_pos{};
+			int last_hitbox{};
+
+			if (!t->GetBestAimPosition(last_pos, tmp_damage, last, last_hitbox) && !SelectTarget(last, last_pos, backtrack_damage))
+				continue;
+
+			if (backtrack_damage >= real_damage)
+				tmp_record = last;
+			else
+				tmp_record = first;
+
+			if (tmp_record != nullptr)
+			{
+				t->SetupHitboxes(tmp_record, false);
+				if (t->m_hitboxes.empty())
+					continue;
+
+				if (t->GetBestAimPosition(tmp_pos, tmp_damage, tmp_record, best.hitbox) && SelectTarget(tmp_record, tmp_pos, tmp_damage)) {
+					// if we made it so far, set shit.
+					best.player = t->m_player;
+					best.pos = tmp_pos;
+					best.damage = tmp_damage;
+					best.record = tmp_record;
+				}
 			}
 		}
 	}
@@ -836,45 +854,46 @@ bool AimPlayer::SetupHitboxPoints(LagRecord* record, BoneArray* bones, int index
 	return true;
 }
 
-bool AimPlayer::GetBestAimPosition( vec3_t &aim, float &damage, LagRecord *record ) {
+bool AimPlayer::GetBestAimPosition(vec3_t& aim, float& damage, LagRecord* record, int& hitbox) {
 	bool                  done, pen;
 	float                 dmg, pendmg;
 	HitscanData_t         scan;
 	std::vector< vec3_t > points;
 
 	// get player hp.
-	int hp = std::min( 100, m_player->m_iHealth( ) );
+	int hp = std::min(100, m_player->m_iHealth());
 
-	if ( g_cl.m_weapon_id == ZEUS ) {
-		dmg = pendmg = hp;
-		pen = true;
+	if (g_cl.m_weapon_id == ZEUS) {
+		dmg = hp;
+		pen = false;
 	}
 
-	else {
-		dmg = g_menu.main.aimbot.minimal_damage.get( );
-		if ( g_menu.main.aimbot.minimal_damage_hp.get( ) )
-			dmg = std::ceil( ( dmg / 100.f ) * hp );
+	else
+	{
+		dmg = g_menu.main.aimbot.minimal_damage.get();
+		if (dmg > 100)
+			dmg = hp + (dmg - 100);
 
-		pendmg = g_menu.main.aimbot.penetrate_minimal_damage.get( );
-		if ( g_menu.main.aimbot.penetrate_minimal_damage_hp.get( ) )
-			pendmg = std::ceil( ( pendmg / 100.f ) * hp );
+		pendmg = g_menu.main.aimbot.penetrate_minimal_damage.get();
+		if (pendmg > 100)
+			pendmg = hp + (pendmg - 100);
 
-		pen = g_menu.main.aimbot.penetrate.get( );
+		pen = g_menu.main.aimbot.penetrate.get();
 	}
 
 	// write all data of this record l0l.
-	record->cache( );
+	record->cache();
 
 	// iterate hitboxes.
-	for ( const auto &it : m_hitboxes ) {
+	for (const auto& it : m_hitboxes) {
 		done = false;
 
 		// setup points on hitbox.
-		if ( !SetupHitboxPoints( record, record->m_bones, it.m_index, points ) )
+		if (!SetupHitboxPoints(record, record->m_bones, it.m_index, points))
 			continue;
 
 		// iterate points on hitbox.
-		for ( const auto &point : points ) {
+		for (const auto& point : points) {
 			penetration::PenetrationInput_t in;
 
 			in.m_damage = dmg;
@@ -885,49 +904,51 @@ bool AimPlayer::GetBestAimPosition( vec3_t &aim, float &damage, LagRecord *recor
 			in.m_pos = point;
 
 			// ignore mindmg.
-			if ( it.m_mode == HitscanMode::LETHAL || it.m_mode == HitscanMode::LETHAL2 )
+			if (it.m_mode == HitscanMode::LETHAL || it.m_mode == HitscanMode::LETHAL2)
 				in.m_damage = in.m_damage_pen = 1.f;
 
 			penetration::PenetrationOutput_t out;
 
 			// we can hit p!
-			if ( penetration::run( &in, &out ) ) {
+			if (penetration::run(&in, &out)) {
 
 				// nope we did not hit head..
-				if ( it.m_index == HITBOX_HEAD && out.m_hitgroup != HITGROUP_HEAD )
+				if (it.m_index == HITBOX_HEAD && out.m_hitgroup != HITGROUP_HEAD)
 					continue;
 
 				// prefered hitbox, just stop now.
-				if ( it.m_mode == HitscanMode::PREFER )
+				if (it.m_mode == HitscanMode::PREFER)
 					done = true;
 
 				// this hitbox requires lethality to get selected, if that is the case.
 				// we are done, stop now.
-				else if ( it.m_mode == HitscanMode::LETHAL && out.m_damage >= m_player->m_iHealth( ) )
+				else if (it.m_mode == HitscanMode::LETHAL && out.m_damage >= m_player->m_iHealth())
 					done = true;
 
 				// 2 shots will be sufficient to kill.
-				else if ( it.m_mode == HitscanMode::LETHAL2 && ( out.m_damage * 2.f ) >= m_player->m_iHealth( ) )
+				else if (it.m_mode == HitscanMode::LETHAL2 && (out.m_damage * 2.f) >= m_player->m_iHealth())
 					done = true;
 
 				// this hitbox has normal selection, it needs to have more damage.
-				else if ( it.m_mode == HitscanMode::NORMAL ) {
+				else if (it.m_mode == HitscanMode::NORMAL) {
 					// we did more damage.
-					if ( out.m_damage > scan.m_damage ) {
+					if (out.m_damage > scan.m_damage) {
 						// save new best data.
+						scan.m_hitbox = it.m_index;
 						scan.m_damage = out.m_damage;
 						scan.m_pos = point;
 
 						// if the first point is lethal
 						// screw the other ones.
-						if ( point == points.front( ) && out.m_damage >= m_player->m_iHealth( ) )
+						if (point == points.front() && out.m_damage >= m_player->m_iHealth())
 							break;
 					}
 				}
 
 				// we found a preferred / lethal hitbox.
-				if ( done ) {
+				if (done) {
 					// save new best data.
+					scan.m_hitbox = it.m_index;
 					scan.m_damage = out.m_damage;
 					scan.m_pos = point;
 					break;
@@ -936,15 +957,16 @@ bool AimPlayer::GetBestAimPosition( vec3_t &aim, float &damage, LagRecord *recor
 		}
 
 		// ghetto break out of outer loop.
-		if ( done )
+		if (done)
 			break;
 	}
 
 	// we found something that we can damage.
 	// set out vars.
-	if ( scan.m_damage > 0.f ) {
+	if (scan.m_damage > 0.f) {
 		aim = scan.m_pos;
 		damage = scan.m_damage;
+		hitbox = scan.m_hitbox;
 		return true;
 	}
 

@@ -81,6 +81,7 @@ public:
 	void DoFakeAntiAim( );
 	void AntiAim( );
 	void SendPacket( );
+	void FakeDuck();
 };
 
 extern HVH g_hvh;

@@ -38,15 +38,13 @@
 
 =====3.7.21=====
 [RAGEBOT]
-- Doubletap (not working yet)
-- Teleport on Key
+- Tickbase Manipulation
+- Resolver Improvements
 [ANTIAIM]
-- LBY 2.0 (not consistent)
 - Global Antiaim Improvements
-[VISUALS]
-- New watermark
-- Added hidden cvars
-- Added remove blur
+[MISC]
+- Added Slow Walk
+
 
 
 

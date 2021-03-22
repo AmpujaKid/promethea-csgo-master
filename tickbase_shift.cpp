@@ -27,10 +27,11 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 
 	m_nFrom = -1;
 
-	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
-	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 	if (g_menu.main.movement.slow_motion.get())
 		g_tickbase.m_shift_data.m_ticks_to_shift = 2;
+
+	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
+	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 
 	int* m_pnNewCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x2C );
 	int* m_pnBackupCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x30 );
@@ -137,16 +138,30 @@ void TickbaseSystem::PostMovement( ) {
 		g_tickbase.m_shift_data.m_should_be_ready = false;
 	}
 
+	// we want to recharge after stopping fake duck.
+	if (g_hvh.m_fake_duck) {
+		g_tickbase.m_shift_data.m_prepare_recharge = true;
+
+		g_tickbase.m_shift_data.m_next_shift_amount = 0;
+		g_tickbase.m_shift_data.m_should_be_ready = false;
+
+		g_tickbase.m_shift_data.m_should_disable = true;
+
+		return;
+	}
+
 	// Are we even supposed to shift tickbase?
 	if( g_tickbase.m_shift_data.m_next_shift_amount > 0 ) {
 		// Prevent m_iTicksAllowedForProcessing from being incremented.
-		//g_cl.m_cmd->m_tick = INT_MAX;
+		g_cl.m_cmd->m_tick = INT_MAX;
 		// Determine if we're able to double-tap  
 		// note - slow walk shift is such a weird exploit to code.
 		if (g_menu.main.antiaim.lbyexploit.get() ? (!g_menu.main.movement.slow_motion.get() && bCanShootIn12Ticks) : bCanShootIn12Ticks) {
 			if (g_tickbase.m_shift_data.m_prepare_recharge && !bIsShooting) {
 				g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
 				g_tickbase.m_shift_data.m_prepare_recharge = false;
+				if (g_menu.main.misc.debug.get())
+					g_notify.add(tfm::format(XOR("Attempting doubletap")));
 			}
 			else {
 				if (bIsShooting) {
@@ -186,7 +201,9 @@ void TickbaseSystem::PostMovement( ) {
 			}
 		}
 		else if (g_menu.main.movement.slow_motion.get()) {
-			g_cl.m_goal_shift = 2;
+			g_cl.m_goal_shift = 8;
+			if (g_menu.main.misc.debug.get())
+				g_notify.add(tfm::format(XOR("Attempting to shift ticks")));
 			if (g_tickbase.m_shift_data.old_tickbase != g_tickbase.m_shift_data.m_should_attempt_shift) {
 				if(g_menu.main.misc.debug.get())
 					g_notify.add( tfm::format( XOR( "Tried breaking lby using tickbase" )) );

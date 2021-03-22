@@ -278,8 +278,10 @@ void Client::DoMove( ) {
 	// run movement code before input prediction.
 	g_movement.JumpRelated( );
 	g_movement.Strafe( );
+	//g_movement.QuickStop( );
 	g_movement.FakeWalk( );
 	g_movement.AutoPeek( );
+	//g_hvh.FakeDuck( );
 
 	// predict input.
 	g_inputpred.run( );
