@@ -51,6 +51,39 @@ vec3_t math::CalcAngle(const vec3_t& vecSource, const vec3_t& vecDestination) {
 	return vAngle;
 }
 
+#define M_RADPI 57.295779513082f
+void math::CalcAngle3(const vec3_t src, const vec3_t dst, ang_t& angles) {
+    auto delta = src - dst;
+    vec3_t vec_zero = vec3_t(0.0f, 0.0f, 0.0f);
+    ang_t ang_zero = ang_t(0.0f, 0.0f, 0.0f);
+
+
+    if (delta == vec_zero)
+        angles = ang_zero;
+
+    const auto len = delta.length();
+
+    if (delta.z == 0.0f && len == 0.0f)
+        angles = ang_zero;
+
+    if (delta.y == 0.0f && delta.x == 0.0f)
+        angles = ang_zero;
+
+
+#ifdef QUICK_MATH
+    angles.x = (fast_asin(delta.z / delta.Length()) * M_RADPI);
+    angles.y = (fast_atan(delta.y / delta.x) * M_RADPI);
+#else
+    angles.x = (asinf(delta.z / delta.length()) * M_RADPI);
+    angles.y = (atanf(delta.y / delta.x) * M_RADPI);
+#endif
+
+    angles.z = 0.0f;
+    if (delta.x >= 0.0f) { angles.y += 180.0f; }
+
+    angles.clamp();
+}
+
 float math::ApproachAngle( float target, float value, float speed ) {
     float delta;
 

@@ -62,6 +62,21 @@ namespace math {
     // normalizes an angle.
     void NormalizeAngle( float &angle );
 
+	static float normalize_float(float angle)
+	{
+		auto revolutions = angle / 360.f;
+		if (angle > 180.f || angle < -180.f)
+		{
+			revolutions = round(abs(revolutions));
+			if (angle < 0.f)
+				angle = (angle + 360.f * revolutions);
+			else
+				angle = (angle - 360.f * revolutions);
+			return angle;
+		}
+		return angle;
+	}
+
 	// normalizes an yaw.
 	float NormalizeYaw(float angle);
 
@@ -98,7 +113,8 @@ namespace math {
 	}
 
 	vec3_t CalcAngle(const vec3_t& vecSource, const vec3_t& vecDestination);
-    float ApproachAngle( float target, float value, float speed );
+	void CalcAngle3(const vec3_t src, const vec3_t dst, ang_t& angles);
+	float ApproachAngle( float target, float value, float speed );
     void  VectorAngles( const vec3_t& forward, ang_t& angles, vec3_t* up = nullptr );
     void  AngleVectors( const ang_t& angles, vec3_t* forward, vec3_t* right = nullptr, vec3_t* up = nullptr );
     float GetFOV( const ang_t &view_angles, const vec3_t &start, const vec3_t &end );

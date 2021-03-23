@@ -531,14 +531,20 @@ void HVH::DoRealAntiAim( ) {
 				case 7:
 					if (m_lby_counter == 0) {
 						g_cl.m_cmd->m_view_angles.y += 15;
+						if (g_menu.main.misc.debug.get())
+							g_notify.add("lby += 15");
 						m_lby_counter += 1;
 					}
 					else if (m_lby_counter == 1) {
 						g_cl.m_cmd->m_view_angles.y -= 35;
+						if (g_menu.main.misc.debug.get())
+							g_notify.add("lby -= 15");
 						m_lby_counter += 1;
 					}
 					else if (m_lby_counter == 2) {
 						g_cl.m_cmd->m_view_angles.y = 180;
+						if (g_menu.main.misc.debug.get())
+							g_notify.add("lby = 180");
 						m_lby_counter = 0;
 					}
 					else {

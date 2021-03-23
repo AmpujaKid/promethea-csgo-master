@@ -63,6 +63,7 @@ public:
 	bool	         m_old_shot;
 	float            m_abs_yaw;
 	float            m_poses[ 24 ];
+	float			 m_left_thickness[64], m_right_thickness[64], m_at_target_angle[64];
 
 	// active weapon variables.
 	Weapon*     m_weapon;

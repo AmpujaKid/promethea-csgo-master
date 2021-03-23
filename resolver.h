@@ -12,6 +12,7 @@ public:
 		RESOLVE_STAND1,
 		RESOLVE_STAND2,
 		RESOLVE_AIR,
+		RESOLVE_LASTMOVE,
 		RESOLVE_BODY,
 		RESOLVE_STOPPED_MOVING,
 		RESOLVE_LBY_UPDATE,
@@ -26,17 +27,19 @@ public:
 	LagRecord* FindLastRecord(AimPlayer* data);
 
 	void OnBodyUpdate(Player* player, float value);
+	float GetDirectionAngle(int index, Player* player);
 	float GetAwayAngle(LagRecord* record);
 
 	void MatchShot(AimPlayer* data, LagRecord* record);
 	void Override(LagRecord* record);
-	void SetMode(LagRecord* record);
+	void SetMode(AimPlayer* data, LagRecord* record);
 
 	void ResolveAngles(Player* player, LagRecord* record);
 	void ResolveWalk(AimPlayer* data, LagRecord* record);
 	void ResetNiggaShit(AimPlayer* data, bool printDebug);
 	float GetLBYRotatedYaw(float lby, float yaw);
 	bool IsYawSideways(Player* entity, float yaw);
+	void LastMoveLby(LagRecord* record, AimPlayer* data, Player* player);
 	void ResolveStand(AimPlayer* data, LagRecord* record);
 	void ExploitFix(AimPlayer* data, LagRecord* record);
 	void StandNS(AimPlayer* data, LagRecord* record);
