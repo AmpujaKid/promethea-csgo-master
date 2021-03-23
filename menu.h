@@ -725,35 +725,42 @@ public:
 
 class VisualsTab : public Tab {
 public:
+	// this is retarded
+	// subtabs: player, world
+
+	// world
+	Checkbox      disableteam;
 	Checkbox      items;
 	Checkbox      ammo;
 	Colorpicker   item_color;
 	Checkbox      proj;
 	Colorpicker   proj_color;
+	Dropdown	  world;
+	MultiDropdown planted_c4;
+	Checkbox      transparent_props;
+	Checkbox      spectators;
+	Checkbox      impact_beams;
+	Colorpicker   impact_beams_color;
+	Slider        impact_beams_time;
+
+	// player
 	Checkbox	  on_shot_hitbox;
 	Colorpicker   on_shot_hitbox_color;
 	Slider		  on_shot_hitbox_time;
-	MultiDropdown planted_c4;
-	Checkbox      disableteam;
-	Dropdown	  world;
-	Checkbox      transparent_props;
 	Checkbox      enemy_radar;
 	Dropdown	  pen_crosshair;
-
-	// col2.
 	Checkbox      novisrecoil;
 	Checkbox      nosmoke;
 	Checkbox      nofog;
 	Checkbox      noflash;
 	Checkbox      noscope;
 	Checkbox      noblur;
-	Checkbox      quickmenu;
 	Checkbox      fov;
 	Slider        fov_amt;
 	Checkbox      fov_scoped;
 	Checkbox      viewmodel_fov;
 	Slider        viewmodel_fov_amt;
-	Checkbox      spectators;
+	Checkbox      quickmenu;
 	Checkbox      force_xhair;
 	Checkbox      spread_xhair;
 	Colorpicker   spread_xhair_col;
@@ -761,9 +768,6 @@ public:
 	MultiDropdown indicators;
 	Checkbox      tracers;
 	Colorpicker	  tracers_color;
-	Checkbox      impact_beams;
-	Colorpicker   impact_beams_color;
-	Slider        impact_beams_time;
 	Keybind       thirdperson;
 	Slider		  thirdperson_distance;
 

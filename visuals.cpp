@@ -532,7 +532,7 @@ void Visuals::StatusIndicators( ) {
 	std::vector< Indicator_t > indicators{ };
 
 	// DOUBLETAP
-	if (g_menu.main.visuals.indicators.get(5)) {
+	if (g_menu.main.visuals.indicators.get(4)) {
 		Indicator_t ind{ };
 		ind.color = g_tickbase.m_shift_data.m_can_shift_tickbase ? 0xff15c27b : 0xff0000ff;
 		ind.text = XOR("DT");
@@ -1789,12 +1789,12 @@ void Visuals::DrawBeams( ) {
 				beam_info.m_flWidth = 3.0f;
 				beam_info.m_flEndWidth = 5.0f;
 				beam_info.m_flFadeLength = 0.f;
-				beam_info.m_flAmplitude = 10.f;   // beam 'jitter'.
+				beam_info.m_flAmplitude = 20.f;   // beam 'jitter'.
 				beam_info.m_flBrightness = 255.f;
-				beam_info.m_flSpeed = 0.2f;  // seems to control how fast the 'scrolling' of beam is... once fully spawned.
+				beam_info.m_flSpeed = 0.8f;  // seems to control how fast the 'scrolling' of beam is... once fully spawned.
 				beam_info.m_nStartFrame = 0;
 				beam_info.m_flFrameRate = 1.f;
-				beam_info.m_nSegments = 2;     // controls how much of the beam is 'split up', usually makes m_flAmplitude and m_flSpeed much more noticeable.
+				beam_info.m_nSegments = 8;     // controls how much of the beam is 'split up', usually makes m_flAmplitude and m_flSpeed much more noticeable.
 				beam_info.m_bRenderable = true;  // must be true or you won't see the beam.
 				beam_info.m_nFlags = 0x8300;
 

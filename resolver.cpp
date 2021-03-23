@@ -219,7 +219,10 @@ void Resolver::AntiFreestand(LagRecord* record) {
 			enemypos.z };
 
 		// draw a line for debugging purposes.
-		// g_csgo.m_debug_overlay->AddLineOverlay( start, end, 255, 0, 0, true, 0.1f );
+		if (g_menu.main.misc.debug.get()) {
+			g_csgo.m_debug_overlay->AddLineOverlay(start, end, 0, 255, 255, true, 0.1f);
+			g_notify.add("[DEBUG] tried anti-freestand");
+		}
 
 		// compute the direction.
 		vec3_t dir = end - start;
@@ -306,8 +309,10 @@ void Resolver::SetMode( LagRecord* record ) {
 
 void Resolver::ResolveAngles( Player* player, LagRecord* record ) {
 	AimPlayer* data = &g_aimbot.m_players[ player->index( ) - 1 ];
-
+	
 	bool printDebug = true;
+	
+
 	if (g_cl.m_round_end)
 		ResetNiggaShit(data, printDebug);
 
