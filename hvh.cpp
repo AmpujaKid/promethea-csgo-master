@@ -962,6 +962,8 @@ void HVH::SendPacket() {
 
 			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
 				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
+				if (g_menu.main.misc.debug.get())
+					g_notify.add("we set the tick");
 			}
 		}
 
