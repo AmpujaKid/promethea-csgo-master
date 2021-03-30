@@ -9,7 +9,8 @@
 #include <detail/LuaHelpers.h>
 #include <detail/Userdata.h>
 #include <lua.hpp>
-
+#include <cassert>
+#include <lua.h>
 
 #include <string>
 
@@ -19,6 +20,7 @@ namespace luabridge {
 ///
 /// @tparam T A C++ type.
 ///
+    typedef struct lua_State lua_State;
 template<class T>
 struct Stack;
 

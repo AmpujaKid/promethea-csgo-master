@@ -34,9 +34,6 @@
     <Filter Include="Header Files\util\contrib">
       <UniqueIdentifier>{203aec8b-15f9-4e88-b0c7-d51d4a57be52}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\lua">
-      <UniqueIdentifier>{0c6e2763-5f76-41c8-a76e-afcd585ce3e0}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aimbot.h">
@@ -320,78 +317,6 @@
     </ClInclude>
     <ClInclude Include="luaengine.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\Array.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\CFunctions.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\ClassInfo.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\Constructor.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\Config.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\FuncTraits.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\List.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\LuaBridge.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\LuaException.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\LuaHelpers.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\RefCountedObject.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\LuaRef.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\Map.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\RefCountedPtr.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\Iterator.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\dump.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\Namespace.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\Security.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\Stack.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\TypeList.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\TypeTraits.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\UnorderedMap.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\detail\Userdata.h">
-      <Filter>Header Files\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaBridge\Vector.h">
-      <Filter>Header Files\lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

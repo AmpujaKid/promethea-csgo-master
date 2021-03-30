@@ -1,5 +1,4 @@
 #include "includes.h"
-#include <LuaBridge.h>
 #include <iostream>
 #include "LuaBridge/detail/Namespace.h"
 

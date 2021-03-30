@@ -1,11 +1,15 @@
 #pragma once
 #include "includes.h"
+#include "client.h"
+#include "csgo.h"
 
 #define LOCKLUA() std::lock_guard<std::mutex> lock(g_pLuaEngine->m)
 
 class LuaEngine
 {
 public:
+	typedef struct lua_State lua_State;
+	lua_State* m_L;
 	LuaEngine() : m_L(luaL_newstate()) { luaL_openlibs(m_L); }
 	LuaEngine(const LuaEngine& other);
 	LuaEngine& operator=(const LuaEngine&);
@@ -27,7 +31,7 @@ public:
 
 	std::mutex m;
 private:
-	lua_State* m_L;
+
 	void report_errors(int state);
 };
 class ExportedEngine

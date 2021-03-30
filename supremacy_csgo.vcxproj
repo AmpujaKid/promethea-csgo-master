@@ -75,7 +75,7 @@
     <LinkIncremental>
     </LinkIncremental>
     <OutDir>.\output\release\</OutDir>
-    <IncludePath>C:\Users\aidan\Documents\LuaBridge-master\LuaBridge-master\Source\LuaBridge;C:\Users\aidan\Downloads\vcpkg-master\vcpkg-master\installed\x86-windows\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\aidan\Downloads\vcpkg-master\vcpkg-master\installed\x86-windows\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseEx|Win32'">
     <LinkIncremental />
@@ -132,7 +132,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <StringPooling>true</StringPooling>
       <Cpp0xSupport>true</Cpp0xSupport>
-      <AdditionalIncludeDirectories>C:\Users\aidan\Documents\LuaBridge-master\LuaBridge-master\Source\LuaBridge;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -251,30 +251,6 @@
     <ClInclude Include="lagrecord.h" />
     <ClInclude Include="events.h" />
     <ClInclude Include="localize.h" />
-    <ClInclude Include="LuaBridge\Array.h" />
-    <ClInclude Include="LuaBridge\detail\CFunctions.h" />
-    <ClInclude Include="LuaBridge\detail\ClassInfo.h" />
-    <ClInclude Include="LuaBridge\detail\Config.h" />
-    <ClInclude Include="LuaBridge\detail\Constructor.h" />
-    <ClInclude Include="LuaBridge\detail\dump.h" />
-    <ClInclude Include="LuaBridge\detail\FuncTraits.h" />
-    <ClInclude Include="LuaBridge\detail\Iterator.h" />
-    <ClInclude Include="LuaBridge\detail\LuaException.h" />
-    <ClInclude Include="LuaBridge\detail\LuaHelpers.h" />
-    <ClInclude Include="LuaBridge\detail\LuaRef.h" />
-    <ClInclude Include="LuaBridge\detail\Namespace.h" />
-    <ClInclude Include="LuaBridge\detail\Security.h" />
-    <ClInclude Include="LuaBridge\detail\Stack.h" />
-    <ClInclude Include="LuaBridge\detail\TypeList.h" />
-    <ClInclude Include="LuaBridge\detail\TypeTraits.h" />
-    <ClInclude Include="LuaBridge\detail\Userdata.h" />
-    <ClInclude Include="LuaBridge\List.h" />
-    <ClInclude Include="LuaBridge\LuaBridge.h" />
-    <ClInclude Include="LuaBridge\Map.h" />
-    <ClInclude Include="LuaBridge\RefCountedObject.h" />
-    <ClInclude Include="LuaBridge\RefCountedPtr.h" />
-    <ClInclude Include="LuaBridge\UnorderedMap.h" />
-    <ClInclude Include="LuaBridge\Vector.h" />
     <ClInclude Include="luaengine.h" />
     <ClInclude Include="matchframework.h" />
     <ClInclude Include="math.h" />

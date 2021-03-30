@@ -6,12 +6,16 @@
 
 #include <detail/Stack.h>
 
+#include <Vector.h>
+#include <set>
+#include <string>
 #include <vector>
 
 namespace luabridge {
 
 template<class T>
-struct Stack<std::vector<T>>
+using namespace std;
+struct Stack<std::vector(T)>
 {
     static void push(lua_State* L, std::vector<T> const& vector)
     {

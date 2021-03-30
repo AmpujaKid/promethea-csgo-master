@@ -15,7 +15,7 @@
 #define LUABRIDGE_VERSION 207
 
 #ifndef LUA_VERSION_NUM
-#error "Lua headers must be included prior to LuaBridge ones"
+//#error "Lua headers must be included prior to LuaBridge ones"
 #endif
 
 #include <detail/CFunctions.h>
