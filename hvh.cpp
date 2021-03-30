@@ -538,7 +538,7 @@ void HVH::DoRealAntiAim( ) {
 					else if (m_lby_counter == 1) {
 						g_cl.m_cmd->m_view_angles.y -= 35;
 						if (g_menu.main.misc.debug.get())
-							g_notify.add("lby -= 15");
+							g_notify.add("lby -= 35");
 						m_lby_counter += 1;
 					}
 					else if (m_lby_counter == 2) {

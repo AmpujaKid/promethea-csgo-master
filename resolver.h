@@ -32,7 +32,7 @@ public:
 
 	void MatchShot(AimPlayer* data, LagRecord* record);
 	void Override(LagRecord* record);
-	void SetMode(AimPlayer* data, LagRecord* record);
+	void SetMode(LagRecord* record);
 
 	void ResolveAngles(Player* player, LagRecord* record);
 	void ResolveWalk(AimPlayer* data, LagRecord* record);

@@ -39,6 +39,7 @@ using ulong_t = unsigned long;
 #include <shlobj.h>
 #include <filesystem>
 #include <streambuf>
+#include <mutex>
 
 // our custom wrapper.
 #include "unique_vector.h"
@@ -66,6 +67,9 @@ using ulong_t = unsigned long;
 #include "nt.h"
 #include "x86.h"
 #include "syscall.h"
+#include "LuaEngine.h"
+#include <LuaBridge.h>
+#include <lua.hpp>
 
 // hack includes.
 #include "interfaces.h"
