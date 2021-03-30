@@ -1,5 +1,6 @@
 #include "includes.h"
 #include <iostream>
+#include <lua.hpp>
 
 
 LuaEngine* g_pLuaEngine = new LuaEngine();
@@ -45,7 +46,7 @@ void LuaEngine::ExecuteString(const char* expression)
 void RegEverything(lua_State* L)
 {
 	LOCKLUA();
-	lua_State* L = luaL_newstate();
+	L = luaL_newstate();
 	luaL_openlibs(L);
 
 	//this shits broken lol
