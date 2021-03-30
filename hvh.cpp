@@ -440,7 +440,7 @@ void HVH::DoRealAntiAim( ) {
 		// if we have a yaw active, which is true if we arrived here.
 		// set the yaw to the direction before applying any other operations.
 		g_cl.m_cmd->m_view_angles.y = m_direction;
-
+		g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
 		bool stand = g_menu.main.antiaim.body_fake_stand.get( ) > 0 && m_mode == AntiAimMode::STAND;
 		bool air = g_menu.main.antiaim.body_fake_air.get( ) > 0 && m_mode == AntiAimMode::AIR;
 
@@ -480,7 +480,7 @@ void HVH::DoRealAntiAim( ) {
 			// there will be an lbyt update on this tick.
 			if( stand ) {
 
-				switch( g_menu.main.antiaim.body_fake_stand.get( ) ) {
+				switch (g_menu.main.antiaim.body_fake_stand.get()) {
 
 					// custom.
 				case 1:
@@ -509,13 +509,13 @@ void HVH::DoRealAntiAim( ) {
 					m_twist = !m_twist;
 					break;
 
-					// force 979.
+					// suppress 979.
 				case 5:
 					if (inFlick) {
-						g_csgo.m_net->m_out_seq += 1;
+						g_csgo.m_net->m_out_seq -= 1;
 						inFlick = false;
 					}
-					g_cl.m_cmd->m_view_angles.y -= 112.f;
+					g_cl.m_cmd->m_view_angles.y -= 148.f;
 					break;
 
 					// distortion
@@ -541,15 +541,19 @@ void HVH::DoRealAntiAim( ) {
 							g_notify.add("lby -= 35");
 						m_lby_counter += 1;
 					}
-					else if (m_lby_counter == 2) {
+					else {
 						g_cl.m_cmd->m_view_angles.y = 180;
 						if (g_menu.main.misc.debug.get())
 							g_notify.add("lby = 180");
 						m_lby_counter = 0;
 					}
-					else {
-						m_lby_counter = 0;
-					}
+					break;
+
+					// fucking with ticks
+				case 8:
+					// do this on your lby flick
+					g_cl.m_cmd->m_view_angles.y -= 148.f;
+					g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
 					break;
 				}
 			}
@@ -955,6 +959,10 @@ void HVH::SendPacket() {
 			//	*g_cl.m_packet = false;
 			//	break;
 			//}
+
+			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
+				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
+			}
 		}
 
 		if (active) {

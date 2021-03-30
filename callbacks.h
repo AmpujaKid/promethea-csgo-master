@@ -24,6 +24,10 @@ namespace callbacks {
 	void ConfigLoad6( );
 	void ConfigLoad( );
 	void ConfigSave( );
+	void ScriptLoad( );
+	void Refresh( );
+	void ScriptReload( );
+	void ScriptUnload( );
 
 	bool IsBaimHealth( );
 	bool IsFovOn( );

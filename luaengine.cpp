@@ -2,7 +2,7 @@
 #include <iostream>
 #include <lua.hpp>
 
-
+/*
 LuaEngine* g_pLuaEngine = new LuaEngine();
 ExportedInterfaces g_Interfaces;
 
@@ -51,7 +51,7 @@ void RegEverything(lua_State* L)
 
 	//this shits broken lol
 
-	/*luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(L)
 		.beginNamespace("Game")
 		.addVariable("Interfaces", &g_Interfaces, false)
 		.beginClass<ExportedEngine>("EngineInterface")
@@ -61,7 +61,7 @@ void RegEverything(lua_State* L)
 		.beginClass<ExportedInterfaces>("InterfaceClass")
 		.addFunction("GetEngine", &ExportedInterfaces::GetEngine)
 		.endClass()
-		.endNamespace();*/
+		.endNamespace();
 }
 
 void ExportedEngine::ExecuteCommand(const char* str)
@@ -72,4 +72,4 @@ void ExportedEngine::ExecuteCommand(const char* str)
 int ExportedEngine::GetLocalPlayer()
 {
 	return g_csgo.m_engine->GetLocalPlayer();
-}
+}*/
