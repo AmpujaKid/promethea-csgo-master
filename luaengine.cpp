@@ -1,6 +1,5 @@
 #include "includes.h"
 #include <iostream>
-#include "LuaBridge/detail/Namespace.h"
 
 
 LuaEngine* g_pLuaEngine = new LuaEngine();
@@ -48,7 +47,10 @@ void RegEverything(lua_State* L)
 	LOCKLUA();
 	lua_State* L = luaL_newstate();
 	luaL_openlibs(L);
-	luabridge::getGlobalNamespace(L)
+
+	//this shits broken lol
+
+	/*luabridge::getGlobalNamespace(L)
 		.beginNamespace("Game")
 		.addVariable("Interfaces", &g_Interfaces, false)
 		.beginClass<ExportedEngine>("EngineInterface")
@@ -58,7 +60,7 @@ void RegEverything(lua_State* L)
 		.beginClass<ExportedInterfaces>("InterfaceClass")
 		.addFunction("GetEngine", &ExportedInterfaces::GetEngine)
 		.endClass()
-		.endNamespace();
+		.endNamespace();*/
 }
 
 void ExportedEngine::ExecuteCommand(const char* str)
