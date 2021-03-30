@@ -1,6 +1,6 @@
 #include "includes.h"
 
-Resolver g_resolver{};;
+Resolver g_resolver{};
 
 LagRecord* Resolver::FindIdealRecord( AimPlayer* data ) {
     LagRecord *first_valid, *current;
@@ -48,6 +48,32 @@ LagRecord* Resolver::FindLastRecord( AimPlayer* data ) {
 	}
 
 	return nullptr;
+}
+
+void Resolver::SavePlayerAngle(Player* player, float flEyeAng) {
+	// get player index
+	int iPlayerInd = player->index();
+
+	// create object PlayerInfo using constructor and push back the value
+	PlayerInfo pInfo(iPlayerInd, flEyeAng);
+	m_SavedAngs.push_front(pInfo);
+
+	// so we wont get too many saved angles we limit it to 32 angles at most
+	while (m_SavedAngs.size() > 32)
+		m_SavedAngs.pop_back();
+}
+
+float Resolver::GetPlayerAngle(Player* player, AimPlayer* data) {
+	// iterate through every saved angle
+	for (int i = data->m_body_index; i < m_SavedAngs.size(); i++) {
+		// we have a saved angle that belongs to the same index
+		if (m_SavedAngs.at(i).iIndex == player->index())
+			// return said angle
+			return m_SavedAngs.at(i).flLBY;
+	}
+
+	// return NULL we found no angle
+	return NULL;
 }
 
 void Resolver::OnBodyUpdate( Player* player, float value ) {
@@ -418,7 +444,8 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 		record->m_mode = Modes::RESOLVE_STOPPED_MOVING;
 	}
-	else if (data->m_body != data->m_old_body && data->m_body_index <= 5) // flick prediction, has .22 flick predict
+
+	else if (data->m_body != data->m_old_body && data->m_body_index < 4) // flick prediction, has .22 flick predict
 	{
 		record->m_eye_angles.y = data->m_body;
 
@@ -426,44 +453,28 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 		record->m_mode = Modes::RESOLVE_LBY_UPDATE;
 	}
-	else if (g_input.GetKeyState(g_menu.main.aimbot.override_key.get()))
-	{
+
+	else if (g_input.GetKeyState(g_menu.main.aimbot.override_key.get())) {
 		Override(record);
 	}
-	else if (data->m_moved && data->m_moving_index < 1) // last moving if we havn't missed it
-	{
+
+	// last moving
+	else if (data->m_moved && data->m_moving_index < 1) {
 		record->m_eye_angles.y = move->m_body;
 
 		record->m_mode = Modes::RESOLVE_LAST_LBY;
 	}
-	else if (!data->m_moved || data->m_moving_index >= 1 && data->m_freestanding_index < 3) // freestanding if we have gone through that shit or missed last moving
-	{
+
+	// freestanding if we have gone through that shit or missed last moving
+	else if (!data->m_moved || data->m_moving_index > 0) {
 		AntiFreestand(record);
 
 		record->m_mode = Modes::RESOLVE_FREESTAND;
-		//record->m_resolver_mode = "FREESTANDING";
 	}
+
 	else // bruteforce as a last fallback
 	{
-		switch (data->m_stand_index2 % 4)
-		{
-		case 1:
-			record->m_eye_angles.y -= away + record->m_body;
-			break;
-
-		case 2:
-			record->m_eye_angles.y += away - 12.f - record->m_body;
-			break;
-
-		case 3:
-			record->m_eye_angles.y -= away + 180.f + record->m_body;
-			break;
-
-
-		case 4:
-			record->m_eye_angles.y = away - 130.f + record->m_body;
-			break;
-		}
+		record->m_eye_angles.y = GetPlayerAngle(data->m_player, data);
 
 		record->m_mode = Modes::RESOLVE_BRUTEFORCE;
 	}
