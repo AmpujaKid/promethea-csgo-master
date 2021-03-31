@@ -169,7 +169,7 @@ public:
 
 		doubletap.setup(XOR("teleport on key"), XOR("doubletap"));
 		doubletap.SetToggleCallback(callbacks::ToggleDT);
-		//RegisterElement(&doubletap, 1);
+		RegisterElement(&doubletap, 1);
 
 		override_key.setup(XOR("override"), XOR("override_key"));
 		RegisterElement(&override_key, 1);
@@ -326,7 +326,7 @@ public:
 		dir_lock.AddShowCallback(callbacks::HasStandYaw);
 		RegisterElement(&dir_lock);
 
-		body_fake_stand.setup(XOR("fake body"), XOR("body_fake_stnd"), { XOR("off"), XOR("custom"), XOR("rotate"), XOR("z"), XOR("twist"), XOR("anim breaker"), XOR("shake"), XOR("test") });
+		body_fake_stand.setup(XOR("fake body"), XOR("body_fake_stnd"), { XOR("off"), XOR("custom"), XOR("random"), XOR("z"), XOR("twist"), XOR("anim breaker"), XOR("distortion"), XOR("shake"), XOR("test") });
 		body_fake_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		body_fake_stand.AddShowCallback(callbacks::HasStandYaw);
 		RegisterElement(&body_fake_stand);

@@ -244,14 +244,16 @@ void Client::StartMove( CUserCmd* cmd ) {
 	if( !m_processing )
 		return;
 
-	// make sure prediction has ran on all usercommands.
-	// because prediction runs on frames, when we have low fps it might not predict all usercommands.
-	// also fix the tick being inaccurate.
-	g_inputpred.update( );
-
 	// store some stuff about the local player.
 	m_flags = m_local->m_fFlags( );
 
+	// do tickbase shift related code.
+	g_tickbase.PreMovement();
+
+	// make sure prediction has ran on all usercommands.
+	// because prediction runs on frames, when we have low fps it might not predict all usercommands.
+	// also fix the tick being inaccurate.
+	g_inputpred.update();
 	// ...
 	m_shot = false;
 }
@@ -365,6 +367,18 @@ void Client::DoMove( ) {
 			m_cmd->m_buttons |= IN_USE;
 	}
 
+	if (g_cl.m_processing && g_tickbase.m_shift_data.m_should_attempt_shift && g_tickbase.m_shift_data.m_needs_recharge) {
+		--g_tickbase.m_shift_data.m_needs_recharge;
+
+		//g_tickbase.m_shift_data.m_did_shift_before = false;
+
+		if (g_tickbase.m_shift_data.m_needs_recharge == 0) {
+			g_tickbase.m_shift_data.m_should_be_ready = true;
+		}
+
+		return;
+	}
+
 	// grenade prediction.
 	g_grenades.think( );
 
@@ -414,6 +428,9 @@ void Client::EndMove( CUserCmd* cmd ) {
 	// store some values for next tick.
 	m_old_packet = *m_packet;
 	m_old_shot = m_shot;
+
+	// finish tickbase shift related code.
+	g_tickbase.PostMovement();
 }
 
 void Client::OnTick( CUserCmd* cmd ) {

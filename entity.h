@@ -757,6 +757,12 @@ public:
 		return get< CBoneAccessor >(g_csgo.BoneAccessor);
 	}
 
+	__forceinline float& m_flVelocityModifier() {
+		// .text:10381AB3 00C    F3 0F 10 49 10             movss   xmm1, dword ptr [ecx+10h] ; Move Scalar Single-FP
+		// .text:10381AB8 00C    F3 0F 5C 88 90 A2 00 00    subss   xmm1, dword ptr[ eax + 0A290h ]; Scalar Single - FP Subtract
+		return get< float >(0xA38C);
+	}
+
 public:
 	enum indices : size_t {
 		GETREFEHANDLE = 2,

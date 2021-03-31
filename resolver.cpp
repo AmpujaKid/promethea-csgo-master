@@ -454,7 +454,7 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 			if (record->m_body < 120) {
 				record->m_eye_angles.y = record->m_body;
 			}
-
+			// idk if you noticed, but this is all the same shit. im gonna add output for the angle we hit so we know what to set this to in the future.
 			else if (move->m_body < 120) {
 				record->m_eye_angles.y = move->m_body;
 			}
@@ -498,6 +498,7 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	}
 }
 
+// this doesnt even work probably
 void Resolver::ExploitFix(AimPlayer* data, LagRecord* record) {
 	// apply lby to eyeangles.
 	record->m_eye_angles.y = record->m_body;

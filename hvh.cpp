@@ -461,6 +461,10 @@ void HVH::DoRealAntiAim( ) {
 					m_lby_counter = 0;
 				}
 			}
+
+			else if (g_menu.main.antiaim.body_fake_stand.get() == 8 && g_tickbase.m_shift_data.m_can_shift_tickbase) {
+				// shift 2 ticks
+			}
 		}
 
 		else if (stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= (g_cl.m_body_pred - g_cl.m_anim_frame + g_csgo.m_globals->m_tick_count) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && g_menu.main.antiaim.lbyexploit.get()) {
@@ -527,7 +531,7 @@ void HVH::DoRealAntiAim( ) {
 
 					m_flicks++;
 
-					// lby 2.0
+					// lby 2.0 (shake)
 				case 7:
 					if (m_lby_counter == 0) {
 						g_cl.m_cmd->m_view_angles.y += 15;
@@ -959,7 +963,7 @@ void HVH::SendPacket() {
 			//	*g_cl.m_packet = false;
 			//	break;
 			//}
-
+			// i think that theres some other stuff we can do with this, but idk... maybe jump forward the tick before the flick and then jump back here?
 			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime && g_menu.main.antiaim.body_fake_stand.get() == 8) {
 				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
 				if (g_menu.main.misc.debug.get())

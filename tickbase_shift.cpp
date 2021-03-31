@@ -30,8 +30,8 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 	if (g_menu.main.movement.slow_motion.get())
 		g_tickbase.m_shift_data.m_ticks_to_shift = 2;
 
-	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
 	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
+	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
 
 	int* m_pnNewCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x2C );
 	int* m_pnBackupCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x30 );
@@ -98,7 +98,7 @@ void TickbaseSystem::PostMovement( ) {
 		return;
 	}
 
-	// Don't attempt to shift if we're supposed to
+	// Don't attempt to shift if we're not supposed to
 	if( !g_tickbase.m_shift_data.m_should_attempt_shift ) {
 		g_tickbase.m_shift_data.m_did_shift_before = false;
 		g_tickbase.m_shift_data.m_should_be_ready = false;

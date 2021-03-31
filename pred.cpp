@@ -28,8 +28,8 @@ void InputPrediction::update( ) {
 			// cmd hasn't been predicted.
 			// m_nTickBase is incremented inside RunCommand ( which is called frame by frame, we are running tick by tick here ) and prediction hasn't run yet,
 			// so we must fix tickbase by incrementing it ourselves on non-predicted commands.
-			if( !cmd->m_predicted )
-				++g_cl.m_local->m_nTickBase( );
+			if (!cmd->m_predicted)
+				++g_cl.m_local->m_nTickBase();
 		}
 
 		// EDIT; from what ive seen RunCommand is called when u call Prediction::Update
