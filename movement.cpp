@@ -402,89 +402,53 @@ bool Movement::WillCollide( float time, float change ) {
 	return false;
 }
 
-void Movement::FixMove( CUserCmd *cmd, const ang_t &wish_angles ) {
-	vec3_t  move, dir;
-	float   delta, len;
-	ang_t   move_angle;
+/* thanks aimware.net! */
+void Movement::FixMove(CUserCmd* cmd, ang_t& wish_angles) {
 
-	// roll nospread fix.
-	if( !( g_cl.m_flags & FL_ONGROUND ) && cmd->m_view_angles.z != 0.f )
-		cmd->m_side_move = 0.f;
+	vec3_t view_fwd, view_right, view_up, cmd_fwd, cmd_right, cmd_up;
+	math::AngleVectors(wish_angles, &view_fwd, &view_right, &view_up);
+	math::AngleVectors(cmd->m_view_angles, &cmd_fwd, &cmd_right, &cmd_up);
 
-	// convert movement to vector.
-	move = { cmd->m_forward_move, cmd->m_side_move, 0.f };
+	const auto v8 = sqrtf((view_fwd.x * view_fwd.x) + (view_fwd.y * view_fwd.y));
+	const auto v10 = sqrtf((view_right.x * view_right.x) + (view_right.y * view_right.y));
+	const auto v12 = sqrtf(view_up.z * view_up.z);
 
-	// get move length and ensure we're using a unit vector ( vector with length of 1 ).
-	len = move.normalize( );
-	if( !len )
-		return;
+	const vec3_t norm_view_fwd((1.f / v8) * view_fwd.x, (1.f / v8) * view_fwd.y, 0.f);
+	const vec3_t norm_view_right((1.f / v10) * view_right.x, (1.f / v10) * view_right.y, 0.f);
+	const vec3_t norm_view_up(0.f, 0.f, (1.f / v12) * view_up.z);
 
-	// convert move to an angle.
-	math::VectorAngles( move, move_angle );
+	const auto v14 = sqrtf((cmd_fwd.x * cmd_fwd.x) + (cmd_fwd.y * cmd_fwd.y));
+	const auto v16 = sqrtf((cmd_right.x * cmd_right.x) + (cmd_right.y * cmd_right.y));
+	const auto v18 = sqrtf(cmd_up.z * cmd_up.z);
 
-	// calculate yaw delta.
-	delta = ( cmd->m_view_angles.y - wish_angles.y );
+	const vec3_t norm_cmd_fwd((1.f / v14) * cmd_fwd.x, (1.f / v14) * cmd_fwd.y, 0.f);
+	const vec3_t norm_cmd_right((1.f / v16) * cmd_right.x, (1.f / v16) * cmd_right.y, 0.f);
+	const vec3_t norm_cmd_up(0.f, 0.f, (1.f / v18) * cmd_up.z);
 
-	// accumulate yaw delta.
-	move_angle.y += delta;
+	const auto v22 = norm_view_fwd.x * cmd->m_forward_move;
+	const auto v26 = norm_view_fwd.y * cmd->m_forward_move;
+	const auto v28 = norm_view_fwd.z * cmd->m_forward_move;
+	const auto v24 = norm_view_right.x * cmd->m_side_move;
+	const auto v23 = norm_view_right.y * cmd->m_side_move;
+	const auto v25 = norm_view_right.z * cmd->m_side_move;
+	const auto v30 = norm_view_up.x * cmd->m_up_move;
+	const auto v27 = norm_view_up.z * cmd->m_up_move;
+	const auto v29 = norm_view_up.y * cmd->m_up_move;
 
-	// calculate our new move direction.
-	// dir = move_angle_forward * move_length
-	math::AngleVectors( move_angle, &dir );
+	cmd->m_forward_move = ((((norm_cmd_fwd.x * v24) + (norm_cmd_fwd.y * v23)) + (norm_cmd_fwd.z * v25))
+		+ (((norm_cmd_fwd.x * v22) + (norm_cmd_fwd.y * v26)) + (norm_cmd_fwd.z * v28)))
+		+ (((norm_cmd_fwd.y * v30) + (norm_cmd_fwd.x * v29)) + (norm_cmd_fwd.z * v27));
+	cmd->m_side_move = ((((norm_cmd_right.x * v24) + (norm_cmd_right.y * v23)) + (norm_cmd_right.z * v25))
+		+ (((norm_cmd_right.x * v22) + (norm_cmd_right.y * v26)) + (norm_cmd_right.z * v28)))
+		+ (((norm_cmd_right.x * v29) + (norm_cmd_right.y * v30)) + (norm_cmd_right.z * v27));
+	cmd->m_up_move = ((((norm_cmd_up.x * v23) + (norm_cmd_up.y * v24)) + (norm_cmd_up.z * v25))
+		+ (((norm_cmd_up.x * v26) + (norm_cmd_up.y * v22)) + (norm_cmd_up.z * v28)))
+		+ (((norm_cmd_up.x * v30) + (norm_cmd_up.y * v29)) + (norm_cmd_up.z * v27));
 
-	// scale to og movement.
-	dir *= len;
+	wish_angles = cmd->m_view_angles;
 
-	// strip old flags.
-	g_cl.m_cmd->m_buttons &= ~( IN_FORWARD | IN_BACK | IN_MOVELEFT | IN_MOVERIGHT );
-
-	// fix ladder and noclip.
-	if( g_cl.m_local->m_MoveType( ) == MOVETYPE_LADDER ) {
-		// invert directon for up and down.
-		if( cmd->m_view_angles.x >= 45.f && wish_angles.x < 45.f && std::abs( delta ) <= 65.f )
-			dir.x = -dir.x;
-
-		// write to movement.
-		cmd->m_forward_move = dir.x;
-		cmd->m_side_move = dir.y;
-
-		// set new button flags.
-		if( cmd->m_forward_move > 200.f )
-			cmd->m_buttons |= IN_FORWARD;
-
-		else if( cmd->m_forward_move < -200.f )
-			cmd->m_buttons |= IN_BACK;
-
-		if( cmd->m_side_move > 200.f )
-			cmd->m_buttons |= IN_MOVERIGHT;
-
-		else if( cmd->m_side_move < -200.f )
-			cmd->m_buttons |= IN_MOVELEFT;
-	}
-
-	// we are moving normally.
-	else {
-		// we must do this for pitch angles that are out of bounds.
-		if( cmd->m_view_angles.x < -90.f || cmd->m_view_angles.x > 90.f )
-			dir.x = -dir.x;
-
-		// set move.
-		cmd->m_forward_move = dir.x;
-		cmd->m_side_move = dir.y;
-
-		// set new button flags.
-		if( cmd->m_forward_move > 0.f )
-			cmd->m_buttons |= IN_FORWARD;
-
-		else if( cmd->m_forward_move < 0.f )
-			cmd->m_buttons |= IN_BACK;
-
-		if( cmd->m_side_move > 0.f )
-			cmd->m_buttons |= IN_MOVERIGHT;
-
-		else if( cmd->m_side_move < 0.f )
-			cmd->m_buttons |= IN_MOVELEFT;
-	}
+	if (g_cl.m_local->m_MoveType() != MOVETYPE_LADDER)
+		cmd->m_buttons &= ~(IN_FORWARD | IN_BACK | IN_MOVERIGHT | IN_MOVELEFT);
 }
 
 void Movement::AutoPeek( ) {
