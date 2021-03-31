@@ -61,13 +61,19 @@ notes:
 Make sure I haven't forgotten anything on the upd log... I don't wanna push an upd and ppl ask
 "Whats this feature? It wasn't in upd log!" and etc.
 
+I really want to make a v2, so once we finish the todo list, I will make some sort of ui update
+and we can push it to alpha.
+
 todo:
-[aimbot]
-	spread fix
-	resolver
+[resolver]
+	last moving lby
+	lby log
 [antiaim]
-	bug test and improve new antiaims
-	fix running = tapped
+	broken anti aims
+		desync
+		jitter
+		swap
+		static backwards 
 [visuals]
 	fake chams
 	menu theme recode
@@ -75,13 +81,3 @@ todo:
 	nothing for now
 [misc]
 	nothing for now
-
-other:
-Laz, instead of making the manual aa its own option, we should have it be a button. Click keybind
-once to override the current yaw to do its thing around one direction, click it again to stop the
-override. This would be a much cleaner release, I think. Lets put it in aa column 2, under fakelag.
-I am moving it right now, and making edits to spacial use in order to fit everything in the menu.
-
-I am also going to make a giant list of every feature. I will format it like our update log, then
-we can release it as a kind of showcase. Having this list will show everyone just how good our
-cheat is.

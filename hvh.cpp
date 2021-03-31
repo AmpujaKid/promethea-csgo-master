@@ -960,7 +960,7 @@ void HVH::SendPacket() {
 			//	break;
 			//}
 
-			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
+			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime && g_menu.main.antiaim.body_fake_stand.get() == 8) {
 				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
 				if (g_menu.main.misc.debug.get())
 					g_notify.add("we set the tick");
