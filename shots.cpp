@@ -113,8 +113,8 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	impact.m_shot = shot;
 	impact.m_tick = g_cl.m_local->m_nTickBase( );
 	impact.m_pos = pos;
-
-	//g_cl.print( "imp %x time: %f lat: %f dmg: %f\n", shot->m_record, shot->m_time, shot->m_lat, shot->m_damage );
+	if(g_menu.main.misc.debug.get())
+		g_cl.print( "imp %x time: %f lat: %f dmg: %f\n", shot->m_record, shot->m_time, shot->m_lat, shot->m_damage );
 
 	// add to track.
 	m_impacts.push_front( impact );
@@ -177,7 +177,7 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	// this is a miss due to wrong angles.
 	else if ( trace.m_entity == target ) {
 		size_t mode = shot->m_record->m_mode;
-
+		g_notify.add(XOR("Missed due to bad resolve\n"));
 		// if we miss a shot on body update.
 		// we can chose to stop shooting at them.
 		//if (mode == Resolver::Modes::RESOLVE_BODY)
@@ -357,7 +357,7 @@ void Shots::OnHurt(IGameEvent* evt) {
 
 	g_resolver.SavePlayerAngle(target, target->m_flLowerBodyYawTarget());
 	if (g_menu.main.misc.debug.get()) {
-		g_nofity.add("saved %s lby angle at %i", target, target->m_flLowerBodyYawTarget());
+		//g_nofity.add("saved %s lby angle at %i", target, target->m_flLowerBodyYawTarget());
 		// why can't i call g_notify wtf
 	}
 	// if we hit head
