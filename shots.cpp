@@ -36,13 +36,13 @@ void Shots::OnShotFire( Player *target, float damage, int bullets, LagRecord *re
 	// printing the resolver mode
 	
 	if (Resolver::Modes::RESOLVE_FREESTAND)
-		g_notify.add("[resolver] tried resolve mode - freestanding");
+		g_notify.add("[resolver] tried resolve mode - freestanding\n");
 
 	else if (Resolver::Modes::RESOLVE_STAND)
-		g_notify.add("[resolver] tried resolve mode - stand");
+		g_notify.add("[resolver] tried resolve mode - stand\n");
 
 	else if (Resolver::Modes::RESOLVE_BRUTEFORCE)
-		g_notify.add("[resolver] tried resolve mode - bruteforce");
+		g_notify.add("[resolver] tried resolve mode - bruteforce\n");
 }
 
 void Shots::OnImpact( IGameEvent *evt ) {

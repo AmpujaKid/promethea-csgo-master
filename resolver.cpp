@@ -244,12 +244,6 @@ void Resolver::AntiFreestand(LagRecord* record) {
 			enemypos.y + std::sin(math::deg_to_rad(it->m_yaw)) * RANGE,
 			enemypos.z };
 
-		// draw a line for debugging purposes.
-		if (g_menu.main.misc.debug.get()) {
-			g_csgo.m_debug_overlay->AddLineOverlay(start, end, 0, 255, 255, true, 0.1f);
-			g_notify.add("[DEBUG] tried anti-freestand");
-		}
-
 		// compute the direction.
 		vec3_t dir = end - start;
 		float len = dir.normalize();
