@@ -79,7 +79,7 @@ void TickbaseSystem::PreMovement( ) {
 
 void TickbaseSystem::PostMovement( ) {
 	// Perform sanity checks to make sure we're able to shift
-	if( !g_cl.m_processing || g_menu.main.aimbot.rapidfire.get()) {
+	if( !g_cl.m_processing || !g_menu.main.aimbot.rapidfire.get()) {
 		return;
 	}
 
