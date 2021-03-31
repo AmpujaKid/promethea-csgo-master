@@ -205,57 +205,57 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	backup.restore( target );
 }
 
-void Shots::OnHurt( IGameEvent *evt ) {
+void Shots::OnHurt(IGameEvent* evt) {
 	int         attacker, victim, group, hp;
 	float       damage;
 	std::string name;
 	Player* attacker_harmed = nullptr;
 	Player* victim_harmed = nullptr;
 
-	if ( !evt || !g_cl.m_local )
+	if (!evt || !g_cl.m_local)
 		return;
 
-	attacker = g_csgo.m_engine->GetPlayerForUserID( evt->m_keys->FindKey( HASH( "attacker" ) )->GetInt( ) );
-	victim = g_csgo.m_engine->GetPlayerForUserID( evt->m_keys->FindKey( HASH( "userid" ) )->GetInt( ) );
+	attacker = g_csgo.m_engine->GetPlayerForUserID(evt->m_keys->FindKey(HASH("attacker"))->GetInt());
+	victim = g_csgo.m_engine->GetPlayerForUserID(evt->m_keys->FindKey(HASH("userid"))->GetInt());
 
 	// skip invalid player indexes.
 	// should never happen? world entity could be attacker, or a nade that hits you.
-	if ( attacker < 1 || attacker > 64 || victim < 1 || victim > 64 )
+	if (attacker < 1 || attacker > 64 || victim < 1 || victim > 64)
 		return;
 
 	// we were not the attacker or we hurt ourselves.
-	else if ( attacker != g_csgo.m_engine->GetLocalPlayer( ) || victim == g_csgo.m_engine->GetLocalPlayer( ) )
+	else if (attacker != g_csgo.m_engine->GetLocalPlayer() || victim == g_csgo.m_engine->GetLocalPlayer())
 		return;
 
 	// get hitgroup.
 	// players that get naded ( DMG_BLAST ) or stabbed seem to be put as HITGROUP_GENERIC.
-	group = evt->m_keys->FindKey( HASH( "hitgroup" ) )->GetInt( );
+	group = evt->m_keys->FindKey(HASH("hitgroup"))->GetInt();
 
 	// invalid hitgroups ( note - dex; HITGROUP_GEAR isn't really invalid, seems to be set for hands and stuff? ).
-	if ( group == HITGROUP_GEAR )
+	if (group == HITGROUP_GEAR)
 		return;
 
 	// get the player that was hurt.
-	Player *target = g_csgo.m_entlist->GetClientEntity< Player * >( victim );
-	if ( !target )
+	Player* target = g_csgo.m_entlist->GetClientEntity< Player* >(victim);
+	if (!target)
 		return;
 
 	// get player info.
 	player_info_t info;
-	if ( !g_csgo.m_engine->GetPlayerInfo( victim, &info ) )
+	if (!g_csgo.m_engine->GetPlayerInfo(victim, &info))
 		return;
 
 	// get player name;
-	name = std::string( info.m_name ).substr( 0, 24 );
+	name = std::string(info.m_name).substr(0, 24);
 
 	// get damage reported by the server.
-	damage = ( float )evt->m_keys->FindKey( HASH( "dmg_health" ) )->GetInt( );
+	damage = (float)evt->m_keys->FindKey(HASH("dmg_health"))->GetInt();
 
 	// get remaining hp.
-	hp = evt->m_keys->FindKey( HASH( "health" ) )->GetInt( );
+	hp = evt->m_keys->FindKey(HASH("health"))->GetInt();
 
 	// hitmarker.
-	if ( g_menu.main.misc.hitmarker.get( 0 ) ) {
+	if (g_menu.main.misc.hitmarker.get(0)) {
 		g_visuals.m_hit_duration = 1.f;
 		g_visuals.m_hit_start = g_csgo.m_globals->m_curtime;
 		g_visuals.m_hit_end = g_visuals.m_hit_start + g_visuals.m_hit_duration;
@@ -268,48 +268,48 @@ void Shots::OnHurt( IGameEvent *evt ) {
 		g_csgo.m_sound->EmitAmbientSound(XOR("buttons/arena_switch_press_02.wav"), 1.f);
 		break;
 	case 2:
-		PlaySoundA(LPCSTR (cod), NULL, SND_MEMORY | SND_ASYNC);
+		PlaySoundA(LPCSTR(cod), NULL, SND_MEMORY | SND_ASYNC);
 		break;
 	case 3:
-		PlaySoundA(LPCSTR (bubble), NULL, SND_MEMORY | SND_ASYNC);
+		PlaySoundA(LPCSTR(bubble), NULL, SND_MEMORY | SND_ASYNC);
 		break;
 	case 4:
-		PlaySoundA(LPCSTR (neverlose), NULL, SND_MEMORY | SND_ASYNC);
+		PlaySoundA(LPCSTR(neverlose), NULL, SND_MEMORY | SND_ASYNC);
 		break;
 	}
 
 	// print hit log.
-	if ( g_menu.main.misc.notifications.get( 1 ) ) {
-		std::string out = tfm::format( XOR( "Hit %s in the %s for %i damage (%i health remaining)\n" ), name, m_groups[ group ], ( int )damage, hp );
-		g_notify.add( out );
+	if (g_menu.main.misc.notifications.get(1)) {
+		std::string out = tfm::format(XOR("Hit %s in the %s for %i damage (%i health remaining)\n"), name, m_groups[group], (int)damage, hp);
+		g_notify.add(out);
 	}
 
-	if ( group == HITGROUP_GENERIC )
+	if (group == HITGROUP_GENERIC)
 		return;
 
 	// if we hit a player, mark vis impacts.
-	if ( !m_vis_impacts.empty( ) ) {
-		for ( auto &i : m_vis_impacts ) {
-			if ( i.m_tickbase == g_cl.m_local->m_nTickBase( ) )
+	if (!m_vis_impacts.empty()) {
+		for (auto& i : m_vis_impacts) {
+			if (i.m_tickbase == g_cl.m_local->m_nTickBase())
 				i.m_hit_player = true;
 		}
 	}
 
 	// no impacts to match.
-	if ( m_impacts.empty( ) )
+	if (m_impacts.empty())
 		return;
 
-	ImpactRecord *impact{ nullptr };
+	ImpactRecord* impact{ nullptr };
 
 	// iterate stored impacts.
-	for ( auto &i : m_impacts ) {
+	for (auto& i : m_impacts) {
 
 		// this impact doesnt match with our current hit.
-		if ( i.m_tick != g_cl.m_local->m_nTickBase( ) )
+		if (i.m_tick != g_cl.m_local->m_nTickBase())
 			continue;
 
 		// wrong player.
-		if ( i.m_shot->m_target != target )
+		if (i.m_shot->m_target != target)
 			continue;
 
 		// shit fond.
@@ -318,7 +318,7 @@ void Shots::OnHurt( IGameEvent *evt ) {
 	}
 
 	// no impact matched.
-	if ( !impact )
+	if (!impact)
 		return;
 
 	// setup new data for hit track and push to hit track.
@@ -327,15 +327,16 @@ void Shots::OnHurt( IGameEvent *evt ) {
 	hit.m_group = group;
 	hit.m_damage = damage;
 
-	//g_cl.print( "hit %x time: %f lat: %f dmg: %f\n", impact->m_shot->m_record, impact->m_shot->m_time, impact->m_shot->m_lat, impact->m_shot->m_damage );
+	if (g_menu.main.misc.debug.get())
+		g_cl.print("hit %x time: %f lat: %f dmg: %f\n", impact->m_shot->m_record, impact->m_shot->m_time, impact->m_shot->m_lat, impact->m_shot->m_damage);
 
-	m_hits.push_front( hit );
+	m_hits.push_front(hit);
 
-	while ( m_hits.size( ) > 128 )
-		m_hits.pop_back( );
+	while (m_hits.size() > 128)
+		m_hits.pop_back();
 
-	AimPlayer *data = &g_aimbot.m_players[ target->index( ) - 1 ];
-	if ( !data )
+	AimPlayer* data = &g_aimbot.m_players[target->index() - 1];
+	if (!data)
 		return;
 
 	// we hit, reset missed shots counter.
@@ -345,21 +346,24 @@ void Shots::OnHurt( IGameEvent *evt ) {
 
 	// if we miss a shot on body update.
 	// we can chose to stop shooting at them.
-	if ( mode == Resolver::Modes::RESOLVE_BODY && data->m_body_index > 0 )
+	if (mode == Resolver::Modes::RESOLVE_BODY && data->m_body_index > 0)
 		--data->m_body_index;
 
 	else if (mode == Resolver::Modes::RESOLVE_STAND && data->m_stand_index > 0)
 		--data->m_stand_index;
 
-	else if ( mode == Resolver::Modes::RESOLVE_STAND2 && data->m_stand_index2 > 0 )
+	else if (mode == Resolver::Modes::RESOLVE_STAND2 && data->m_stand_index2 > 0)
 		--data->m_stand_index2;
 
 	g_resolver.SavePlayerAngle(target, target->m_flLowerBodyYawTarget());
-
+	if (g_menu.main.misc.debug.get()) {
+		g_nofity.add("saved %s lby angle at %i", target, target->m_flLowerBodyYawTarget());
+		// why can't i call g_notify wtf
+	}
 	// if we hit head
 	// shoot at this 5 more times.
-	if ( group == HITGROUP_HEAD ) {
-		LagRecord *record = hit.m_impact->m_shot->m_record;
+	if (group == HITGROUP_HEAD) {
+		LagRecord* record = hit.m_impact->m_shot->m_record;
 
 		//switch( record->m_mode ) {
 		//case Resolver::Modes::RESOLVE_STAND:
