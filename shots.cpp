@@ -32,6 +32,13 @@ void Shots::OnShotFire( Player *target, float damage, int bullets, LagRecord *re
 	// no need to keep an insane amount of shots.
 	while ( m_shots.size( ) > 128 )
 		m_shots.pop_back( );
+
+	// printing the resolver mode
+	if (g_resolver.RESOLVE_FREESTAND)
+		g_notify.add("[resolver] tried resolve mode - freestanding");
+
+	if (g_resolver.RESOLVE_STAND)
+		g_notify.add("[resolver] tried resolve mode - stand");
 }
 
 void Shots::OnImpact( IGameEvent *evt ) {
@@ -357,8 +364,9 @@ void Shots::OnHurt(IGameEvent* evt) {
 
 	g_resolver.SavePlayerAngle(target, target->m_flLowerBodyYawTarget());
 	if (g_menu.main.misc.debug.get()) {
-		//g_nofity.add("saved %s lby angle at %i", target, target->m_flLowerBodyYawTarget());
+		g_cl.print("saved %s lby angle at %i", target, target->m_flLowerBodyYawTarget());
 		// why can't i call g_notify wtf
+		// fuck g_notify, im using print >:(
 	}
 	// if we hit head
 	// shoot at this 5 more times.

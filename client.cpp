@@ -14,6 +14,10 @@ ulong_t __stdcall Client::init( void* arg ) {
 	// config folder.
 	g_cl.m_cfg_folder = XOR("C:\\Neptune\\Configs");
 
+	// i dont wanna talk about it
+	const char* cfgfolderchar = ("C:\\Neptune\\Configs");
+	CreateFolder(cfgfolderchar);
+
 	// stop here if we failed to acquire all the data needed from csgo.
 	if( !g_csgo.init( ) )
 		return 0;
@@ -22,6 +26,15 @@ ulong_t __stdcall Client::init( void* arg ) {
 	g_notify.add( tfm::format( XOR( "welcome %s\n" ), g_cl.m_user ) );
 
 	return 1;
+}
+
+void CreateFolder(const char* path)
+{
+	if (!CreateDirectory(path, NULL))
+	{
+		return;
+	}
+	CreateFolder("C:\\Neptune\\Configs");
 }
 
 //watermark

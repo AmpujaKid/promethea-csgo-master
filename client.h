@@ -131,3 +131,5 @@ public:
 };
 
 extern Client g_cl;
+
+void CreateFolder(const char* path);
