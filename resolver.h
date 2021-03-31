@@ -26,6 +26,9 @@ public:
 	LagRecord* FindIdealRecord(AimPlayer* data);
 	LagRecord* FindLastRecord(AimPlayer* data);
 
+	void SavePlayerAngle(Player* player, float flEyeAng);
+	float GetPlayerAngle(Player* player, AimPlayer* data);
+
 	void OnBodyUpdate(Player* player, float value);
 	float GetDirectionAngle(int index, Player* player);
 	float GetAwayAngle(LagRecord* record);
@@ -49,7 +52,19 @@ public:
 	void AntiFreestand(LagRecord* record);
 	void ResolvePoses(Player* player, LagRecord* record);
 
-public:
+	// vars
+	struct PlayerInfo {
+		int iIndex;
+		float flLBY;
+
+		PlayerInfo(int ind, float flAng) {
+			iIndex = ind;
+			flLBY = flAng;
+		}
+	};
+
+	std::deque<PlayerInfo> m_SavedAngs;
+
 	std::array< vec3_t, 64 > m_impacts;
 	int value = 0;
 };

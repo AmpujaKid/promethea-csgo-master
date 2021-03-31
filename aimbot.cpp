@@ -3,7 +3,7 @@
 
 #define shift_ticks 13
 
-Aimbot g_aimbot{ };;
+Aimbot g_aimbot{ };
 
 void AimPlayer::UpdateAnimations( LagRecord *record ) {
 	CCSGOPlayerAnimState *state = m_player->m_PlayerAnimState( );

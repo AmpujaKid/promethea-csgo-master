@@ -2,7 +2,7 @@
 #include "includes.h"
 #include "client.h"
 #include "csgo.h"
-#include <lua.hpp>
+
 /*
 #define LOCKLUA() std::lock_guard<std::mutex> lock(g_pLuaEngine->m)
 
