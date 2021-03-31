@@ -69,15 +69,17 @@ todo:
 	last moving lby
 	lby log
 [antiaim]
-	broken anti aims
+	fix broken anti aims:
 		desync
 		jitter
 		swap
 		static backwards 
+	shift ticks on lby flick
+	finish tickbased lby
 [visuals]
-	fake chams
-	menu theme recode
+	world modulation
 [movement]
 	nothing for now
 [misc]
-	nothing for now
+	more specific debugger output
+	finish doubletap

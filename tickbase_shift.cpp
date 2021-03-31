@@ -2,6 +2,8 @@
 
 #define dont
 
+// I added a bunch of debug output for every stage in the doubletap process, its probably going to be a LOT of output, assuming I did everything right.
+
 TickbaseSystem g_tickbase;
 
 void TickbaseSystem::WriteUserCmd( bf_write* buf, CUserCmd* incmd, CUserCmd* outcmd ) {
@@ -72,20 +74,31 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 }
 
 void TickbaseSystem::PreMovement( ) {
-
+	if (g_menu.main.misc.debug.get())
+		g_notify.add(tfm::format(XOR("[debug] called premovement")));
 	// Invalidate next shift amount and the ticks to shift prior to shifting
 	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = g_menu.main.movement.slow_motion.get() ? 2 : 12;
 }
 
 void TickbaseSystem::PostMovement( ) {
+
+	if (g_menu.main.misc.debug.get())
+		g_notify.add(tfm::format(XOR("[debug] called postmovement")));
+
 	// Perform sanity checks to make sure we're able to shift
 	if( !g_cl.m_processing || !g_menu.main.aimbot.rapidfire.get()) {
 		return;
 	}
 
+	if (g_menu.main.misc.debug.get())
+		g_notify.add(tfm::format(XOR("[debug - postmovement] sanity check passed and we can shift")));
+
 	if( !g_cl.m_cmd || !g_cl.m_weapon) {
 		return;
 	}
+
+	if (g_menu.main.misc.debug.get())
+		g_notify.add(tfm::format(XOR("[debug - postmovement] m_cmd and m_weapon check passed")));
 
 	if(g_cl.m_weapon_id == REVOLVER ||
 		g_cl.m_weapon_id == C4 ||
@@ -98,12 +111,18 @@ void TickbaseSystem::PostMovement( ) {
 		return;
 	}
 
+	if (g_menu.main.misc.debug.get())
+		g_notify.add(tfm::format(XOR("[debug - postmovement] weapontype check passed")));
+
 	// Don't attempt to shift if we're not supposed to
 	if( !g_tickbase.m_shift_data.m_should_attempt_shift ) {
 		g_tickbase.m_shift_data.m_did_shift_before = false;
 		g_tickbase.m_shift_data.m_should_be_ready = false;
 		return;
 	}
+
+	if (g_menu.main.misc.debug.get())
+		g_notify.add(tfm::format(XOR("[debug - postmovement] should attempt shift check passed")));
 
 	g_tickbase.m_shift_data.old_tickbase = g_tickbase.m_shift_data.m_should_attempt_shift;
 
@@ -132,10 +151,14 @@ void TickbaseSystem::PostMovement( ) {
 		// Tell the cheat to shift tick-base and disable fakelag
 		g_tickbase.m_shift_data.m_next_shift_amount = g_cl.m_goal_shift;
 		*g_cl.m_packet = true;
+		if (g_menu.main.misc.debug.get())
+			g_notify.add(tfm::format(XOR("[debug - postmovement] asking neptune to doubletap")));
 	}
 	else {
 		g_tickbase.m_shift_data.m_next_shift_amount = 0;
 		g_tickbase.m_shift_data.m_should_be_ready = false;
+		if (g_menu.main.misc.debug.get())
+			g_notify.add(tfm::format(XOR("[debug - postmovement] we cant doubletap")));
 	}
 
 	// we want to recharge after stopping fake duck.
@@ -147,6 +170,9 @@ void TickbaseSystem::PostMovement( ) {
 
 		g_tickbase.m_shift_data.m_should_disable = true;
 
+		if (g_menu.main.misc.debug.get())
+			g_notify.add(tfm::format(XOR("[debug - postmovement] we fakeducked and need to recharge")));
+
 		return;
 	}
 
@@ -155,13 +181,12 @@ void TickbaseSystem::PostMovement( ) {
 		// Prevent m_iTicksAllowedForProcessing from being incremented.
 		g_cl.m_cmd->m_tick = INT_MAX;
 		// Determine if we're able to double-tap  
-		// note - slow walk shift is such a weird exploit to code.
-		if (g_menu.main.antiaim.lbyexploit.get() ? (!g_menu.main.movement.slow_motion.get() && bCanShootIn12Ticks) : bCanShootIn12Ticks) {
+		if (bCanShootIn12Ticks) {
 			if (g_tickbase.m_shift_data.m_prepare_recharge && !bIsShooting) {
 				g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
 				g_tickbase.m_shift_data.m_prepare_recharge = false;
 				if (g_menu.main.misc.debug.get())
-					g_notify.add(tfm::format(XOR("Attempting doubletap")));
+					g_notify.add(tfm::format(XOR("[debug - postmovement] attempting doubletap")));
 			}
 			else {
 				if (bIsShooting) {
@@ -188,7 +213,7 @@ void TickbaseSystem::PostMovement( ) {
 					g_cl.m_goal_shift = 14;
 					if (g_tickbase.m_shift_data.old_tickbase != g_tickbase.m_shift_data.m_should_attempt_shift) {
 						if (g_menu.main.misc.debug.get())
-							g_notify.add(tfm::format(XOR("Tried doubletap")));
+							g_notify.add(tfm::format(XOR("[debug - postmovement] old tickbase != should attempt shift")));
 
 						if (g_tickbase.m_shift_data.m_should_attempt_shift)
 							g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
@@ -200,7 +225,7 @@ void TickbaseSystem::PostMovement( ) {
 				}
 			}
 		}
-		else if (g_menu.main.movement.slow_motion.get()) {
+		/*else if (g_menu.main.movement.slow_motion.get()) {
 			g_cl.m_goal_shift = 8;
 			if (g_menu.main.misc.debug.get())
 				g_notify.add(tfm::format(XOR("Attempting to shift ticks")));
@@ -216,15 +241,19 @@ void TickbaseSystem::PostMovement( ) {
 
 				g_tickbase.m_shift_data.m_did_shift_before = false;
 			}
-		}
+		}*/
 		else {
 			g_tickbase.m_shift_data.m_prepare_recharge = true;
 			g_tickbase.m_shift_data.m_should_be_ready = false;
+			if (g_menu.main.misc.debug.get())
+				g_notify.add(tfm::format(XOR("[debug - postmovement] recharge needed")));
 		}
 	}
 	else {
 		g_tickbase.m_shift_data.m_prepare_recharge = true;
 		g_tickbase.m_shift_data.m_should_be_ready = false;
+		if (g_menu.main.misc.debug.get())
+			g_notify.add(tfm::format(XOR("[debug - postmovement] recharge needed")));
 	}
 
 	// Note DidShiftBefore state 
