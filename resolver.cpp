@@ -423,6 +423,8 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	// get predicted away angle for the player.
 	float away = GetAwayAngle(record);
 
+	int act = data->m_player->GetSequenceActivity(data->m_player->m_nSequence());
+
 	// pointer for easy access.
 	LagRecord* move = &data->m_walk_record;
 	float delta = record->m_anim_time - move->m_anim_time;
@@ -443,18 +445,34 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 		record->m_eye_angles.y = move->m_body;
 
 		record->m_mode = Modes::RESOLVE_STOPPED_MOVING;
+
+		return;
 	}
 
-	else if (data->m_body != data->m_old_body && data->m_body_index < 4) // flick prediction, has .22 flick predict
+	else if (record->m_anim_time >= data->m_body_update && data->m_body_index < 4) // flick prediction, has .22 flick predict
 	{
-		record->m_eye_angles.y = data->m_body;
+		if (act == 979 && IsYawSideways(data->m_player, record->m_body)) {
+			record->m_eye_angles.y = record->m_body;
+		}
+
+		// breaking below 120
+		else if (act == 980) {
+			if (record->m_body < 120) {
+				record->m_eye_angles.y = record->m_body;
+			}
+
+			else if (move->m_body < 120) {
+				record->m_eye_angles.y = move->m_body;
+			}
+		}
 
 		data->m_body_update = record->m_anim_time + 1.1f;
-
 		record->m_mode = Modes::RESOLVE_LBY_UPDATE;
+
+		return;
 	}
 
-	else if (g_input.GetKeyState(g_menu.main.aimbot.override_key.get())) {
+	if (g_input.GetKeyState(g_menu.main.aimbot.override_key.get())) {
 		Override(record);
 	}
 
@@ -466,7 +484,7 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	}
 
 	// freestanding if we have gone through that shit or missed last moving
-	else if (!data->m_moved || data->m_moving_index > 0) {
+	else if (!data->m_moved || data->m_body_index > 1) {
 		AntiFreestand(record);
 
 		record->m_mode = Modes::RESOLVE_FREESTAND;
@@ -474,7 +492,13 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 	else // bruteforce as a last fallback
 	{
-		record->m_eye_angles.y = GetPlayerAngle(data->m_player, data);
+		float flNewAng = GetPlayerAngle(data->m_player, data);
+
+		if (flNewAng != NULL)
+			record->m_eye_angles.y = flNewAng;
+
+		else
+			record->m_eye_angles.y = away + 180.f;
 
 		record->m_mode = Modes::RESOLVE_BRUTEFORCE;
 	}
