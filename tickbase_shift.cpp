@@ -29,11 +29,8 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 
 	m_nFrom = -1;
 
-	if (g_menu.main.movement.slow_motion.get())
-		g_tickbase.m_shift_data.m_ticks_to_shift = 2;
-
-	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
+	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 
 	int* m_pnNewCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x2C );
 	int* m_pnBackupCmds = ( int* )( ( uintptr_t )m_pBuffer - 0x30 );
@@ -74,8 +71,6 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 }
 
 void TickbaseSystem::PreMovement( ) {
-	if (g_menu.main.misc.debug.get())
-		g_notify.add(tfm::format(XOR("[debug] called premovement")));
 	// Invalidate next shift amount and the ticks to shift prior to shifting
 	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = g_menu.main.movement.slow_motion.get() ? 2 : 12;
 }
