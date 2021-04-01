@@ -71,12 +71,16 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 }
 
 void TickbaseSystem::PreMovement( ) {
+	return;
 	// Invalidate next shift amount and the ticks to shift prior to shifting
+	if (!g_cl.m_processing || !g_menu.main.aimbot.rapidfire.get()) {
+		return;
+	}
 	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = g_menu.main.movement.slow_motion.get() ? 2 : 12;
 }
 
 void TickbaseSystem::PostMovement( ) {
-
+	return;
 
 	// Perform sanity checks to make sure we're able to shift
 	if( !g_cl.m_processing || !g_menu.main.aimbot.rapidfire.get()) {

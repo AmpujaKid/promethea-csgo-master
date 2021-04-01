@@ -445,7 +445,7 @@ void HVH::DoRealAntiAim( ) {
 		bool air = g_menu.main.antiaim.body_fake_air.get( ) > 0 && m_mode == AntiAimMode::AIR;
 
 		// one tick before the update.
-		if( stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= ( g_cl.m_body_pred - g_cl.m_anim_frame ) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && !g_menu.main.antiaim.lbyexploit.get() ) {
+		if( stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= ( g_cl.m_body_pred - g_cl.m_anim_frame ) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred ) {
 			// z mode.
 			if (g_menu.main.antiaim.body_fake_stand.get() == 3)
 				g_cl.m_cmd->m_view_angles.y -= 150.f;
@@ -462,9 +462,14 @@ void HVH::DoRealAntiAim( ) {
 				}
 			}
 
-			else if (g_menu.main.antiaim.body_fake_stand.get() == 8 && g_tickbase.m_shift_data.m_can_shift_tickbase) {
-				// shift 2 ticks
+			else if (g_menu.main.antiaim.body_fake_stand.get() == 8) {
+				g_cl.m_tick = g_csgo.m_globals->m_curtime + 2;
 			}
+		}
+
+		// one tick after the update (if m_tick was changed)
+		if (stand && g_cl.m_tick >= (g_cl.m_body_pred - g_cl.m_anim_frame) && g_cl.m_tick < g_cl.m_body_pred) {
+			m_animbreak ? g_csgo.m_net->m_out_seq -= 2 : g_csgo.m_net->m_out_seq += 2;
 		}
 
 		else if (stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= (g_cl.m_body_pred - g_cl.m_anim_frame + g_csgo.m_globals->m_tick_count) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && g_menu.main.antiaim.lbyexploit.get()) {
@@ -702,7 +707,7 @@ void HVH::DoFakeAntiAim( ) {
 	switch (g_menu.main.antiaim.fake_yaw.get()) {
 		// desync (fixed maybe i gotta test rq)
 	case 1:
-		m_jitter ? g_cl.m_cmd->m_view_angles.y += 110.f : g_cl.m_cmd->m_view_angles.y -= 110.f;
+		m_jitter ? g_cl.m_cmd->m_view_angles.y += 116.f : g_cl.m_cmd->m_view_angles.y -= 106.f;
 		m_jitter = !m_jitter;
 		//jitter.
 	case 2: {
@@ -958,10 +963,9 @@ void HVH::SendPacket() {
 			//	break;
 			//}
 			// i think that theres some other stuff we can do with this, but idk... maybe jump forward the tick before the flick and then jump back here?
-			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime && g_menu.main.antiaim.body_fake_stand.get() == 8) {
+			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
 				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
-				if (g_menu.main.misc.debug.get())
-					g_notify.add("we set the tick");
+				m_animbreak = !m_animbreak;
 			}
 		}
 

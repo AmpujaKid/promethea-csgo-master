@@ -16,7 +16,7 @@ ulong_t __stdcall Client::init( void* arg ) {
 
 	// i dont wanna talk about it
 	const char* cfgfolderchar = ("C:\\Neptune\\Configs");
-	CreateFolder(cfgfolderchar);
+	//CreateFolder(cfgfolderchar);
 
 	// stop here if we failed to acquire all the data needed from csgo.
 	if( !g_csgo.init( ) )
@@ -248,7 +248,7 @@ void Client::StartMove( CUserCmd* cmd ) {
 	m_flags = m_local->m_fFlags( );
 
 	// do tickbase shift related code.
-	g_tickbase.PreMovement();
+	//g_tickbase.PreMovement();
 
 	// make sure prediction has ran on all usercommands.
 	// because prediction runs on frames, when we have low fps it might not predict all usercommands.
@@ -367,7 +367,7 @@ void Client::DoMove( ) {
 			m_cmd->m_buttons |= IN_USE;
 	}
 
-	if (g_cl.m_processing && g_tickbase.m_shift_data.m_should_attempt_shift && g_tickbase.m_shift_data.m_needs_recharge) {
+	/*if (g_cl.m_processing && g_tickbase.m_shift_data.m_should_attempt_shift && g_tickbase.m_shift_data.m_needs_recharge) {
 		--g_tickbase.m_shift_data.m_needs_recharge;
 
 		//g_tickbase.m_shift_data.m_did_shift_before = false;
@@ -377,7 +377,7 @@ void Client::DoMove( ) {
 		}
 
 		return;
-	}
+	}*/
 
 	// grenade prediction.
 	g_grenades.think( );
@@ -430,7 +430,7 @@ void Client::EndMove( CUserCmd* cmd ) {
 	m_old_shot = m_shot;
 
 	// finish tickbase shift related code.
-	g_tickbase.PostMovement();
+	//g_tickbase.PostMovement();
 }
 
 void Client::OnTick( CUserCmd* cmd ) {

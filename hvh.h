@@ -46,6 +46,7 @@ public:
 
 	bool   m_twist = false;
 	bool   m_jitter = false;
+	bool   m_animbreak = false;
 	bool   m_step_switch;
 	bool   switchDir;
 	bool   inFlick;
