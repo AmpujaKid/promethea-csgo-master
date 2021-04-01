@@ -49,6 +49,13 @@
 [MISC]
 - Added Slow Walk
 
+=====TBD=====
+[RAGEBOT]
+- Major Resolver Improvements
+[ANTIAIM]
+- New Antiaim Lby "insert lby name once we choose one"
+[VISUALS]
+- New beam mode
 
 
 

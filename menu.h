@@ -165,11 +165,11 @@ public:
 		RegisterElement(&baim_key, 1);
 
 		rapidfire.setup(XOR("doubletap"), XOR("rapidfire"));
-		//RegisterElement(&rapidfire, 1);
+		RegisterElement(&rapidfire, 1);
 
 		doubletap.setup(XOR("teleport on key"), XOR("doubletap"));
 		doubletap.SetToggleCallback(callbacks::ToggleDT);
-		RegisterElement(&doubletap, 1);
+		//RegisterElement(&doubletap, 1);
 
 		override_key.setup(XOR("override"), XOR("override_key"));
 		RegisterElement(&override_key, 1);
