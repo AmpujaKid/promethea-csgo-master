@@ -1782,19 +1782,29 @@ void Visuals::DrawBeams( ) {
 				// note - lazarus & dex; possible beam models: sprites/purplelaser1.vmt | sprites/white.vmt
 				beam_info.m_vecStart = start;
 				beam_info.m_vecEnd = end;
-				beam_info.m_nModelIndex = g_csgo.m_model_info->GetModelIndex( XOR( "sprites/physbeam.vmt" ) );
-				beam_info.m_pszModelName = XOR( "sprites/physbeam.vmt" );
+				if (g_menu.main.visuals.impact_type.get() == 1) {
+					beam_info.m_nModelIndex = g_csgo.m_model_info->GetModelIndex(XOR("sprites/purplelaser1.vmt"));
+					beam_info.m_pszModelName = XOR("sprites/purplelaser1.vmt");
+				}
+				else if (g_menu.main.visuals.impact_type.get() == 1) {
+					beam_info.m_nModelIndex = g_csgo.m_model_info->GetModelIndex(XOR("sprites/white.vmt"));
+					beam_info.m_pszModelName = XOR("sprites/white.vmt");
+				}
+				else {
+					beam_info.m_nModelIndex = g_csgo.m_model_info->GetModelIndex(XOR("sprites/physbeam.vmt"));
+					beam_info.m_pszModelName = XOR("sprites/physbeam.vmt");
+				}
 				beam_info.m_flHaloScale = 0.f;
 				beam_info.m_flLife = g_menu.main.visuals.impact_beams_time.get( );
 				beam_info.m_flWidth = 3.0f;
 				beam_info.m_flEndWidth = 5.0f;
 				beam_info.m_flFadeLength = 0.f;
-				beam_info.m_flAmplitude = 15.f;   // beam 'jitter'.
+				beam_info.m_flAmplitude = 5.f;   // beam 'jitter'.
 				beam_info.m_flBrightness = 255.f;
-				beam_info.m_flSpeed = 0.4f;  // seems to control how fast the 'scrolling' of beam is... once fully spawned.
+				beam_info.m_flSpeed = 0.2f;  // seems to control how fast the 'scrolling' of beam is... once fully spawned.
 				beam_info.m_nStartFrame = 0;
 				beam_info.m_flFrameRate = 1.f;
-				beam_info.m_nSegments = 4;     // controls how much of the beam is 'split up', usually makes m_flAmplitude and m_flSpeed much more noticeable.
+				beam_info.m_nSegments = 2;     // controls how much of the beam is 'split up', usually makes m_flAmplitude and m_flSpeed much more noticeable.
 				beam_info.m_bRenderable = true;  // must be true or you won't see the beam.
 				beam_info.m_nFlags = 0x8300;
 

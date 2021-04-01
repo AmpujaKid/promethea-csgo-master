@@ -66,6 +66,16 @@ void Chams::init( ) {
 		"$alpha" "0.8"
 		})#";
 
+	std::ofstream("csgo/materials/onetap_overlay.vmt") << R"#("VertexLitGeneric" 
+		{
+		$alpha 0.8
+		$additive 1
+		$envmap "models/effects/cube_white"
+		$envmaptint "[0 0 0]"
+		$envmapfresnel 1
+		$envmapfresnelminmaxexp "[0 16 12]"
+		})#";
+
 	std::ofstream("csgo\\materials\\promethea_metallic.vmt") << R"#("VertexLitGeneric" 
 	{
 		"$basetexture" "vgui/white_additive"
@@ -79,6 +89,26 @@ void Chams::init( ) {
 		"$halflambert"  "1"
 		"$znearer"      "0"
 		"$flat"         "1"
+		})#";
+
+	std::ofstream("csgo\\materials\\skeetchams.vmt") << R"#("VertexLitGeneric" 
+	{
+		$basetexture "vgui/white_additive"
+		$envmap "models/effects/cube_white"
+		$normalmapalphaenvmapmask 1
+		$envmaptint "[0.37 0.68 0.89]"
+		$envmapcontrast 1
+		$envmapfresnel 1
+		$envmapfresnelminmaxexp "[0 1 2]"
+		$phong 1
+		$phongfresnelranges "[0.5 0.75 1]"
+		$halflambert 1
+		$phongexponent 5
+		$selfillum 1
+		$nofog 1
+		$flat 1
+		$model 1
+		$znearer 0
 		})#";
 
 	std::ofstream("csgo\\materials\\promethea_shaded.vmt") << R"#("VertexLitGeneric" 
@@ -107,6 +137,8 @@ void Chams::init( ) {
 	m_materials.push_back(g_csgo.m_material_system->FindMaterial(XOR("promethea_metallic"), XOR("Model textures")));
 	m_materials.push_back(g_csgo.m_material_system->FindMaterial(XOR("promethea_shaded"), XOR("Model textures")));
 	m_materials.push_back(g_csgo.m_material_system->FindMaterial(XOR("promethea_glowoverlay"), nullptr));
+	m_materials.push_back(g_csgo.m_material_system->FindMaterial(XOR("onetap_overlay"), XOR("Model textures")));
+	m_materials.push_back(g_csgo.m_material_system->FindMaterial(XOR("skeetchams"), XOR("Model textures")));
 
 	for (int i = 0; i < m_materials.size(); i++) {
 		m_materials[i]->IncrementReferenceCount();

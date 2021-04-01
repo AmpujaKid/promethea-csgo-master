@@ -740,6 +740,7 @@ public:
 	Checkbox      transparent_props;
 	Checkbox      spectators;
 	Checkbox      impact_beams;
+	Dropdown      impact_type;
 	Colorpicker   impact_beams_color;
 	Slider        impact_beams_time;
 
@@ -882,6 +883,9 @@ public:
 
 		impact_beams.setup(XOR("impact beams"), XOR("impact_beams"));
 		RegisterElement(&impact_beams, 1);
+
+		impact_type.setup(XOR("impact beam type"), XOR("impact_type"), { XOR("beam"), XOR("laser"), XOR("white") });
+		RegisterElement(&impact_type, 1);
 
 		impact_beams_color.setup(XOR("impact beams color"), XOR("impact_beams_color"), colors::light_blue);
 		RegisterElement(&impact_beams_color, 1);
