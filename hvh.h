@@ -45,6 +45,7 @@ public:
 	int    m_lby_counter = 0;
 
 	bool   m_twist = false;
+	bool   m_jitter = false;
 	bool   m_step_switch;
 	bool   switchDir;
 	bool   inFlick;

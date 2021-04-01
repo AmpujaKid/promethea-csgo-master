@@ -516,10 +516,10 @@ void HVH::DoRealAntiAim( ) {
 					// suppress 979.
 				case 5:
 					if (inFlick) {
-						g_csgo.m_net->m_out_seq -= 1;
+						g_csgo.m_net->m_out_seq -= 2;
 						inFlick = false;
 					}
-					g_cl.m_cmd->m_view_angles.y -= 148.f;
+					g_cl.m_cmd->m_view_angles.y -= 116.f;
 					break;
 
 					// distortion
@@ -700,21 +700,15 @@ void HVH::DoFakeAntiAim( ) {
 	*g_cl.m_packet = true;
 
 	switch (g_menu.main.antiaim.fake_yaw.get()) {
-		// desync (doing this probably doesnt work but fuck you im doing it anyways
+		// desync (fixed maybe i gotta test rq)
 	case 1:
-		switch (jitter_thing % 2) {
-		case 1:
-			g_cl.m_cmd->m_view_angles.y = -88.f;
-		case 2:
-			g_cl.m_cmd->m_view_angles.y = 168.f;
-		default:
-			g_cl.m_cmd->m_view_angles.y = m_direction + 118.f;
-		}
+		m_jitter ? g_cl.m_cmd->m_view_angles.y += 110.f : g_cl.m_cmd->m_view_angles.y -= 110.f;
+		m_jitter = !m_jitter;
 		//jitter.
 	case 2: {
 		// get fake jitter range from menu.
 		float range = g_menu.main.antiaim.fake_jitter_range.get( ) / 2.f;
-		g_cl.m_cmd->m_view_angles.y = m_direction + range;
+		g_cl.m_cmd->m_view_angles.y += m_direction + range;
 		range *= -1;
 	}
 

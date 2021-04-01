@@ -55,7 +55,8 @@
 [ANTIAIM]
 - New Antiaim Lby "insert lby name once we choose one"
 [VISUALS]
-- New beam mode
+- New beam modes
+- New cham types
 
 
 
