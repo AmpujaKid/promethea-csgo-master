@@ -407,7 +407,7 @@ void Client::EndMove( CUserCmd* cmd ) {
 	// this packet will be sent.
 	if( *m_packet ) {
 		g_hvh.m_step_switch = ( bool ) g_csgo.RandomInt( 0, 1 );
-		// ewww RandomInt
+
 		// we are sending a packet, so this will be reset soon.
 		// store the old value.
 		m_old_lag = m_lag;
