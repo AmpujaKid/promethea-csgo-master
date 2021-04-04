@@ -186,7 +186,7 @@ void TickbaseSystem::PostMovement( ) {
 					// therefore let's just fakelag 2 ticks - resulting in our max shift ticks being 14
 					// cos sv_maxusrcmdprocessticks Take Away Two Is Fourteen
 					// (assuming that the convar wasn't changed to a higher/lower value).
-					g_cl.m_goal_shift = 14;
+					g_cl.m_goal_shift = 0;
 					if (g_tickbase.m_shift_data.old_tickbase != g_tickbase.m_shift_data.m_should_attempt_shift) {
 
 						if (g_tickbase.m_shift_data.m_should_attempt_shift)

@@ -56,7 +56,7 @@ void Chams::SetupMaterial( IMaterial* mat, Color col, bool z_flag ) {
 
 void Chams::init( ) {
 
-	std::ofstream("csgo/materials/promethea_glowoverlay.vmt") << R"#("VertexLitGeneric" 
+	std::ofstream("csgo\\materials\\promethea_glowoverlay.vmt") << R"#("VertexLitGeneric" 
 		{
 		"$additive" "1"
 		"$envmap" "models/effects/cube_white"
@@ -66,7 +66,7 @@ void Chams::init( ) {
 		"$alpha" "0.8"
 		})#";
 
-	std::ofstream("csgo/materials/onetap_overlay.vmt") << R"#("VertexLitGeneric" 
+	std::ofstream("csgo\\materials\\onetap_overlay.vmt") << R"#("VertexLitGeneric" 
 		{
 		$alpha 0.8
 		$additive 1

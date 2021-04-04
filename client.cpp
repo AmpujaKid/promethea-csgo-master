@@ -343,6 +343,10 @@ void Client::DoMove( ) {
 			penetration::run( &in, &tmp_pen_data );
 		}
 
+		// stupid fix for stupid fakeduck
+		if (!g_menu.main.antiaim.fakeduck.get())
+			g_hvh.m_fake_duck = false;
+
 		// set pen data for penetration crosshair.
 		m_pen_data = tmp_pen_data;
 

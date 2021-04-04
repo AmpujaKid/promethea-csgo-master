@@ -279,12 +279,12 @@ public:
 		distortion_swap_amount.AddShowCallback(callbacks::IsAntiAimModeDistortion);
 		RegisterElement(&distortion_swap_amount);
 
-		jitter_range_stand.setup("", XOR("jitter_range_stnd"), 1.f, 180.f, false, 0, 45.f, 5.f, XOR(L"�"));
+		jitter_range_stand.setup("", XOR("jitter_range_stnd"), 1.f, 180.f, false, 0, 45.f, 5.f, XOR(L""));
 		jitter_range_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		jitter_range_stand.AddShowCallback(callbacks::IsStandYawJitter);
 		RegisterElement(&jitter_range_stand);
 
-		rot_range_stand.setup("", XOR("rot_range_stnd"), 0.f, 360.f, false, 0, 360.f, 5.f, XOR(L"�"));
+		rot_range_stand.setup("", XOR("rot_range_stnd"), 0.f, 360.f, false, 0, 360.f, 5.f, XOR(L""));
 		rot_range_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		rot_range_stand.AddShowCallback(callbacks::IsStandYawRotate);
 		RegisterElement(&rot_range_stand);
@@ -310,7 +310,7 @@ public:
 		dir_time_stand.AddShowCallback(callbacks::IsStandDirAuto);
 		RegisterElement(&dir_time_stand);
 
-		dir_custom_stand.setup("", XOR("dir_custom_stnd"), -180.f, 180.f, false, 0, 0.f, 5.f, XOR(L"�"));
+		dir_custom_stand.setup("", XOR("dir_custom_stnd"), -180.f, 180.f, false, 0, 0.f, 5.f, XOR(L""));
 		dir_custom_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		dir_custom_stand.AddShowCallback(callbacks::HasStandYaw);
 		dir_custom_stand.AddShowCallback(callbacks::IsStandDirCustom);
@@ -331,7 +331,7 @@ public:
 		body_fake_stand.AddShowCallback(callbacks::HasStandYaw);
 		RegisterElement(&body_fake_stand);
 
-		body_fake_offset_stand.setup("", XOR("body_fake_offset_stand"), -180.f, 180.f, false, 0, 0.f, 1.f, XOR(L"�"));
+		body_fake_offset_stand.setup("", XOR("body_fake_offset_stand"), -180.f, 180.f, false, 0, 0.f, 1.f, XOR(L""));
 		body_fake_offset_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		body_fake_offset_stand.AddShowCallback(callbacks::HasStandYaw);
 		body_fake_offset_stand.AddShowCallback(callbacks::IsFakeBodyCustomStand);
@@ -346,12 +346,12 @@ public:
 		yaw_walk.AddShowCallback(callbacks::IsAntiAimModeWalk);
 		RegisterElement(&yaw_walk);
 
-		jitter_range_walk.setup("", XOR("jitter_range_walk"), 1.f, 180.f, false, 0, 45.f, 5.f, XOR(L"�"));
+		jitter_range_walk.setup("", XOR("jitter_range_walk"), 1.f, 180.f, false, 0, 45.f, 5.f, XOR(L""));
 		jitter_range_walk.AddShowCallback(callbacks::IsAntiAimModeWalk);
 		jitter_range_walk.AddShowCallback(callbacks::IsWalkYawJitter);
 		RegisterElement(&jitter_range_walk);
 
-		rot_range_walk.setup("", XOR("rot_range_walk"), 0.f, 360.f, false, 0, 360.f, 5.f, XOR(L"�"));
+		rot_range_walk.setup("", XOR("rot_range_walk"), 0.f, 360.f, false, 0, 360.f, 5.f, XOR(L""));
 		rot_range_walk.AddShowCallback(callbacks::IsAntiAimModeWalk);
 		rot_range_walk.AddShowCallback(callbacks::IsWalkYawRotate);
 		RegisterElement(&rot_range_walk);
@@ -377,7 +377,7 @@ public:
 		dir_time_walk.AddShowCallback(callbacks::IsWalkDirAuto);
 		RegisterElement(&dir_time_walk);
 
-		dir_custom_walk.setup("", XOR("dir_custom_walk"), -180.f, 180.f, false, 0, 0.f, 5.f, XOR(L"�"));
+		dir_custom_walk.setup("", XOR("dir_custom_walk"), -180.f, 180.f, false, 0, 0.f, 5.f, XOR(L""));
 		dir_custom_walk.AddShowCallback(callbacks::IsAntiAimModeWalk);
 		dir_custom_walk.AddShowCallback(callbacks::WalkHasYaw);
 		dir_custom_walk.AddShowCallback(callbacks::IsWalkDirCustom);
@@ -397,12 +397,12 @@ public:
 		yaw_air.AddShowCallback(callbacks::IsAntiAimModeAir);
 		RegisterElement(&yaw_air);
 
-		jitter_range_air.setup("", XOR("jitter_range_air"), 1.f, 180.f, false, 0, 45.f, 5.f, XOR(L"�"));
+		jitter_range_air.setup("", XOR("jitter_range_air"), 1.f, 180.f, false, 0, 45.f, 5.f, XOR(L""));
 		jitter_range_air.AddShowCallback(callbacks::IsAntiAimModeAir);
 		jitter_range_air.AddShowCallback(callbacks::IsAirYawJitter);
 		RegisterElement(&jitter_range_air);
 
-		rot_range_air.setup("", XOR("rot_range_air"), 0.f, 360.f, false, 0, 360.f, 5.f, XOR(L"�"));
+		rot_range_air.setup("", XOR("rot_range_air"), 0.f, 360.f, false, 0, 360.f, 5.f, XOR(L""));
 		rot_range_air.AddShowCallback(callbacks::IsAntiAimModeAir);
 		rot_range_air.AddShowCallback(callbacks::IsAirYawRotate);
 		RegisterElement(&rot_range_air);
@@ -428,7 +428,7 @@ public:
 		dir_time_air.AddShowCallback(callbacks::IsAirDirAuto);
 		RegisterElement(&dir_time_air);
 
-		dir_custom_air.setup("", XOR("dir_custom_air"), -180.f, 180.f, false, 0, 0.f, 5.f, XOR(L"�"));
+		dir_custom_air.setup("", XOR("dir_custom_air"), -180.f, 180.f, false, 0, 0.f, 5.f, XOR(L""));
 		dir_custom_air.AddShowCallback(callbacks::IsAntiAimModeAir);
 		dir_custom_air.AddShowCallback(callbacks::AirHasYaw);
 		dir_custom_air.AddShowCallback(callbacks::IsAirDirCustom);
@@ -454,19 +454,19 @@ public:
 		fake_yaw.setup(XOR("fake yaw"), XOR("fake_yaw"), { XOR("off"), XOR("desync"), XOR("jitter"), XOR("float"), XOR("fake-flick"), XOR("jitter rotate"), XOR("rotate"), XOR("swap"), XOR("static backwards") });
 		RegisterElement(&fake_yaw, 1);
 
-		fake_jitter_range.setup("", XOR("fake_jitter_range"), 1.f, 90.f, false, 0, 0.f, 5.f, XOR(L"�"));
+		fake_jitter_range.setup("", XOR("fake_jitter_range"), 1.f, 90.f, false, 0, 0.f, 5.f, XOR(L""));
 		fake_jitter_range.AddShowCallback(callbacks::IsFakeAntiAimJitter);
 		RegisterElement(&fake_jitter_range, 1);
 
-		fake_swap_range.setup("", XOR("fake_swap_range"), 10.f, 50.f, false, 0, 0.f, 5.f, XOR(L"�"));
+		fake_swap_range.setup("", XOR("fake_swap_range"), 10.f, 50.f, false, 0, 0.f, 5.f, XOR(L""));
 		fake_swap_range.AddShowCallback(callbacks::IsFakeAntiAimSwap);
 		RegisterElement(&fake_swap_range, 1);
 
-		fake_flick_range.setup("", XOR("fake_flick_range"), -180.f, 180.f, false, 0, 0.f, 1.f, XOR(L"�"));
+		fake_flick_range.setup("", XOR("fake_flick_range"), -180.f, 180.f, false, 0, 0.f, 1.f, XOR(L""));
 		fake_flick_range.AddShowCallback(callbacks::IsFakeAntiAimFlick);
 		RegisterElement(&fake_flick_range, 1);
 
-		fake_flick_distance.setup("distance from real", XOR("fake_flick_range"), -180.f, 180.f, true, 0, 0.f, 1.f, XOR(L"♦"));
+		fake_flick_distance.setup("distance from real", XOR("fake_flick_range"), -180.f, 180.f, true, 0, 0.f, 1.f, XOR(L""));
 		fake_flick_distance.AddShowCallback(callbacks::IsFakeAntiAimFlick);
 		RegisterElement(&fake_flick_distance, 1);
 
@@ -496,8 +496,8 @@ public:
 		lbyexploit.setup(XOR("tickbase lby"), XOR("lbyexploit"));
 		//RegisterElement(&lbyexploit, 1);
 
-		//fakeduck.setup(XOR("fakeduck"), XOR("fakeduck"));
-		//RegisterElement(&fakeduck, 1);
+		fakeduck.setup(XOR("fakeduck"), XOR("fakeduck"));
+		RegisterElement(&fakeduck, 1);
 	}
 };
 
@@ -2213,7 +2213,7 @@ public:
 		hitmarker.setup(XOR("hitmarker"), XOR("hitmarker"), { XOR("screen"), XOR("world"), XOR("text") });
 		RegisterElement(&hitmarker, 1);
 
-		hitsound.setup("hitsound", XOR("hitsound"), { XOR("off"), XOR("arena switch"), XOR("cod"), XOR("bubble"), XOR("bell") });
+		hitsound.setup("hitsound", XOR("hitsound"), { XOR("off"), XOR("arena switch"), XOR("cod"), XOR("bubble"), XOR("bell"), XOR("star wars") });
 		RegisterElement(&hitsound, 1);
 
 		ragdoll_force.setup(XOR("ragdoll force"), XOR("ragdoll_force"));

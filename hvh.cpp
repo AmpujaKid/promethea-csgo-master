@@ -463,13 +463,13 @@ void HVH::DoRealAntiAim( ) {
 			}
 
 			else if (g_menu.main.antiaim.body_fake_stand.get() == 8) {
-				g_cl.m_tick = g_csgo.m_globals->m_curtime + 2;
+				//g_cl.m_tick = g_csgo.m_globals->m_curtime + 2;
 			}
 		}
 
 		// one tick after the update (if m_tick was changed)
 		if (stand && g_cl.m_tick >= (g_cl.m_body_pred - g_cl.m_anim_frame) && g_cl.m_tick < g_cl.m_body_pred) {
-			m_animbreak ? g_csgo.m_net->m_out_seq -= 2 : g_csgo.m_net->m_out_seq += 2;
+			//m_animbreak ? g_csgo.m_net->m_out_seq -= 2 : g_csgo.m_net->m_out_seq += 2;
 		}
 
 		else if (stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= (g_cl.m_body_pred - g_cl.m_anim_frame + g_csgo.m_globals->m_tick_count) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && g_menu.main.antiaim.lbyexploit.get()) {
@@ -480,7 +480,7 @@ void HVH::DoRealAntiAim( ) {
 			}
 			// suppress 979
 			else if (g_menu.main.antiaim.body_fake_stand.get() == 5) {
-				g_csgo.m_net->m_out_seq -= 2;
+				//g_csgo.m_net->m_out_seq -= 2;
 			}
 		}
 
@@ -539,21 +539,15 @@ void HVH::DoRealAntiAim( ) {
 					// lby 2.0 (shake)
 				case 7:
 					if (m_lby_counter == 0) {
-						g_cl.m_cmd->m_view_angles.y += 15;
-						if (g_menu.main.misc.debug.get())
-							g_notify.add("lby += 15");
+						g_cl.m_cmd->m_view_angles.y += 115;
 						m_lby_counter += 1;
 					}
 					else if (m_lby_counter == 1) {
-						g_cl.m_cmd->m_view_angles.y -= 35;
-						if (g_menu.main.misc.debug.get())
-							g_notify.add("lby -= 35");
+						g_cl.m_cmd->m_view_angles.y -= 135;
 						m_lby_counter += 1;
 					}
 					else {
 						g_cl.m_cmd->m_view_angles.y = 180;
-						if (g_menu.main.misc.debug.get())
-							g_notify.add("lby = 180");
 						m_lby_counter = 0;
 					}
 					break;
@@ -562,7 +556,7 @@ void HVH::DoRealAntiAim( ) {
 				case 8:
 					// do this on your lby flick
 					g_cl.m_cmd->m_view_angles.y -= 148.f;
-					g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
+					//g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
 					break;
 				}
 			}
@@ -939,11 +933,11 @@ void HVH::SendPacket() {
 			}
 
 			// commenting in gives the 'p2c effect' where it turns on fakelag between shots, though cba adjusting the current recharging..
-			else if (g_tickbase.m_shift_data.m_should_attempt_shift && ((!g_tickbase.m_shift_data.m_should_be_ready && g_tickbase.m_shift_data.m_prepare_recharge) || g_tickbase.m_shift_data.m_needs_recharge || g_tickbase.m_shift_data.m_should_be_ready)) {
+			/*else if (g_tickbase.m_shift_data.m_should_attempt_shift && ((!g_tickbase.m_shift_data.m_should_be_ready && g_tickbase.m_shift_data.m_prepare_recharge) || g_tickbase.m_shift_data.m_needs_recharge || g_tickbase.m_shift_data.m_should_be_ready)) {
 				g_cl.m_should_lag = true;
 				limit = 2;
 				mode = 0;
-			}
+			}*/
 
 			 //before flick
 
@@ -964,7 +958,7 @@ void HVH::SendPacket() {
 			//}
 			// i think that theres some other stuff we can do with this, but idk... maybe jump forward the tick before the flick and then jump back here?
 			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
-				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
+				//g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
 				m_animbreak = !m_animbreak;
 			}
 		}
@@ -1047,10 +1041,10 @@ void HVH::SendPacket() {
 		g_cl.m_weapon_fire = false;
 	}
 }
-/*
+
 void HVH::FakeDuck()
 {
-	if (!g_csgo.m_cl || !g_cl.m_cmd)
+	if (!g_csgo.m_cl || !g_cl.m_cmd || !g_menu.main.antiaim.fakeduck.get())
 		return;
 
 	// ensure infinite duck.
@@ -1068,4 +1062,3 @@ void HVH::FakeDuck()
 		g_cl.m_cmd->m_buttons |= IN_DUCK;
 	}
 }
-*/

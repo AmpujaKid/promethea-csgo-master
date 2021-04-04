@@ -32,17 +32,6 @@ void Shots::OnShotFire( Player *target, float damage, int bullets, LagRecord *re
 	// no need to keep an insane amount of shots.
 	while ( m_shots.size( ) > 128 )
 		m_shots.pop_back( );
-
-	// printing the resolver mode
-	
-	if (Resolver::Modes::RESOLVE_FREESTAND)
-		g_notify.add("[resolver] tried resolve mode - freestanding\n");
-
-	else if (Resolver::Modes::RESOLVE_STAND)
-		g_notify.add("[resolver] tried resolve mode - stand\n");
-
-	else if (Resolver::Modes::RESOLVE_BRUTEFORCE)
-		g_notify.add("[resolver] tried resolve mode - bruteforce\n");
 }
 
 void Shots::OnImpact( IGameEvent *evt ) {
@@ -50,6 +39,7 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	vec3_t     pos, dir, start, end;
 	float      time;
 	CGameTrace trace;
+	didPrintResolveMode = false;
 
 	// screw this.
 	if ( !evt || !g_cl.m_local )
@@ -60,6 +50,20 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	if ( attacker != g_csgo.m_engine->GetLocalPlayer( ) )
 		return;
 
+	if (Resolver::Modes::RESOLVE_FREESTAND && !didPrintResolveMode) {
+		g_notify.add("[resolver] tried resolve mode - freestanding\n");
+		didPrintResolveMode = true;
+	}
+
+	else if (Resolver::Modes::RESOLVE_STAND && !didPrintResolveMode) {
+		g_notify.add("[resolver] tried resolve mode - stand\n");
+		didPrintResolveMode = true;
+	}
+
+	else if (Resolver::Modes::RESOLVE_BRUTEFORCE && !didPrintResolveMode) {
+		g_notify.add("[resolver] tried resolve mode - bruteforce\n");
+		didPrintResolveMode = true;
+	}
 	// decode impact coordinates and convert to vec3.
 	pos = {
 		evt->m_keys->FindKey( HASH( "x" ) )->GetFloat( ),
@@ -188,7 +192,8 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	// this is a miss due to wrong angles.
 	else if ( trace.m_entity == target ) {
 		size_t mode = shot->m_record->m_mode;
-		g_notify.add(XOR("Missed due to bad resolve\n"));
+		if (!trace.m_entity || !trace.m_entity->IsPlayer() || trace.m_entity != target)
+			g_notify.add(XOR("Missed due to bad resolve\n"));
 		// if we miss a shot on body update.
 		// we can chose to stop shooting at them.
 		//if (mode == Resolver::Modes::RESOLVE_BODY)
@@ -287,6 +292,9 @@ void Shots::OnHurt(IGameEvent* evt) {
 	case 4:
 		PlaySoundA(LPCSTR(neverlose), NULL, SND_MEMORY | SND_ASYNC);
 		break;
+	case 5:
+		PlaySoundA(LPCSTR(blaster), NULL, SND_MEMORY | SND_ASYNC);
+		break;
 	}
 
 	// print hit log.
@@ -368,9 +376,11 @@ void Shots::OnHurt(IGameEvent* evt) {
 
 	g_resolver.SavePlayerAngle(target, target->m_flLowerBodyYawTarget());
 	if (g_menu.main.misc.debug.get()) {
-		g_cl.print("saved %s lby angle at %i", target, target->m_flLowerBodyYawTarget());
+		std::string out = tfm::format(XOR("saved %s lby angle at %f \n"), name, target->m_flLowerBodyYawTarget());
+		g_notify.add(out);
 		// why can't i call g_notify wtf
 		// fuck g_notify, im using print >:(
+		// 3 days later: WTF WHY CAN I CALL G_NOTIFY NOW????? ffs
 	}
 	// if we hit head
 	// shoot at this 5 more times.

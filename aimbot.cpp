@@ -1,7 +1,7 @@
 #include "includes.h"
 #include "resolver.h"
 
-#define shift_ticks 13
+#define shift_ticks 0
 
 Aimbot g_aimbot{ };
 
@@ -421,8 +421,8 @@ void Aimbot::init( ) {
 	m_best_lag = std::numeric_limits< float >::max( );
 	m_best_height = std::numeric_limits< float >::max( );
 
-	if (!g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)
-		m_shoot_next_tick = false;
+	//if (!g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)
+		//m_shoot_next_tick = false;
 }
 
 void Aimbot::StripAttack( ) {
@@ -646,14 +646,12 @@ void Aimbot::find( ) {
 
 		if ( hit || !on ) {
 			// right click attack.
-			if(!g_tickbase.m_shift_data.m_should_attempt_shift ||  ((g_cl.m_goal_shift == 13 || g_tickbase.m_shift_data.m_should_disable) && g_tickbase.m_shift_data.m_should_attempt_shift) || g_cl.m_goal_shift == 7 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
-				if (g_menu.main.config.mode.get() == 1 && g_cl.m_weapon_id == REVOLVER)
-					g_cl.m_cmd->m_buttons |= IN_ATTACK2;
+			if (g_menu.main.config.mode.get() == 1 && g_cl.m_weapon_id == REVOLVER)
+				g_cl.m_cmd->m_buttons |= IN_ATTACK2;
 
-				// left click attack.
-				else
-					g_cl.m_cmd->m_buttons |= IN_ATTACK;
-			}
+			// left click attack.
+			else
+				g_cl.m_cmd->m_buttons |= IN_ATTACK;
 		}
 	}
 }
@@ -1101,9 +1099,9 @@ void Aimbot::apply( ) {
 			g_cl.m_shot = true;
 		}
 
-		if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
-			m_shoot_next_tick = true;
-		}
+		//if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
+			//m_shoot_next_tick = true;
+		//}
 	}
 }
 

@@ -50,6 +50,7 @@ public:
 	void OnShotFire( Player* target, float damage, int bullets, LagRecord* record );
 	void OnImpact( IGameEvent* evt );
 	void OnHurt( IGameEvent* evt );
+	bool       didPrintResolveMode = false;
 
 public:
 	std::array< std::string, 8 > m_groups = {
