@@ -1,7 +1,7 @@
 #include "includes.h"
 
 #define dont
-
+// whos ur daddy
 TickbaseSystem g_tickbase;
 
 void TickbaseSystem::WriteUserCmd( bf_write* buf, CUserCmd* incmd, CUserCmd* outcmd ) {
