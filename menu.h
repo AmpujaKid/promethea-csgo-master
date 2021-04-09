@@ -2260,7 +2260,7 @@ public:
 		SetTitle(XOR("config"));
 
 		menu_color.setup(XOR("menu color"), XOR("menu_color"), colors::light_blue, &g_gui.m_color);
-		RegisterElement(&menu_color);
+		//RegisterElement(&menu_color);
 
 		mode.setup(XOR("safety mode"), XOR("mode"), { XOR("matchmaking"), XOR("no-spread") });
 		RegisterElement(&mode, 1);
@@ -2346,37 +2346,37 @@ public:
 		// aim.
 		RegisterTab(&aimbot);
 		aimbot.init();
-		g_notify.add(tfm::format(XOR("aimbot successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("aimbot successfully initialized\n")));
 
 		RegisterTab(&antiaim);
 		antiaim.init();
-		g_notify.add(tfm::format(XOR("antiaim successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("antiaim successfully initialized\n")));
 
 		// visuals.
 		RegisterTab(&players);
 		players.init();
-		g_notify.add(tfm::format(XOR("players successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("players successfully initialized\n")));
 
 		RegisterTab(&visuals);
 		visuals.init();
-		g_notify.add(tfm::format(XOR("visuals successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("visuals successfully initialized\n")));
 
 		// misc.
 		RegisterTab(&movement);
 		movement.init();
-		g_notify.add(tfm::format(XOR("movement successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("movement successfully initialized\n")));
 
 		RegisterTab(&skins);
 		skins.init();
-		g_notify.add(tfm::format(XOR("skins successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("skins successfully initialized\n")));
 
 		RegisterTab(&misc);
 		misc.init();
-		g_notify.add(tfm::format(XOR("miscellaneous successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("miscellaneous successfully initialized\n")));
 
 		RegisterTab(&config);
 		config.init();
-		g_notify.add(tfm::format(XOR("confing successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("confing successfully initialized\n")));
 	}
 };
 
@@ -2389,7 +2389,7 @@ public:
 
 		Colorpicker::init();	// points here, so this was the second injection crash problem, moved here to fix bound bug, look at colorpicker init
 
-		g_notify.add(tfm::format(XOR("colorpicker successfully initialized\n")));
+		//g_notify.add(tfm::format(XOR("colorpicker successfully initialized\n")));
 
 		main.init();
 

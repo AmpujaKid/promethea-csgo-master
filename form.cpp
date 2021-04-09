@@ -1,5 +1,11 @@
 #include "includes.h"
 
+// here are the colors for the moneybot scheme:
+// backgroud: 23, 25, 24
+// pink highlights: 192, 92, 91
+// light grey text: 168, 170, 170
+
+
 void Form::draw() {
 	// opacity should reach 1 in 500 milliseconds.
 	constexpr float frequency = 1.f / 0.5f;
@@ -22,16 +28,15 @@ void Form::draw() {
 	Color color = g_gui.m_color;
 	color.a() = m_alpha;
 
-	// background.
-	render::rect_filled(m_x, m_y, m_width, m_height, { 12, 12, 12, 230 });
+	// background!
+	render::rect_filled(m_x, m_y, m_width, m_height, { 23, 25, 24, 230 });
 
-	// border.
+	// no border!
 	render::rect(m_x, m_y, m_width, m_height, { 5, 5, 5, m_alpha });
-	render::rect(m_x + 1, m_y + 1, m_width - 2, m_height - 2, { 60, 60, 60, 245 });
-	render::rect(m_x + 2, m_y + 2, m_width - 4, m_height - 4, { 40, 40, 40, 245 });
-	render::rect(m_x + 3, m_y + 3, m_width - 6, m_height - 6, { 40, 40, 40, 245 });
-	render::rect(m_x + 4, m_y + 4, m_width - 8, m_height - 8, { 40, 40, 40, 245 });
-	render::rect(m_x + 5, m_y + 5, m_width - 10, m_height - 10, { 60, 60, 60, 245 });
+	render::rect(m_x + 1, m_y + 1, m_width - 2, m_height - 2, { 192, 92, 91, 245 });
+	render::rect(m_x + 2, m_y + 2, m_width - 4, m_height - 4, { 192, 92, 91, 245 });
+	render::rect(m_x + 3, m_y + 3, m_width - 6, m_height - 6, { 192, 92, 91, 245 });
+	render::rect(m_x + 4, m_y + 4, m_width - 8, m_height - 8, { 192, 92, 91, 245 });
 
 	// draw tabs if we have any.
 	if (!m_tabs.empty()) {
@@ -44,19 +49,19 @@ void Form::draw() {
 
 			// text
 			render::menu.string(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 16, tabs_area.y,
-				Color{ 150, 150, 150, m_alpha }, t->m_title);
+				Color{ 168, 170, 170, m_alpha }, t->m_title);
 
 			// active tab indicator
 			render::rect_filled_fade(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 10, tabs_area.y + 14,
-				font_width + 11, 4, Color{ 0, 0, 0, m_alpha }, 0, 150);
+				font_width + 11, 16, Color{ 23, 25, 24, m_alpha }, 0, 150);
 
 			render::rect_filled(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 10, tabs_area.y + 14,
-				font_width + 11, 4,
-				t == m_active_tab ? color : Color{ 0, 0, 0, 0 });
+				font_width + 11, 16,
+				t == m_active_tab ? color : Color{ 23, 25, 24, 0 });
 
 			render::rect_filled(tabs_area.x + (i * (tabs_area.w / m_tabs.size())) + 10, tabs_area.y + 16,
-				font_width + 11, 2,
-				t == m_active_tab ? Color{ 0, 0, 0, 215 } : Color{ 0, 0, 0, 0 });
+				font_width + 11, 16,
+				t == m_active_tab ? Color{ 0, 0, 0, 215 } : Color{ 23, 25, 24, 0 });
 		}
 
 		// this tab has elements.
@@ -64,9 +69,9 @@ void Form::draw() {
 			// elements background and border.
 			Rect el = GetElementsRect();
 
-			render::rect_filled(el.x, el.y, el.w, el.h, { 17, 17, 17, m_alpha });
-			render::rect(el.x, el.y, el.w, el.h, { 0, 0, 0, m_alpha });
-			render::rect(el.x + 1, el.y + 1, el.w - 2, el.h - 2, { 48, 48, 48, m_alpha });
+			render::rect_filled(el.x, el.y, el.w, el.h, { 23, 25, 24, m_alpha });
+			render::rect(el.x, el.y, el.w, el.h, { 23, 25, 24, m_alpha });
+			render::rect(el.x + 1, el.y + 1, el.w - 2, el.h - 2, { 23, 25, 24, m_alpha });
 
 			// iterate elements to display.
 			for (const auto& e : m_active_tab->m_elements) {

@@ -1,6 +1,6 @@
 #pragma once
-
-#define CHECKBOX_SIZE 8
+// experimental lol
+#define CHECKBOX_SIZE 12
 
 class Checkbox : public Element {
 public:

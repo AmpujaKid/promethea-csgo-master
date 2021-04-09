@@ -1,7 +1,7 @@
 #include "includes.h"
 #include "resolver.h"
 
-#define shift_ticks 0
+#define shift_ticks 14
 
 Aimbot g_aimbot{ };
 
@@ -1099,9 +1099,9 @@ void Aimbot::apply( ) {
 			g_cl.m_shot = true;
 		}
 
-		//if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
-			//m_shoot_next_tick = true;
-		//}
+		if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
+			m_shoot_next_tick = true;
+		}
 	}
 }
 

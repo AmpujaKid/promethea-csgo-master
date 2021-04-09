@@ -531,15 +531,6 @@ void Visuals::StatusIndicators( ) {
 	struct Indicator_t { Color color; std::string text; };
 	std::vector< Indicator_t > indicators{ };
 
-	// DOUBLETAP
-	if (g_menu.main.visuals.indicators.get(4)) {
-		Indicator_t ind{ };
-		ind.color = g_tickbase.m_shift_data.m_can_shift_tickbase ? 0xff15c27b : 0xff0000ff;
-		ind.text = XOR("DT");
-
-		indicators.push_back(ind);
-	}
-
 	// PING
 	if (g_menu.main.visuals.indicators.get(2)) {
 		Indicator_t ind{ };

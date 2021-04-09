@@ -279,15 +279,15 @@ void HVH::GetAntiAimDirection( ) {
 		m_direction = m_view + m_dir_custom;
 		break;
 
-		// jitter
+		// snake (?)
 	case 3:
 		switch ((GetTickCount() + 1) % 2) {
 		case 1:
-			m_direction = m_view - 45.f;
+			m_direction = m_view - 45.f + 180.f;
 			break;
 
 		case 0:
-			m_direction = m_view + 45.f;
+			m_direction = m_view + 45.f + 180.f;
 			break;
 
 		}
@@ -463,13 +463,13 @@ void HVH::DoRealAntiAim( ) {
 			}
 
 			else if (g_menu.main.antiaim.body_fake_stand.get() == 8) {
-				//g_cl.m_tick = g_csgo.m_globals->m_curtime + 2;
+				g_cl.m_tick = g_csgo.m_globals->m_curtime + 2;
 			}
 		}
 
 		// one tick after the update (if m_tick was changed)
 		if (stand && g_cl.m_tick >= (g_cl.m_body_pred - g_cl.m_anim_frame) && g_cl.m_tick < g_cl.m_body_pred) {
-			//m_animbreak ? g_csgo.m_net->m_out_seq -= 2 : g_csgo.m_net->m_out_seq += 2;
+			m_animbreak ? g_csgo.m_net->m_out_seq -= 2 : g_csgo.m_net->m_out_seq += 2;
 		}
 
 		else if (stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= (g_cl.m_body_pred - g_cl.m_anim_frame + g_csgo.m_globals->m_tick_count) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && g_menu.main.antiaim.lbyexploit.get()) {
@@ -556,7 +556,7 @@ void HVH::DoRealAntiAim( ) {
 				case 8:
 					// do this on your lby flick
 					g_cl.m_cmd->m_view_angles.y -= 148.f;
-					//g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
+					g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
 					break;
 				}
 			}
@@ -958,7 +958,7 @@ void HVH::SendPacket() {
 			//}
 			// i think that theres some other stuff we can do with this, but idk... maybe jump forward the tick before the flick and then jump back here?
 			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
-				//g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
+				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
 				m_animbreak = !m_animbreak;
 			}
 		}

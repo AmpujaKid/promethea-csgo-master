@@ -23,7 +23,8 @@ ulong_t __stdcall Client::init( void* arg ) {
 		return 0;
 
 	// welcome the user.
-	g_notify.add( tfm::format( XOR( "welcome %s\n" ), g_cl.m_user ) );
+	g_notify.add(tfm::format(XOR("welcome to neptune\n")));
+	g_notify.add(tfm::format(XOR("pasted by ampuja\n")));
 
 	return 1;
 }
@@ -68,7 +69,7 @@ void Client::DrawHUD( ) {
 	
 	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("neptune [%s] | ms: %i | %itick | %s | %s"), build, ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("neptune [%s] | %s"), build, time.str().data());
 
-	Color color = g_menu.main.config.menu_color.get( );
+	Color color = Color(192, 92, 91, 255);
 
 	// render background.
 	render::rect_filled(position.x, position.y, render::hud.size(text).m_width + 10, 19, Color(30, 30, 30, 120));
@@ -244,17 +245,15 @@ void Client::StartMove( CUserCmd* cmd ) {
 	if( !m_processing )
 		return;
 
-	// store some stuff about the local player.
-	m_flags = m_local->m_fFlags( );
-
-	// do tickbase shift related code.
-	//g_tickbase.PreMovement();
-
 	// make sure prediction has ran on all usercommands.
 	// because prediction runs on frames, when we have low fps it might not predict all usercommands.
 	// also fix the tick being inaccurate.
 	g_inputpred.update();
+
+	// store some stuff about the local player.
+	m_flags = m_local->m_fFlags( );
 	// ...
+	g_tickbase.PreMovement();
 	m_shot = false;
 }
 
@@ -371,7 +370,7 @@ void Client::DoMove( ) {
 			m_cmd->m_buttons |= IN_USE;
 	}
 
-	/*if (g_cl.m_processing && g_tickbase.m_shift_data.m_should_attempt_shift && g_tickbase.m_shift_data.m_needs_recharge) {
+	if (g_cl.m_processing && g_tickbase.m_shift_data.m_should_attempt_shift && g_tickbase.m_shift_data.m_needs_recharge) {
 		--g_tickbase.m_shift_data.m_needs_recharge;
 
 		//g_tickbase.m_shift_data.m_did_shift_before = false;
@@ -381,7 +380,7 @@ void Client::DoMove( ) {
 		}
 
 		return;
-	}*/
+	}
 
 	// grenade prediction.
 	g_grenades.think( );
@@ -434,7 +433,7 @@ void Client::EndMove( CUserCmd* cmd ) {
 	m_old_shot = m_shot;
 
 	// finish tickbase shift related code.
-	//g_tickbase.PostMovement();
+	g_tickbase.PostMovement();
 }
 
 void Client::OnTick( CUserCmd* cmd ) {

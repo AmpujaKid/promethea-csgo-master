@@ -312,10 +312,10 @@
     <ClInclude Include="interfaces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tickbase_shift.h">
+    <ClInclude Include="luaengine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="luaengine.h">
+    <ClInclude Include="tickbase_shift.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -476,10 +476,10 @@
     <ClCompile Include="clientstate.cpp">
       <Filter>Source Files\hooks\game</Filter>
     </ClCompile>
-    <ClCompile Include="tickbase_shift.cpp">
+    <ClCompile Include="luaengine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="luaengine.cpp">
+    <ClCompile Include="tickbase_shift.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

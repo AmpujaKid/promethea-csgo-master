@@ -8,7 +8,7 @@ public:
 	bool  m_open;
 	Form* m_drag_form;
 	Point m_drag_offset;
-	Color m_color{ colors::white };
+	Color m_color{ Color(168, 170, 170) };
 
 public:
 	void think( );

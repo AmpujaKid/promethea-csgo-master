@@ -145,7 +145,7 @@ class CInput {
 public:
 	enum indices : size_t {
 		CREATEMOVE                = 3,
-		WRITEUSERCMDDELTATOBUFFER = 5,
+		//WRITEUSERCMDDELTATOBUFFER = 5,
 		ENCODEUSERCMDTOBUFFER     = 6,
 		GETUSERCMD                = 8,
 		CAMISTHIRDPERSON          = 32,

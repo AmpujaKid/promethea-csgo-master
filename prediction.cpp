@@ -54,23 +54,6 @@ void Hooks::RunCommand( Entity* ent, CUserCmd* cmd, IMoveHelper* movehelper ) {
 		g_csgo.m_globals->m_curtime = game::TICKS_TO_TIME(player->m_nTickBase());
 	}*/
 
-	float m_flVelModBackup = player->m_flVelocityModifier();
-	if (cmd->m_command_number == g_csgo.m_cl->m_last_command_ack + 1)
-		player->m_flVelocityModifier() = g_inputpred.m_stored_variables.m_flVelocityModifier;
-
-	// call og.
-	g_hooks.m_prediction.GetOldMethod< RunCommand_t >(CPrediction::RUNCOMMAND)(this, ent, cmd, movehelper);
-
-	if (!g_cl.m_update)
-		player->m_flVelocityModifier() = m_flVelModBackup;
-
-	// restore tickbase and curtime.
-	if (cmd->m_command_number == g_tickbase.m_prediction.m_shifted_command) {
-		player->m_nTickBase() = backup_tickbase;
-
-		g_csgo.m_globals->m_curtime = backup_curtime;
-	}
-
 	// store non compressed netvars.
 	g_netdata.store( );
 }
