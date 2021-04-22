@@ -421,8 +421,8 @@ void Aimbot::init( ) {
 	m_best_lag = std::numeric_limits< float >::max( );
 	m_best_height = std::numeric_limits< float >::max( );
 
-	//if (!g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)
-		//m_shoot_next_tick = false;
+	if (!g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)
+		m_shoot_next_tick = false;
 }
 
 void Aimbot::StripAttack( ) {
@@ -458,14 +458,14 @@ void Aimbot::think( ) {
 
 	// 4 ticks (?) before being able to shoot.
 	if ( revolver && g_cl.m_revolver_cock > 3 && g_cl.m_revolver_cock == g_cl.m_revolver_query ) {
-		*g_cl.m_packet = false;
+		//*g_cl.m_packet = false;
 		return;
 	}
 
 	// we have a normal weapon or a non cocking revolver
 	// choke if its the processing tick.
 	if ( g_cl.m_weapon_fire && !g_cl.m_lag && !revolver ) {
-		*g_cl.m_packet = false;
+		//*g_cl.m_packet = false;
 		StripAttack( );
 		return;
 	}
@@ -503,6 +503,19 @@ void Aimbot::think( ) {
 
 	// finally set data when shooting.
 	apply( );
+}
+
+void Aimbot::double_tap() {
+	if (!g_menu.main.aimbot.rapidfire.get())
+		return;
+
+	static int last_dt_tick = 0;
+	if (g_cl.m_cmd->m_buttons & IN_ATTACK) {
+		last_dt_tick = g_cl.m_tick;
+		if (last_dt_tick >= game::TIME_TO_TICKS(1.2f)) {
+			g_tickbase.m_shift_data.m_ticks_to_shift = 13;
+		}
+	}
 }
 
 void Aimbot::find( ) {
@@ -644,14 +657,18 @@ void Aimbot::find( ) {
 			}
 		}
 
-		if ( hit || !on ) {
-			// right click attack.
-			if (g_menu.main.config.mode.get() == 1 && g_cl.m_weapon_id == REVOLVER)
-				g_cl.m_cmd->m_buttons |= IN_ATTACK2;
+		if (!g_tickbase.m_shift_data.m_should_attempt_shift || ((!g_menu.main.aimbot.rapidfire.get() || g_cl.m_goal_shift == 13 || g_tickbase.m_shift_data.m_should_disable) && g_tickbase.m_shift_data.m_should_attempt_shift) || (g_menu.main.aimbot.rapidfire.get() && g_cl.m_goal_shift == 7 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready))) {
+			if (g_menu.main.aimbot.enable.get()) {
+				// right click attack.
+				if (g_menu.main.config.mode.get() == 1 && g_cl.m_weapon_id == REVOLVER)
+					g_cl.m_cmd->m_buttons |= IN_ATTACK2;
 
-			// left click attack.
-			else
-				g_cl.m_cmd->m_buttons |= IN_ATTACK;
+				// left click attack.
+				else
+					g_cl.m_cmd->m_buttons |= IN_ATTACK;
+					
+
+			}
 		}
 	}
 }
@@ -1064,8 +1081,8 @@ void Aimbot::apply( ) {
 	// ensure we're attacking.
 	if ( attack || attack2 ) {
 		// choke every shot.
-		*g_cl.m_packet = false;
-
+		//*g_cl.m_packet = false;
+		g_hvh.m_should_duck = false;
 		if ( m_target ) {
 			// make sure to aim at un-interpolated data.
 			// do this so BacktrackEntity selects the exact record.
@@ -1102,6 +1119,7 @@ void Aimbot::apply( ) {
 		if (!m_shoot_next_tick && g_cl.m_goal_shift == 13 && g_tickbase.m_shift_data.m_should_attempt_shift && !(g_tickbase.m_shift_data.m_prepare_recharge || g_tickbase.m_shift_data.m_did_shift_before && !g_tickbase.m_shift_data.m_should_be_ready)) {
 			m_shoot_next_tick = true;
 		}
+		g_hvh.m_should_duck = true;
 	}
 }
 

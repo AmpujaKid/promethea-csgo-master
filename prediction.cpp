@@ -47,12 +47,19 @@ void Hooks::RunCommand( Entity* ent, CUserCmd* cmd, IMoveHelper* movehelper ) {
 	g_hooks.m_prediction.GetOldMethod< RunCommand_t >( CPrediction::RUNCOMMAND )( this, ent, cmd, movehelper );
 
 	// fix tickbase when shifting.
-	/*if (cmd->m_command_number == g_tickbase.m_prediction.m_shifted_command) {
+	if (cmd->m_command_number == g_tickbase.m_prediction.m_shifted_command) {
 		player->m_nTickBase() = (g_tickbase.m_prediction.m_original_tickbase - g_tickbase.m_prediction.m_shifted_ticks + 1);
 		++player->m_nTickBase();
 
 		g_csgo.m_globals->m_curtime = game::TICKS_TO_TIME(player->m_nTickBase());
-	}*/
+	}
+
+	// restore tickbase and curtime.
+	if (cmd->m_command_number == g_tickbase.m_prediction.m_shifted_command) {
+		player->m_nTickBase() = backup_tickbase;
+
+		g_csgo.m_globals->m_curtime = backup_curtime;
+	}
 
 	// store non compressed netvars.
 	g_netdata.store( );
