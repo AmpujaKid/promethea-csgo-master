@@ -55,7 +55,7 @@ public:
 		SHOULDDRAWPARTICLES      = 16,
 		SHOULDDRAWFOG            = 17,
 		OVERRIDEVIEW             = 18,
-		CREATEMOVE               = 23,
+		CREATEMOVE               = 24,
 		DOPOSTSPACESCREENEFFECTS = 44,
 	};
 };

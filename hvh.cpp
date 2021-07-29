@@ -283,11 +283,11 @@ void HVH::GetAntiAimDirection( ) {
 	case 3:
 		switch ((GetTickCount() + 1) % 2) {
 		case 1:
-			m_direction = m_view - (45.f / m_view) + lbydelta;
+			m_direction = m_view - 45.f;
 			break;
 
 		case 0:
-			m_direction = m_view + (45.f / m_view) + lbydelta;
+			m_direction = m_view + 45.f;
 			break;
 
 		}

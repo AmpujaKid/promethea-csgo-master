@@ -68,12 +68,10 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 	return true;
 }
 
-// im going to change from WriteUsercmdDeltaToBuffer to ClMove because why tf not???? mwahahahaha
-
 void TickbaseSystem::PreMovement( ) {
 
 	// Invalidate next shift amount and the ticks to shift prior to shifting
-	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = 0;
+	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 }
 
 void TickbaseSystem::PostMovement( ) {

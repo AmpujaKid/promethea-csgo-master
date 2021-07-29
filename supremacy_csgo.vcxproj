@@ -217,8 +217,6 @@
     <ClInclude Include="clientclass.h" />
     <ClInclude Include="clientdll.h" />
     <ClInclude Include="clientmode.h" />
-    <ClInclude Include="Clua.h" />
-    <ClInclude Include="CLuaHook.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="colorpicker.h" />
     <ClInclude Include="config.h" />
@@ -242,7 +240,6 @@
     <ClInclude Include="gui.h" />
     <ClInclude Include="hash.h" />
     <ClInclude Include="hooks.h" />
-    <ClInclude Include="HTTPRequest.hpp" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="hvh.h" />
     <ClInclude Include="includes.h" />
@@ -253,19 +250,13 @@
     <ClInclude Include="lagcomp.h" />
     <ClInclude Include="lagrecord.h" />
     <ClInclude Include="events.h" />
-    <ClInclude Include="lauxlib.h" />
     <ClInclude Include="localize.h" />
-    <ClInclude Include="lua.h" />
-    <ClInclude Include="lua.hpp" />
-    <ClInclude Include="luaconf.h" />
     <ClInclude Include="luaengine.h" />
-    <ClInclude Include="lualib.h" />
     <ClInclude Include="matchframework.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="memalloc.h" />
     <ClInclude Include="menu.h" />
-    <ClInclude Include="menu_item.h" />
     <ClInclude Include="modules.h" />
     <ClInclude Include="movement.h" />
     <ClInclude Include="multidropdown.h" />
@@ -285,7 +276,6 @@
     <ClInclude Include="shots.h" />
     <ClInclude Include="skins.h" />
     <ClInclude Include="slider.h" />
-    <ClInclude Include="sol.hpp" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="studio.h" />
@@ -316,8 +306,6 @@
     <ClCompile Include="checkbox.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="clientstate.cpp" />
-    <ClCompile Include="Clua.cpp" />
-    <ClCompile Include="CLuaHook.cpp" />
     <ClCompile Include="colorpicker.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="edit.cpp" />
@@ -367,10 +355,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Lua.lib" />
-    <Library Include="lua53.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
