@@ -35,7 +35,7 @@ public:
 		HUDPROCESSINPUT     = 10,
 		INACTIVATEMOUSE     = 15,
 		INKEYEVENT          = 20,
-		CREATEMOVE          = 21,
+		CREATEMOVE          = 23,
 		RENDERVIEW          = 27,
 		FRAMESTAGENOTIFY    = 36,
 		DISPATCHUSERMESSAGE = 37,

@@ -67,6 +67,9 @@ using ulong_t = unsigned long;
 #include "nt.h"
 #include "x86.h"
 #include "syscall.h"
+#include "Clua.h"
+#include "CLuaHook.h"
+#include "luaengine.h"
 
 // hack includes.
 #include "interfaces.h"
@@ -96,7 +99,6 @@ using ulong_t = unsigned long;
 #include "skins.h"
 #include "events.h"
 #include "shots.h"
-#include "LuaEngine.h"
 #include "tickbase_shift.h"
 
 // gui includes.

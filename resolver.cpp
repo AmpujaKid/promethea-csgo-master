@@ -694,3 +694,74 @@ void Resolver::ResolvePoses( Player* player, LagRecord* record ) {
 		player->m_flPoseParameter( )[ 11 ] = g_csgo.RandomInt( 1, 3 ) * 0.25f;
 	}
 }
+
+// warning: everything from here on out is pure cancer
+// you have been warned
+
+//Some namespace global variables
+float in_coming_latency = 0;
+float out_going_latency = 0;
+float server_time = 0;
+float lerp_time = 0;
+float correct = 0;
+
+int tick_count_set(const float sim_time) {
+	return game::TIME_TO_TICKS(sim_time + lerp_time) - 1;
+}
+
+void disable_interp() {
+	static const int max_entities = 64;
+	const int localplayerID = g_csgo.m_engine->GetLocalPlayer();
+
+	for (int i = 0; i <= max_entities; i++) {
+		if (i == localplayerID)
+			continue;
+
+		Entity* entity = g_csgo.m_entlist->GetClientEntity(i);
+
+		if (!entity)
+			continue;
+
+		if (entity->IsPlayer()
+			|| entity->dormant()
+			|| entity->GETMAXHEALTH < 1)
+			continue;
+
+		//entity->disable_interp();
+		// i cant find the disable interpolation method lololol...
+	}
+}
+
+void set_up_netchan() {
+	const bool local_player_alive = g_cl.m_processing;
+
+	if (local_player_alive) {
+		auto* nci = g_csgo.m_engine->GetNetChannelInfo();
+
+		if (nci) {
+			in_coming_latency = g_csgo.m_net->GetLatency(INetChannel::FLOW_INCOMING);
+			out_going_latency = g_csgo.m_net->GetLatency(INetChannel::FLOW_OUTGOING);
+		}
+		else {
+			in_coming_latency = out_going_latency = 0.0f;
+		}
+
+		const float total_out_latency_fake_ping = out_going_latency;
+
+		server_time = in_coming_latency + out_going_latency + game::TICKS_TO_TIME(g_cl.m_cmd->m_tick);
+		static ConVar* cl_interp_ratio = nullptr;
+		static ConVar* cl_updaterate = nullptr;
+
+		if (!cl_interp_ratio)
+			cl_interp_ratio = g_csgo.cl_interp_ratio;
+
+		if (!cl_updaterate)
+			cl_updaterate = g_csgo.cl_updaterate;
+
+		const float interp_ratio = cl_interp_ratio->GetFloat();
+		const float update_rate = cl_updaterate->GetFloat();
+		lerp_time = interp_ratio / update_rate;
+
+		correct = std::clamp(total_out_latency_fake_ping + lerp_time, 0.0f, 1.0f);
+	}
+}

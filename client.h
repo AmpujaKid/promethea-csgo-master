@@ -98,6 +98,8 @@ public:
 	// usercommand variables.
 	CUserCmd* m_cmd;
 	int	      m_tick;
+	int		  m_shot_command_number;
+	int		  m_shot_tickbase;
 	float	  flTargetCurTime;
 	int	      m_rate;
 	int	      m_buttons;

@@ -3,31 +3,31 @@
 #include "client.h"
 #include "csgo.h"
 
-/*
+
 #define LOCKLUA() std::lock_guard<std::mutex> lock(g_pLuaEngine->m)
 
 class LuaEngine
 {
 public:
 	typedef struct lua_State lua_State;
-	//lua_State* m_L;
-	//LuaEngine() : m_L(luaL_newstate()) { luaL_openlibs(m_L); }
-	//LuaEngine(const LuaEngine& other);
-	//LuaEngine& operator=(const LuaEngine&);
-	//~LuaEngine() { lua_close(m_L); }
+	lua_State* m_L;
+	LuaEngine() : m_L(luaL_newstate()) { luaL_openlibs(m_L); }
+	LuaEngine(const LuaEngine& other);
+	LuaEngine& operator=(const LuaEngine&);
+	~LuaEngine() { lua_close(m_L); }
 
-	//lua_State* L();
+	lua_State* L();
 
-	//void ExecuteFile(const char* file);
+	void ExecuteFile(const char* file);
 
-	//void ExecuteString(const char* expression);
+	void ExecuteString(const char* expression);
 
 	void Reset()
 	{
-		//if (m_L)
-			//lua_close(m_L);
-		//m_L = luaL_newstate();
-		//luaL_openlibs(m_L);
+		if (m_L)
+			lua_close(m_L);
+		m_L = luaL_newstate();
+		luaL_openlibs(m_L);
 	}
 
 	std::mutex m;
@@ -54,4 +54,4 @@ public:
 	}
 };
 
-extern LuaEngine* g_pLuaEngine;*/
+extern LuaEngine* g_pLuaEngine;

@@ -1,8 +1,8 @@
 #include "includes.h"
 #include <iostream>
+#include "Namespace.h"
 
 
-/*
 LuaEngine* g_pLuaEngine = new LuaEngine();
 ExportedInterfaces g_Interfaces;
 
@@ -48,9 +48,6 @@ void RegEverything(lua_State* L)
 	LOCKLUA();
 	L = luaL_newstate();
 	luaL_openlibs(L);
-
-	//this shits broken lol
-
 	luabridge::getGlobalNamespace(L)
 		.beginNamespace("Game")
 		.addVariable("Interfaces", &g_Interfaces, false)
@@ -72,4 +69,4 @@ void ExportedEngine::ExecuteCommand(const char* str)
 int ExportedEngine::GetLocalPlayer()
 {
 	return g_csgo.m_engine->GetLocalPlayer();
-}*/
+}

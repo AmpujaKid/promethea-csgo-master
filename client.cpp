@@ -457,6 +457,19 @@ void Client::OnTick( CUserCmd* cmd ) {
 	// run all movement related code.
 	DoMove( );
 
+	// store command number at the time we fired.
+	if (IsFiring(g_csgo.m_globals->m_curtime)) {
+		g_cl.m_shot_command_number = cmd->m_command_number;
+		g_cl.m_shot_tickbase = g_cl.m_local->m_nTickBase();
+
+		if (!g_hvh.m_fake_duck) {
+			*g_cl.m_packet = true;
+		}
+
+		if (!m_shot)
+			m_shot = true;
+	}
+
 	// store stome additonal stuff for next tick
 	// sanetize our usercommand if needed and fix our movement.
 	EndMove( cmd );
