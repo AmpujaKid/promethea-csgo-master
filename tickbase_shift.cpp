@@ -27,6 +27,9 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 
 	m_nFrom = -1;
 
+	if (g_menu.main.movement.slow_motion.get())
+		g_tickbase.m_shift_data.m_ticks_to_shift = 2;
+
 	g_tickbase.m_shift_data.m_ticks_to_shift = 12;
 	int m_nTickbase = g_tickbase.m_shift_data.m_ticks_to_shift;
 
@@ -71,7 +74,7 @@ bool Hooks::WriteUsercmdDeltaToBuffer( int m_nSlot, void* m_pBuffer, int m_nFrom
 void TickbaseSystem::PreMovement( ) {
 
 	// Invalidate next shift amount and the ticks to shift prior to shifting
-	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = 12;
+	g_tickbase.m_shift_data.m_next_shift_amount = g_tickbase.m_shift_data.m_ticks_to_shift = g_menu.main.movement.slow_motion.get() ? 2 : 12;
 }
 
 void TickbaseSystem::PostMovement( ) {
@@ -152,7 +155,8 @@ void TickbaseSystem::PostMovement( ) {
 		// Prevent m_iTicksAllowedForProcessing from being incremented.
 		g_cl.m_cmd->m_tick = INT_MAX;
 		// Determine if we're able to double-tap  
-		if (bCanShootIn12Ticks) {
+		// note - slow walk shift is such a weird exploit to code.
+		if (g_menu.main.antiaim.lbyexploit.get() ? (!g_menu.main.movement.slow_motion.get() && bCanShootIn12Ticks) : bCanShootIn12Ticks) {
 			if (g_tickbase.m_shift_data.m_prepare_recharge && !bIsShooting) {
 				g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
 				g_tickbase.m_shift_data.m_prepare_recharge = false;
@@ -184,7 +188,7 @@ void TickbaseSystem::PostMovement( ) {
 					g_cl.m_goal_shift = 14;
 					if (g_tickbase.m_shift_data.old_tickbase != g_tickbase.m_shift_data.m_should_attempt_shift) {
 						if (g_menu.main.misc.debug.get())
-							g_notify.add(tfm::format(XOR("Tried shifting tickbase")));
+							g_notify.add(tfm::format(XOR("Tried doubletap")));
 
 						if (g_tickbase.m_shift_data.m_should_attempt_shift)
 							g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
@@ -194,6 +198,23 @@ void TickbaseSystem::PostMovement( ) {
 						g_tickbase.m_shift_data.m_did_shift_before = false;
 					}
 				}
+			}
+		}
+		else if (g_menu.main.movement.slow_motion.get()) {
+			g_cl.m_goal_shift = 8;
+			if (g_menu.main.misc.debug.get())
+				g_notify.add(tfm::format(XOR("Attempting to shift ticks")));
+			if (g_tickbase.m_shift_data.old_tickbase != g_tickbase.m_shift_data.m_should_attempt_shift) {
+				if(g_menu.main.misc.debug.get())
+					g_notify.add( tfm::format( XOR( "Tried breaking lby using tickbase" )) );
+
+				if (g_tickbase.m_shift_data.m_should_attempt_shift)
+
+					g_tickbase.m_shift_data.m_needs_recharge = 0;
+				else
+					g_tickbase.m_shift_data.m_needs_recharge = g_cl.m_goal_shift;
+
+				g_tickbase.m_shift_data.m_did_shift_before = false;
 			}
 		}
 		else {

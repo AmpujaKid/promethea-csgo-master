@@ -51,17 +51,17 @@ void Shots::OnImpact( IGameEvent *evt ) {
 		return;
 
 	if (Resolver::Modes::RESOLVE_FREESTAND && !didPrintResolveMode) {
-		//g_notify.add("[resolver] tried resolve mode - freestanding\n");
+		g_notify.add("[resolver] tried resolve mode - freestanding\n");
 		didPrintResolveMode = true;
 	}
 
 	else if (Resolver::Modes::RESOLVE_STAND && !didPrintResolveMode) {
-		//g_notify.add("[resolver] tried resolve mode - stand\n");
-		//didPrintResolveMode = true;
+		g_notify.add("[resolver] tried resolve mode - stand\n");
+		didPrintResolveMode = true;
 	}
 
 	else if (Resolver::Modes::RESOLVE_BRUTEFORCE && !didPrintResolveMode) {
-		//g_notify.add("[resolver] tried resolve mode - bruteforce\n");
+		g_notify.add("[resolver] tried resolve mode - bruteforce\n");
 		didPrintResolveMode = true;
 	}
 	// decode impact coordinates and convert to vec3.

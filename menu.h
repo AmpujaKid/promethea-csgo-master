@@ -2259,7 +2259,7 @@ public:
 	void init() {
 		SetTitle(XOR("config"));
 
-		menu_color.setup(XOR("menu color"), XOR("menu_color"), colors::moneybot_pink, &g_gui.m_color);
+		menu_color.setup(XOR("menu color"), XOR("menu_color"), colors::light_blue, &g_gui.m_color);
 		//RegisterElement(&menu_color);
 
 		mode.setup(XOR("safety mode"), XOR("mode"), { XOR("matchmaking"), XOR("no-spread") });

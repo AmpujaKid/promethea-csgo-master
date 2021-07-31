@@ -187,7 +187,6 @@ public:
 	void init( );
 	void StripAttack( );
 	void think( );
-	void double_tap();
 	void find( );
 	bool CheckHitchance( Player* player, const ang_t& angle );
 	bool SelectTarget( LagRecord* record, const vec3_t& aim, float damage );

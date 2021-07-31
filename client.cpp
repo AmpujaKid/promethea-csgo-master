@@ -128,7 +128,6 @@ void Client::ClanTag()
 		// are we in a new frame?
 		if (prevframe != curframe) {
 			// clantag switch
-			// unicode char 8233/0x2029 :)
 			switch (curframe % 15)
 			{
 			case 0: clantag = XOR(" "); break;
@@ -296,7 +295,7 @@ void Client::DoMove( ) {
 	//g_movement.QuickStop( );
 	g_movement.FakeWalk( );
 	g_movement.AutoPeek( );
-	g_hvh.FakeDuck( );
+	//g_hvh.FakeDuck( );
 
 	// predict input.
 	g_inputpred.run( );
@@ -468,19 +467,6 @@ void Client::OnTick( CUserCmd* cmd ) {
 	// and prediction seed/player.
 	g_inputpred.restore( );
 
-	if (!g_hvh.m_fake_duck) {
-		if (g_cl.m_processing && g_tickbase.m_shift_data.m_should_attempt_shift && g_tickbase.m_shift_data.m_needs_recharge) {
-			--g_tickbase.m_shift_data.m_needs_recharge;
-
-			//g_tickbase.m_shift_data.m_did_shift_before = false;
-
-			if (g_tickbase.m_shift_data.m_needs_recharge == 0) {
-				g_tickbase.m_shift_data.m_should_be_ready = true;
-			}
-
-			return;
-		}
-	}
 
 	// fix our movement.
 	g_movement.FixMove(cmd, m_strafe_angles);

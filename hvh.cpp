@@ -283,11 +283,11 @@ void HVH::GetAntiAimDirection( ) {
 	case 3:
 		switch ((GetTickCount() + 1) % 2) {
 		case 1:
-			m_direction = m_view - 45.f;
+			m_direction = m_view - 45.f + 180.f;
 			break;
 
 		case 0:
-			m_direction = m_view + 45.f;
+			m_direction = m_view + 45.f + 180.f;
 			break;
 
 		}
@@ -451,8 +451,7 @@ void HVH::DoRealAntiAim( ) {
 				g_cl.m_cmd->m_view_angles.y -= 150.f;
 			// suppress 979
 			else if (g_menu.main.antiaim.body_fake_stand.get() == 5)
-				//g_csgo.m_net->m_out_seq -= 2;
-				; // :rolling_eyes:
+				g_csgo.m_net->m_out_seq -= 2;
 
 			else if (g_menu.main.antiaim.body_fake_stand.get() == 6) {
 				if (m_lby_counter == 0) {
@@ -470,7 +469,7 @@ void HVH::DoRealAntiAim( ) {
 
 		// one tick after the update (if m_tick was changed)
 		if (stand && g_cl.m_tick >= (g_cl.m_body_pred - g_cl.m_anim_frame) && g_cl.m_tick < g_cl.m_body_pred) {
-			//m_animbreak ? g_csgo.m_net->m_out_seq -= 2 : g_csgo.m_net->m_out_seq += 2;
+			m_animbreak ? g_csgo.m_net->m_out_seq -= 2 : g_csgo.m_net->m_out_seq += 2;
 		}
 
 		else if (stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= (g_cl.m_body_pred - g_cl.m_anim_frame + g_csgo.m_globals->m_tick_count) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred && g_menu.main.antiaim.lbyexploit.get()) {
@@ -522,8 +521,8 @@ void HVH::DoRealAntiAim( ) {
 					// suppress 979.
 				case 5:
 					if (inFlick) {
-						//g_csgo.m_net->m_out_seq -= 2;
-						//inFlick = false;
+						g_csgo.m_net->m_out_seq -= 2;
+						inFlick = false;
 					}
 					g_cl.m_cmd->m_view_angles.y -= 116.f;
 					break;
@@ -539,27 +538,25 @@ void HVH::DoRealAntiAim( ) {
 
 					// lby 2.0 (shake)
 				case 7:
-					switch (m_lby_counter) {
-					case 0:
+					if (m_lby_counter == 0) {
 						g_cl.m_cmd->m_view_angles.y += 115;
-						m_lby_counter = 1;
-
-					case 1:
+						m_lby_counter += 1;
+					}
+					else if (m_lby_counter == 1) {
 						g_cl.m_cmd->m_view_angles.y -= 135;
-						m_lby_counter = 2;
-
-					case 2:
+						m_lby_counter += 1;
+					}
+					else {
 						g_cl.m_cmd->m_view_angles.y = 180;
 						m_lby_counter = 0;
-
 					}
 					break;
 
 					// fucking with ticks
 				case 8:
 					// do this on your lby flick
-					g_cl.m_cmd->m_view_angles.y += 116.f;
-					//g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
+					g_cl.m_cmd->m_view_angles.y -= 148.f;
+					g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
 					break;
 				}
 			}
@@ -668,10 +665,10 @@ void HVH::DoRealAntiAim( ) {
 				  // lby 2.0
 			case 7: {
 				if (m_lby_counter == 0) {
-					g_cl.m_cmd->m_view_angles.y -= 145;
+					g_cl.m_cmd->m_view_angles.y -= 45;
 				}
 				else if (m_lby_counter == 1) {
-					g_cl.m_cmd->m_view_angles.y += 115;
+					g_cl.m_cmd->m_view_angles.y += 15;
 				}
 				else if (m_lby_counter == 2) {
 					g_cl.m_cmd->m_view_angles.y = 180;
@@ -960,10 +957,10 @@ void HVH::SendPacket() {
 			//	break;
 			//}
 			// i think that theres some other stuff we can do with this, but idk... maybe jump forward the tick before the flick and then jump back here?
-			/*if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
+			if (g_csgo.m_globals->m_curtime == g_cl.flTargetCurTime) {
 				g_cl.m_tick = g_csgo.m_globals->m_curtime - 2;
 				m_animbreak = !m_animbreak;
-			}*/
+			}
 		}
 
 		if (active) {
@@ -1056,8 +1053,8 @@ void HVH::FakeDuck()
 	if (!g_cl.m_processing || !m_fake_duck)
 		return;
 
-	// unduck if we are about to shoot.
-	if (!m_should_duck) {
+	// unduck if we are choking 7 or less ticks.
+	if (g_csgo.m_cl->m_choked_commands <= 7) {
 		g_cl.m_cmd->m_buttons &= ~IN_DUCK;
 	}
 	// duck if we are choking more than 7 ticks.

@@ -92,7 +92,7 @@ public:
 	int      m_latency_ticks;
 	int      m_server_tick;
 	int      m_arrival_tick;
-	int      m_goal_shift = 12;
+	int      m_goal_shift = 0;
 	int      m_width, m_height;
 
 	// usercommand variables.

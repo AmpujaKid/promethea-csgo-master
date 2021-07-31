@@ -73,7 +73,6 @@ public:
 	float swap_range;
 	bool m_fake_duck = false;
 	int m_manual_side;
-	bool m_should_duck = true;
 
 public:
 	void IdealPitch( );
