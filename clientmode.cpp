@@ -58,8 +58,16 @@ bool Hooks::CreateMove( float time, CUserCmd* cmd ) {
 	if (g_cl.m_local && !g_cl.m_local->alive())
 		g_inputpred.m_curtime = g_csgo.m_globals->m_curtime;
 
+	//if (g_menu.main.aimbot.rapidfire.get())
+		//g_aimbot.DoubleTap();
+
+	//int maxprocessticks = g_csgo.sv_maxusrcmdprocessticks->GetInt();
+	//if (g_cl.m_tick > maxprocessticks)
+		
+
 	// invoke move function.
 	g_cl.OnTick( cmd );
+
 
 	return false;
 }

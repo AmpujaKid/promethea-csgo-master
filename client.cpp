@@ -12,10 +12,10 @@ ulong_t __stdcall Client::init( void* arg ) {
 	g_cl.m_user = XOR( "user" );
 
 	// config folder.
-	g_cl.m_cfg_folder = XOR("C:\\Neptune\\Configs");
+	g_cl.m_cfg_folder = XOR("C:\\Leetgrail\\Configs");
 
 	// i dont wanna talk about it
-	const char* cfgfolderchar = ("C:\\Neptune\\Configs");
+	const char* cfgfolderchar = ("C:\\Leetgrail\\Configs");
 	//CreateFolder(cfgfolderchar);
 
 	// stop here if we failed to acquire all the data needed from csgo.
@@ -67,7 +67,7 @@ void Client::DrawHUD( ) {
 	// get server ip / type
 	const char* server_ip = g_csgo.m_engine->GetNetChannelInfo() ? g_csgo.m_engine->GetNetChannelInfo()->GetAddress() : XOR("");
 	
-	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("neptune [%s] | ms: %i | %itick | %s | %s"), build, ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("neptune [%s] | %s"), build, time.str().data());
+	std::string text = g_csgo.m_engine->IsInGame() ? tfm::format(XOR("leetgrail [%s] | ms: %i | %itick | %s | %s"), build, ms, rate, local ? XOR("local server") : server_ip, time.str().data()) : tfm::format(XOR("leetgrail [%s] | %s"), build, time.str().data());
 
 	Color color = Color(192, 92, 91, 255);
 
@@ -128,23 +128,26 @@ void Client::ClanTag()
 		// are we in a new frame?
 		if (prevframe != curframe) {
 			// clantag switch
-			switch (curframe % 15)
+			switch (curframe % 18)
 			{
-			case 0: clantag = XOR(" "); break;
-			case 1: clantag = XOR("n "); break;
-			case 2: clantag = XOR("ne "); break;
-			case 3: clantag = XOR("nep "); break;
-			case 4: clantag = XOR("nept "); break;
-			case 5: clantag = XOR("neptu "); break;
-			case 6: clantag = XOR("neptun "); break;
-			case 7: clantag = XOR("neptune "); break;
-			case 8: clantag = XOR("eptune "); break;
-			case 9: clantag = XOR("ptune "); break;
-			case 10: clantag = XOR("tune "); break;
-			case 11: clantag = XOR("une "); break;
-			case 12: clantag = XOR("ne "); break;
-			case 13: clantag = XOR("e"); break;
-			case 14: clantag = XOR(" "); break;
+			case 0: clantag = XOR("         "); break;
+			case 1: clantag = XOR("        l"); break;
+			case 2: clantag = XOR("       le"); break;
+			case 3: clantag = XOR("      lee"); break;
+			case 4: clantag = XOR("     leet"); break;
+			case 5: clantag = XOR("    leetg"); break;
+			case 6: clantag = XOR("   leetgr"); break;
+			case 7: clantag = XOR("  leetgra"); break;
+			case 8: clantag = XOR(" leetgrai"); break;
+			case 9: clantag = XOR("leetgrail"); break;
+			case 10:clantag = XOR("eetgrail "); break;
+			case 11:clantag = XOR("etgrail  "); break;
+			case 12:clantag = XOR("tgrail   "); break;
+			case 13:clantag = XOR("grail    "); break;
+			case 14:clantag = XOR("rail     "); break;
+			case 15:clantag = XOR("ail      "); break;
+			case 16:clantag = XOR("il       "); break;
+			case 17:clantag = XOR("l        "); break;
 			}
 
 			// define our clantag

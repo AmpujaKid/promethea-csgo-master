@@ -50,7 +50,7 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	if ( attacker != g_csgo.m_engine->GetLocalPlayer( ) )
 		return;
 
-	if (Resolver::Modes::RESOLVE_FREESTAND && !didPrintResolveMode) {
+	/*if (Resolver::Modes::RESOLVE_FREESTAND && !didPrintResolveMode) {
 		g_notify.add("[resolver] tried resolve mode - freestanding\n");
 		didPrintResolveMode = true;
 	}
@@ -63,7 +63,7 @@ void Shots::OnImpact( IGameEvent *evt ) {
 	else if (Resolver::Modes::RESOLVE_BRUTEFORCE && !didPrintResolveMode) {
 		g_notify.add("[resolver] tried resolve mode - bruteforce\n");
 		didPrintResolveMode = true;
-	}
+	}*/
 	// decode impact coordinates and convert to vec3.
 	pos = {
 		evt->m_keys->FindKey( HASH( "x" ) )->GetFloat( ),

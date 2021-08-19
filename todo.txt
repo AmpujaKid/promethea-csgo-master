@@ -89,3 +89,273 @@ todo:
 	nothing for now
 [misc]
 	nothing for now
+
+
+
+some tickbase thing : 
+int TICKBASE_SHIFT = NASAAmountTxt.iValue;
+	LocalPlayer.bSwarm = !LocalPlayer.bSwarm;
+	int TICKS_TO_SEND_IN_BATCH = !LocalPlayer.bSwarm ? 1 : (TICKBASE_SHIFT + 2);
+	CUserCmd *lastcmd = CreateMoveVars.LastUserCmd;
+	BOOL bInAttack;
+	BOOL bInAttack2;
+	BOOL bInUse;
+	BOOL bInReload;
+ 
+	if (!DisableAllChk.Checked && lastcmd)
+	{
+		bInAttack = lastcmd->buttons & IN_ATTACK;
+		bInAttack2 = lastcmd->buttons & IN_ATTACK2;
+		bInUse = lastcmd->buttons & IN_USE;
+		bInReload = lastcmd->buttons & IN_RELOAD;
+		int bPressingARapidFirableKey = (bInAttack || (bInAttack2 && LocalPlayer.WeaponVars.IsKnife) || bInUse || bInReload);
+ 
+		static int NonSwarmTickCount = 0;
+		if (!LocalPlayer.bSwarm || !LocalPlayer.isastronaut)
+			NonSwarmTickCount = Interfaces::Globals->tickcount;
+ 
+		//static int waitticks = 0;
+		bool backupisastronaut = LocalPlayer.isastronaut;
+		bool backupswarmstate = LocalPlayer.bSwarm;
+		bool setswarmtrueonexit = false;
+ 
+		if (LocalPlayer.isastronaut)
+		{
+			++LocalPlayer.tickssincestartedbeingastronaut;
+			LocalPlayer.isastronaut = true;
+			DWORD cl = *(DWORD*)pClientState;
+			int resul = *(int*)(cl + lastoutgoingcommand);
+ 
+			CUserCmd *usercmds = GetUserCmdStruct(0);
+			CUserCmd backupcmds[150];
+			bool bShouldFire = false;
+			bool bCanHoldAttack = !LocalPlayer.WeaponVars.IsGun || LocalPlayer.WeaponVars.IsFullAuto || bInUse || (LocalPlayer.WeaponVars.IsRevolver && !bInAttack2);
+ 
+			if ((bPressingARapidFirableKey && RapidFireWhenAttackingWithNasaChk.Checked) && LocalPlayer.CurrentWeapon)
+			{
+				WeaponInfo_t *weaponinfo = LocalPlayer.CurrentWeapon->GetCSWpnData();
+				if (weaponinfo)
+				{
+					lastcmd->buttons &= ~IN_ATTACK;
+					lastcmd->buttons &= ~IN_ATTACK2;
+					lastcmd->buttons &= ~IN_USE;
+					lastcmd->buttons &= ~IN_RELOAD;
+ 
+					if (LocalPlayer.tickssincestartedbeingastronaut > 2)
+					{
+						bool &bSwarm = LocalPlayer.bSwarm;
+ 
+						if (!LocalPlayer.finishedrapidfire)
+						{
+							if (!LocalPlayer.started)
+							{
+								int servertime = NonSwarmTickCount;
+								if (LocalPlayer.bSwarm)
+									servertime -= TICKBASE_SHIFT;
+ 
+								if (bSwarm && (LocalPlayer.restart || gTriggerbot.WeaponCanFire(bInAttack2)))
+								{
+									bShouldFire = true;
+									LocalPlayer.started = true;
+									LocalPlayer.restart = false;
+ 
+									float flCycle = (bInAttack2 ? weaponinfo->flCycleTimeAlt : weaponinfo->flCycleTime);
+ 
+									LocalPlayer.lastshottime_server = servertime;
+									LocalPlayer.lastshotwasswarm = LocalPlayer.bSwarm;
+									LocalPlayer.lastshottime = Interfaces::Globals->tickcount;
+									float fllastshottime_server = TICKS_TO_TIME(servertime);
+ 
+									float timestamp;
+									//float delta = fllastshottime_server - LocalPlayer.CurrentWeapon->GetNextPrimaryAttack();
+									//if (delta < 0.0f || delta > Interfaces::Globals->interval_per_tick)
+									timestamp = fllastshottime_server;
+									//else
+									//	timestamp = LocalPlayer.CurrentWeapon->GetNextPrimaryAttack();
+ 
+									LocalPlayer.nextshottime = timestamp + flCycle + TICKS_TO_TIME(RapidFireDelayTxt.iValue);
+								}
+							}
+							else
+							{
+								bool stayrunning = bInUse || bInReload || LocalPlayer.WeaponVars.IsC4 || LocalPlayer.WeaponVars.IsRevolver;
+ 
+								if (stayrunning)
+								{
+									bShouldFire = true;
+									LocalPlayer.bSwarm = false;
+ 
+									//Force no swarm
+									TICKS_TO_SEND_IN_BATCH = 1;
+									NonSwarmTickCount = Interfaces::Globals->tickcount;
+									bSwarm = false;
+									setswarmtrueonexit = true;
+								}
+								else
+								{
+ 
+									int servertime = 1 + LocalPlayer.lastshottime_server + (Interfaces::Globals->tickcount - LocalPlayer.lastshottime);
+									if (LocalPlayer.lastshotwasswarm /*&& RapidFireMode2Chk.Checked*/)
+										servertime += TICKBASE_SHIFT;
+ 
+									//if (bSwarm)
+									//	servertime -= TICKBASE_SHIFT;
+ 
+									float flservertime = TICKS_TO_TIME(servertime);
+ 
+									//bool bCanHoldAttack =  /*Interfaces::Globals->tickcount - lastshottime > 1*/);
+ 
+									if (flservertime >= LocalPlayer.nextshottime && (bCanHoldAttack || (Interfaces::Globals->tickcount - LocalPlayer.lastshottime) > 1))
+									{
+										bShouldFire = true;
+										LocalPlayer.finishedrapidfire = true;
+ 
+										//Force no swarm
+										TICKS_TO_SEND_IN_BATCH = 1;
+										NonSwarmTickCount = Interfaces::Globals->tickcount;
+										bSwarm = false;
+										setswarmtrueonexit = true;
+										LocalPlayer.lastshotwasswarm = false;
+ 
+										float flCycle = (bInAttack2 ? weaponinfo->flCycleTimeAlt : weaponinfo->flCycleTime);
+										servertime = NonSwarmTickCount;
+										LocalPlayer.lastshottime_server = servertime;
+										LocalPlayer.lastshottime = Interfaces::Globals->tickcount;
+										LocalPlayer.nextshottime = TICKS_TO_TIME(servertime + TICKBASE_SHIFT + 2) + flCycle; //Add 2 ticks in case we were not swarming for a long time
+									}
+									else
+									{
+										//Can't shoot yet, let tickbase raise asap
+										TICKS_TO_SEND_IN_BATCH = 1;
+										NonSwarmTickCount = Interfaces::Globals->tickcount;
+										bSwarm = false;
+										setswarmtrueonexit = true;
+										if (bCanHoldAttack)
+											bShouldFire = true;
+									}
+								}
+							}
+						}
+						else
+						{
+							//Force no swarm
+							TICKS_TO_SEND_IN_BATCH = 1;
+							NonSwarmTickCount = Interfaces::Globals->tickcount;
+							bSwarm = false;
+							setswarmtrueonexit = true;
+ 
+							int servertime = 1 + LocalPlayer.lastshottime_server + (Interfaces::Globals->tickcount - LocalPlayer.lastshottime);
+							if (LocalPlayer.lastshotwasswarm /*&& RapidFireMode2Chk.Checked*/)
+								servertime += TICKBASE_SHIFT;
+ 
+							if (TICKS_TO_TIME(servertime) >= LocalPlayer.nextshottime)// && (bCanHoldAttack || (Interfaces::Globals->tickcount - LocalPlayer.lastshottime) > 1))
+							{
+								LocalPlayer.finishedrapidfire = false;
+								LocalPlayer.started = false;
+								LocalPlayer.restart = true;
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				LocalPlayer.finishedrapidfire = false;
+				LocalPlayer.started = false;
+				LocalPlayer.restart = false;
+			}
+ 
+			LocalPlayer.bBlockWriteUserCmdDeltaToBuffer = false;
+			
+			if (LocalPlayer.isastronaut || (bPressingARapidFirableKey && LocalPlayer.started))
+			{
+				int lastcommand = *(int*)(cl + lastoutgoingcommand);
+				int chokedcount = *(int*)(cl + chokedcommands);
+ 
+				//if (chokedcount > 0)
+				//	printf("WARNING: %i CHOKED TICKS!\n", chokedcount);
+ 
+				int LAST_PROCESSABLE_TICK_INDEX = max(0, min(TICKS_TO_SEND_IN_BATCH, 16) - 2); //sv_maxusrcmdprocessticks
+ 
+				for (int i = 0; i < TICKS_TO_SEND_IN_BATCH; i++)
+				{
+					bool bIsLastProcessedTick = i == LAST_PROCESSABLE_TICK_INDEX;
+					int nextcommandnr = lastcommand + chokedcount + 1;
+					CUserCmd *cmd = GetUserCmd(0, nextcommandnr, true);
+					if (cmd)
+					{
+						if (!lastcmd)
+							cmd->Reset();
+						else
+							*cmd = *lastcmd;
+ 
+						if (bShouldFire && (bIsLastProcessedTick || bCanHoldAttack))
+						{
+							if (bInAttack)
+								cmd->buttons |= IN_ATTACK;
+							if (bInAttack2)
+								cmd->buttons |= IN_ATTACK2;
+							if (bInReload)
+								cmd->buttons |= IN_RELOAD;
+							if (bInUse)
+								cmd->buttons |= IN_USE;
+						}
+ 
+						cmd->command_number = nextcommandnr++;
+						cmd->tick_count = *(int*)(*(DWORD*)pClientState + dwServerTickCount) + TIME_TO_TICKS(0.5f) + i;
+ 
+						if (TICKS_TO_SEND_IN_BATCH > 1 && i != (TICKS_TO_SEND_IN_BATCH - 1))
+							chokedcount++;
+ 
+						if (LocalPlayer.bSwarm && i == 0)
+						{
+							memcpy(backupcmds, usercmds, sizeof(CUserCmd) * 150);
+						}
+					}
+				}
+ 
+				static void* tmp = malloc(2048);
+				CNetMsg_Tick_Construct(tmp, *host_computationtime, *host_computationtime_std_deviation, *(DWORD*)(cl + 0x174), *host_framestarttime_std_deviation);
+				chan->SendNetMsg(tmp, false, false);
+ 
+				//if (LocalPlayer.bSwarm)
+				//	chan->m_nOutSequenceNr += 10;
+ 
+				if (!LocalPlayer.bSwarm)
+				{
+				//	int packet_drop_amount = 10; //actual limit is 23 but server clamps to 10
+				//	packet_drop_amount += (TICKBASE_SHIFT + 1);
+				//	chan->m_nOutSequenceNr += packet_drop_amount;
+				}
+ 
+				*(int*)(cl + chokedcommands) = chokedcount;
+				chan->m_nChokedPackets = chokedcount;
+				CL_SendMove_Rebuilt();
+ 
+				resul = oSendDatagram(netchan, datagram);
+				*(int*)(cl + lastoutgoingcommand) = resul;
+				*(int*)(cl + chokedcommands) = 0;
+ 
+				if (LocalPlayer.bSwarm)
+					memcpy(usercmds, backupcmds, sizeof(CUserCmd) * 150);
+ 
+				//static int lastsent = TICKS_TO_SEND_IN_BATCH;
+				//if (TICKS_TO_SEND_IN_BATCH == lastsent && !setswarmtrueonexit)
+				//	printf("WARNING: SENT SAME BATCH TWICE: %i\n", TICKS_TO_SEND_IN_BATCH);
+				//lastsent = TICKS_TO_SEND_IN_BATCH;
+ 
+				LocalPlayer.bSwarm = setswarmtrueonexit ? true : backupswarmstate;
+ 
+				return resul;
+			}
+ 
+			LocalPlayer.isastronaut = backupisastronaut;
+		}
+		else
+		{
+			LocalPlayer.finishedrapidfire = false;
+			LocalPlayer.started = false;
+			LocalPlayer.restart = false;
+			LocalPlayer.tickssincestartedbeingastronaut = 0;
+		}
+	}

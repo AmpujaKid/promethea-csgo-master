@@ -444,6 +444,22 @@ void HVH::DoRealAntiAim( ) {
 		bool stand = g_menu.main.antiaim.body_fake_stand.get( ) > 0 && m_mode == AntiAimMode::STAND;
 		bool air = g_menu.main.antiaim.body_fake_air.get( ) > 0 && m_mode == AntiAimMode::AIR;
 
+		if (g_menu.main.antiaim.antiaim_exploit.get()) {
+			g_cl.m_cmd->m_view_angles.y -= 90.f;
+
+			g_cl.m_cmd->m_tick = INT_MAX;
+
+			if ((g_csgo.m_globals->m_tick_count + 1) % 2 == 0) {
+				*g_cl.m_packet = false;
+				g_csgo.m_net->m_out_seq -= 4;
+			}
+			g_csgo.m_net->m_out_seq -= 2;
+			*g_cl.m_packet = true;
+			g_csgo.m_net->m_out_seq += 4;
+			*g_cl.m_packet = false;
+
+		}
+
 		// one tick before the update.
 		if( stand && !g_cl.m_lag && g_csgo.m_globals->m_curtime >= ( g_cl.m_body_pred - g_cl.m_anim_frame ) && g_csgo.m_globals->m_curtime < g_cl.m_body_pred ) {
 			// z mode.
@@ -480,7 +496,7 @@ void HVH::DoRealAntiAim( ) {
 			}
 			// suppress 979
 			else if (g_menu.main.antiaim.body_fake_stand.get() == 5) {
-				//g_csgo.m_net->m_out_seq -= 2;
+				g_csgo.m_net->m_out_seq -= 2;
 			}
 		}
 

@@ -28,6 +28,7 @@ public:
 	Checkbox      norecoil;
 	Checkbox      lagfix;
 	Checkbox	  correct;
+	Checkbox      fps_saver;
 
 	// exploits subtab
 	Checkbox      tickbase;
@@ -151,6 +152,9 @@ public:
 		correct.setup(XOR("correct anti-aim"), XOR("correct"));
 		RegisterElement(&correct, 1);
 
+		fps_saver.setup(XOR("save fps"), XOR("save_fps"));
+		RegisterElement(&fps_saver, 1);	
+
 		baim1.setup(XOR("prefer body aim"), XOR("baim1"), { XOR("always"), XOR("lethal"), XOR("lethal x2"), XOR("fake"), XOR("in air") });
 		RegisterElement(&baim1, 1);
 
@@ -239,7 +243,7 @@ public:
 	Checkbox      lag_land;
 	Checkbox	  choke_on_flick;
 	Keybind       antiaim_exploit;
-	Checkbox      lbyexploit;
+	Keybind       lbyexploit;
 	Keybind       fakeduck;
 
 public:
@@ -493,8 +497,8 @@ public:
 		antiaim_exploit.setup(XOR("antiaim exploit"), XOR("antiaim_exploit"));
 		//RegisterElement(&antiaim_exploit, 1);
 
-		lbyexploit.setup(XOR("tickbase lby"), XOR("lbyexploit"));
-		//RegisterElement(&lbyexploit, 1);
+		lbyexploit.setup(XOR("lby exploit"), XOR("lbyexploit"));
+		RegisterElement(&lbyexploit, 1);
 
 		fakeduck.setup(XOR("fakeduck"), XOR("fakeduck"));
 		RegisterElement(&fakeduck, 1);

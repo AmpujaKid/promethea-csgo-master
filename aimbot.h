@@ -183,6 +183,8 @@ public:
 	}
 
 public:
+	bool CanDT();
+	void DoubleTap();
 	// aimbot.
 	void init( );
 	void StripAttack( );
