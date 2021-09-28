@@ -192,6 +192,7 @@ public:
 	Slider   distortion_await;
 	Slider   distortion_speed;
 	Slider   distortion_swap_amount;
+	Slider   max_amplitude;
 	Slider   jitter_range_stand;
 	Slider   rot_range_stand;
 	Slider   rot_speed_stand;
@@ -303,10 +304,15 @@ public:
 		rand_update_stand.AddShowCallback(callbacks::IsStandYawRnadom);
 		RegisterElement(&rand_update_stand);
 
-		dir_stand.setup(XOR("direction"), XOR("dir_stnd"), { XOR("auto"), XOR("manual"), XOR("custom"), XOR("snake") });
+		dir_stand.setup(XOR("direction"), XOR("dir_stnd"), { XOR("auto"), XOR("manual"), XOR("custom"), XOR("snake") }); // +++++++
 		dir_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		dir_stand.AddShowCallback(callbacks::HasStandYaw);
 		RegisterElement(&dir_stand);
+
+		max_amplitude.setup("max amplitude", XOR("max_amplitude"), 0.f, 180.f, true, 0, 1.f, 1.f);
+		max_amplitude.AddShowCallback(callbacks::IsAntiAimModeStand);
+		max_amplitude.AddShowCallback(callbacks::IsAntiAimModeSnake);
+		RegisterElement(&max_amplitude);
 
 		dir_time_stand.setup("", XOR("dir_time_stnd"), 0.f, 10.f, false, 0, 0.f, 1.f, XOR(L"s"));
 		dir_time_stand.AddShowCallback(callbacks::IsAntiAimModeStand);

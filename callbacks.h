@@ -63,6 +63,7 @@ namespace callbacks {
 	bool IsFakeAntiAimJitter( );
 	bool IsFakeAntiAimSwap( );
 	bool IsFakeAntiAimFlick( );
+	bool IsAntiAimModeSnake( );
 	
 	// Chams selection.
 	bool IsChamsSelection0();

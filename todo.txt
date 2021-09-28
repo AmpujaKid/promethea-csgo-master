@@ -1,3 +1,11 @@
+Credits :
+ItzPax
+Lazarus
+Sean1
+AmpujaKid
+Alpha
+Geico
+
 - Update Log -
 
 =====12.14.2020=====
@@ -53,10 +61,14 @@
 [RAGEBOT]
 - Major Resolver Improvements
 [ANTIAIM]
-- New Antiaim Lby "insert lby name once we choose one"
+- Universal AntiAim Improvements
 [VISUALS]
 - New beam modes
 - New cham types
+[MOVEMENT]
+- Tickbase Walk
+[MISC]
+- New Hitsound
 
 
 

@@ -36,6 +36,7 @@ using ulong_t = unsigned long;
 #include <deque>
 #include <functional>
 #include <map>
+#include <math.h>
 #include <shlobj.h>
 #include <filesystem>
 #include <streambuf>

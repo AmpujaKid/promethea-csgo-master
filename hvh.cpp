@@ -279,15 +279,19 @@ void HVH::GetAntiAimDirection( ) {
 		m_direction = m_view + m_dir_custom;
 		break;
 
-		// snake (?)
+		// snake
 	case 3:
+
+		float max_amplitude = 20;
+		float sin_angle = max_amplitude * sinf(2 * math::pi);
+
 		switch ((GetTickCount() + 1) % 2) {
 		case 1:
-			m_direction = m_view - 45.f + 180.f;
+			m_direction = m_view - sin_angle;
 			break;
 
 		case 0:
-			m_direction = m_view + 45.f + 180.f;
+			m_direction = m_view + sin_angle;
 			break;
 
 		}
@@ -568,11 +572,23 @@ void HVH::DoRealAntiAim( ) {
 					}
 					break;
 
-					// fucking with ticks
+					
 				case 8:
 					// do this on your lby flick
-					g_cl.m_cmd->m_view_angles.y -= 148.f;
-					g_cl.flTargetCurTime = g_csgo.m_globals->m_curtime + 1;
+
+					/*
+						y(t) = A * sin(2 * PI * f * t + shift)
+						where:
+
+						A = the amplitude, the peak deviation of the function from zero.
+						f = the ordinary frequency, the number of oscillations (cycles)
+						t = time
+						shift = phase shift
+					*/
+					float max_amplitude = 60;
+					float sin_angle = max_amplitude * sinf(2 * math::pi);
+
+					g_cl.m_cmd->m_view_angles.y -= sin_angle;
 					break;
 				}
 			}
