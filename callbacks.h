@@ -1,4 +1,7 @@
 #pragma once
+#ifndef _CALLBACKS_H_
+#define _CALLBACKS_H_
+#endif
 
 namespace callbacks {
 	void SkinUpdate( );

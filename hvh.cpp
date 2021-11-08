@@ -246,7 +246,8 @@ void HVH::GetAntiAimDirection( ) {
 			}
 		}
 	}
-
+	float max_amplitude = 20;
+	float sin_angle = max_amplitude * sinf(2 * math::pi);
 	// switch direction modes.
 	switch( m_dir ) {
 
@@ -281,9 +282,6 @@ void HVH::GetAntiAimDirection( ) {
 
 		// snake
 	case 3:
-
-		float max_amplitude = 20;
-		float sin_angle = max_amplitude * sinf(2 * math::pi);
 
 		switch ((GetTickCount() + 1) % 2) {
 		case 1:

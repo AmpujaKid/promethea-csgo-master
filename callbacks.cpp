@@ -178,7 +178,11 @@ bool callbacks::IsAntiAimModeDistortion( ) {
 	return g_menu.main.antiaim.yaw_stand.get() == 6;
 }
 
-bool callbacks::IsAntiAimModeStand( ) {
+//bool callbacks::IsAntiAimModeStand() {
+//	return g_menu.main.antiaim.dir_stand.get() == 3;
+//}
+
+bool callbacks::IsAntiAimModeSnake() {
 	return g_menu.main.antiaim.dir_stand.get() == 3;
 }
 

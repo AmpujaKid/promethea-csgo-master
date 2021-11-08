@@ -246,7 +246,7 @@ void Resolver::Override(LagRecord* record)
 		//record->m_resolver_mode = "OVERRIDE_LEFT";
 	}
 }
-/*
+
 void Resolver::AntiFreestand(LagRecord* record) {
 	// constants
 	constexpr float STEP{ 4.f };
@@ -334,7 +334,7 @@ void Resolver::AntiFreestand(LagRecord* record) {
 
 	record->m_eye_angles.y = best->m_yaw;
 }
-*/
+
 void Resolver::SetMode( LagRecord* record ) {
 	// the resolver has 3 modes to chose from.
 	// these modes will vary more under the hood depending on what data we have about the player
@@ -428,29 +428,29 @@ void Resolver::ResetNiggaShit(AimPlayer* data, bool printDebug) {
 	data->m_freestanding_index = 0;
 }
 
-//float Resolver::GetLBYRotatedYaw(float lby, float yaw)
-//{
-//	float delta = math::NormalizedAngle(yaw - lby);
-//	if (fabs(delta) < 25.f)
-//		return lby;
-//
-//	if (delta > 0.f)
-//		return yaw + 25.f;
-//
-//	return yaw;
-//}
+float Resolver::GetLBYRotatedYaw(float lby, float yaw)
+{
+	float delta = math::NormalizedAngle(yaw - lby);
+	if (fabs(delta) < 25.f)
+		return lby;
 
-//bool Resolver::IsYawSideways(Player* entity, float yaw)
-//{
-//	auto local_player = g_cl.m_local;
-//	if (!local_player)
-//		return false;
-//
-//	const auto at_target_yaw = math::CalcAngle(local_player->m_vecOrigin(), entity->m_vecOrigin()).y;
-//	const float delta = fabs(math::NormalizedAngle(at_target_yaw - yaw));
-//
-//	return delta > 20.f && delta < 160.f;
-//}
+	if (delta > 0.f)
+		return yaw + 25.f;
+
+	return yaw;
+}
+
+bool Resolver::IsYawSideways(Player* entity, float yaw)
+{
+	auto local_player = g_cl.m_local;
+	if (!local_player)
+		return false;
+
+	const auto at_target_yaw = math::CalcAngle(local_player->m_vecOrigin(), entity->m_vecOrigin()).y;
+	const float delta = fabs(math::NormalizedAngle(at_target_yaw - yaw));
+
+	return delta > 20.f && delta < 160.f;
+}
 
 void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 	// get predicted away angle for the player.
@@ -484,7 +484,7 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 	else if (record->m_anim_time >= data->m_body_update && data->m_body_index < 4) // flick prediction, has .22 flick predict
 	{
-		if (act == 979/* && IsYawSideways(data->m_player, record->m_body)*/) {
+		if (act == 979 && IsYawSideways(data->m_player, record->m_body)) {
 			record->m_eye_angles.y = record->m_body;
 		}
 
@@ -518,7 +518,7 @@ void Resolver::ResolveStand(AimPlayer* data, LagRecord* record) {
 
 	// freestanding if we have gone through that shit or missed last moving
 	else if (!data->m_moved || data->m_body_index > 1) {
-		//AntiFreestand(record);
+		AntiFreestand(record);
 
 		record->m_mode = Modes::RESOLVE_FREESTAND;
 	}
